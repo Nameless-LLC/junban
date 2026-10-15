@@ -216,20 +216,20 @@ has "bar for each day"              "$rep" "████████████
 has "this week against last"        "$rep" "median reply 4m00s → 2m00s (-50%)"
 has "personal best"                 "$rep" "Personal best: $(date +%m/%d), median reply 2m00s"
 has "streak within the goal"        "$rep" "days in a row with a median reply under 5 min"
-hasnt "mascot is opt-in"            "$rep" '\(^o^)/'
+hasnt "mascot is opt-in"            "$rep" '[◠ ◠]'
 tmux set -g @junban-mascot on
 rep=$(bash "$S/stats.sh" 7)
-has "mascot cheers a quicker week"  "$rep" '\(^o^)/'
+has "mascot cheers a quicker week"  "$rep" '[◠ ◠]'
 has "…and says why"                 "$rep" "a new personal best today! 50% quicker"
 eq  "trend needs 5 waits before"    "$(bash "$S/stats.sh" --line | cut -f4)" "-"
 for d in 4 5; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180)) "$e" >> "$log"; done
 eq  "trend: today vs last 7 days"   "$(bash "$S/stats.sh" --line | cut -f4)" "-33%"
 has "guide shows the trend"         "$(bash "$S/hints.sh")" "-33% vs the last 7 days"
 tmux set -w -t u:6 @junban waiting
-has "mascot calls when someone waits" "$(bash "$S/summary.sh")" "(O_O)"
+has "mascot calls when someone waits" "$(bash "$S/summary.sh")" "[▮ ▮]"
 tmux set -w -t u:6 -u @junban
 tmux set -gu @junban-mascot
-hasnt "no mascot unless asked"      "$(bash "$S/summary.sh")" "_"
+hasnt "no mascot unless asked"      "$(bash "$S/summary.sh")" "▮"
 
 echo "recap"
 tmux new-window -d -t u:7 -n r; pr=$(tmux display -p -t u:7 '#{pane_id}')

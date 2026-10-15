@@ -141,12 +141,12 @@ if [ "$tc" -ge "$MIN_N" ] && [ "$lc" -ge "$MIN_N" ] && [ "$lm" -gt 0 ] && [ "$lt
   printf '\n  %s\n' "$(printf "$STATS_WEEK" "$(fmt_dur "$lm")" "$(fmt_dur "$tm")" "$(pct "$tm" "$lm")" \
     "$(fmt_dur "$lt")" "$(fmt_dur "$tt")" "$(pct "$tt" "$lt")")"
   p=$(pct "$tm" "$lm"); p=${p%\%}; p=${p#+}
-  if [ "$p" -le -10 ]; then face='\(^o^)/'; say=$(printf "$MASCOT_UP" $(( -p )))
-  elif [ "$p" -ge 10 ]; then face='(._.)'; say=$(printf "$MASCOT_DOWN" "$p")
-  else face='(^_^)'; say=$MASCOT_SAME
+  if [ "$p" -le -10 ]; then face='[◠ ◠]'; say=$(printf "$MASCOT_UP" $(( -p )))
+  elif [ "$p" -ge 10 ]; then face='[▬ ▬]'; say=$(printf "$MASCOT_DOWN" "$p")
+  else face='[▮ ▮]'; say=$MASCOT_SAME
   fi
 else
-  face='(o_o)'; say=$MASCOT_NEW
+  face='[▮ ▮]?'; say=$MASCOT_NEW
 fi
 
 # Personal best: the day with the quickest median reply (enough waits to count).
