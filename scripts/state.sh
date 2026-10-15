@@ -7,6 +7,10 @@
 #   @junban_ts     epoch seconds of the last change (used to order Alt+a)
 #   @junban_prompt the last thing you asked it (shown in the Alt+f list)
 #
+# Leaving "waiting" or "done" ends a stretch where the agent sat on you. Each one
+# is appended to $XDG_STATE_HOME/junban/waits.tsv (start, end, kind, window) for
+# the meter on the guide line and for stats.sh.
+#
 # A hook must never break the agent, so every path exits 0.
 
 pane=${TMUX_PANE:-}
@@ -26,6 +30,7 @@ cur=$(t display -p -t "$pane" '#{@junban}')
 
 case "$st" in
   clear)
+    # Closing the agent is not answering it, so no wait is logged.
     for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale; do t set -wu -t "$pane" "$o"; done
     exit 0 ;;
   done)
@@ -39,6 +44,16 @@ case "$st" in
 esac
 
 if [ "$st" != "$cur" ]; then
+  case "$cur" in
+    waiting|done)
+      since=$(t display -p -t "$pane" '#{@junban_ts}')
+      if [ -n "$since" ]; then
+        log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
+        name=$(t display -p -t "$pane" '#{session_name}:#{window_name}' | tr '\t' ' ')
+        mkdir -p "${log%/*}" 2>/dev/null &&
+          printf '%s\t%s\t%s\t%s\n' "$since" "$(date +%s)" "$cur" "$name" >> "$log" 2>/dev/null
+      fi ;;
+  esac
   t set -w -t "$pane" @junban "$st"
   t set -w -t "$pane" @junban_ts "$(date +%s)"
 fi

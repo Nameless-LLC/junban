@@ -52,3 +52,13 @@ key_for() {
   if [ -n "$k" ]; then keylabel "$k"; return; fi
   printf 'prefix %s' "$3"
 }
+
+# fmt_dur SECONDS → "42s", "3m10s", "1h20m" in the user's language (T_H/T_M/T_S).
+fmt_dur() {
+  local s=${1:-0}
+  if [ "$s" -lt 60 ]; then printf '%d%s' "$s" "$T_S"
+  elif [ "$s" -lt 600 ]; then printf '%d%s%02d%s' $((s / 60)) "$T_M" $((s % 60)) "$T_S"
+  elif [ "$s" -lt 3600 ]; then printf '%d%s' $((s / 60)) "$T_M"
+  else printf '%d%s%02d%s' $((s / 3600)) "$T_H" $((s % 3600 / 60)) "$T_M"
+  fi
+}

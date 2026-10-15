@@ -57,8 +57,8 @@ if [ "$(opt @junban-guide on)" = on ]; then
   tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh)"
 fi
 
-# Opening a window marks its ✓ as seen.
-seen='if -F "#{==:#{@junban},done}" "set -w @junban idle"'
+# Opening a window marks its ✓ as seen (through state.sh, so the wait is logged).
+seen="if -F '#{==:#{@junban},done}' \"run -b 'TMUX_PANE=#{window_id} bash $S/state.sh idle'\""
 tmux set-hook -g 'session-window-changed[42]' "$seen" \; set-hook -g 'client-session-changed[42]' "$seen"
 
 # Quality of life that agent TUIs need inside tmux.
@@ -71,7 +71,7 @@ kj=$(opt @junban-key-jump M-a); kf=$(opt @junban-key-list M-f); kn=$(opt @junban
 kg=$(opt @junban-key-scratch M-g); kh=$(opt @junban-key-help M-/)
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
 popup_scratch=(display-popup -E -w 80% -h 75% -d "#{pane_current_path}" "tmux new -A -s scratch")
-popup_help=(display-popup -E -w 64 -h 28 "$S/help.sh")
+popup_help=(display-popup -E -w 80 -h 90% "$S/help.sh")
 new_agent=(run -b "$S/new.sh '#{pane_current_path}'")
 
 bind_root "$kj" run -b "$S/jump.sh"

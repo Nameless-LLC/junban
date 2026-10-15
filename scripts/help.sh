@@ -32,5 +32,8 @@ nav=$(opt @junban-nav-keys on)
     printf '\n  %s── %s%s\n' "$dim" "$HELP_PREFIX" "$r"
     printf '   prefix a · f · C · g · /\n'
   fi
+  # The wait report lives here too: Alt+/ is the one place people already look.
+  [ "$(opt @junban-meter on)" = on ] && [ -s "${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv" ] &&
+    bash "$JUNBAN_SCRIPTS/stats.sh" 7
   printf '\n  %s%s%s\n' "$dim" "$HELP_CLOSE" "$r"
 } | less -R

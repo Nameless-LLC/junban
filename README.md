@@ -73,9 +73,11 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **It catches the two habits that cost the most.** Two agents in one git working tree overwrite each other's edits and commit each other's half-done work; those windows get a ⚠ and the guide line names them. Alt+n then starts the second Claude Code in its own worktree (`claude --worktree`) instead. Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones.
 
+**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a 7-day table and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 53 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 66 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -103,6 +105,8 @@ set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when th
 # Hygiene
 set -g @junban-shared-check on     # ⚠ when two agents share a git working tree
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
+set -g @junban-meter on            # ⏱ today's wait total on the guide line
+set -g @junban-meter-cap 60        # minutes one wait can count for
 
 # Window names
 set -g @junban-rename prompt       # off | prompt | llm

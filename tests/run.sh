@@ -164,6 +164,46 @@ eq  "scan is throttled"             "$(get u:3 @junban_stale)" "30"
 scan
 eq  "parked clears on activity"     "$(get u:3 @junban_stale)" ""
 
+echo "wait meter"
+unset XDG_STATE_HOME
+log="$HOME/.local/state/junban/waits.tsv"; rm -f "$log"
+tmux new-window -d -t u:6 -n m; pm=$(tmux display -p -t u:6 '#{pane_id}')
+now=$(date +%s)
+st "$pm" waiting '{}'; tmux set -w -t u:6 @junban_ts $((now - 90))
+st "$pm" running '{}'
+eq  "answering logs the wait"       "$(cut -f3,4 "$log")" "waiting	u:m"
+eq  "wait length recorded"          "$(awk -F'\t' '{print $2 - $1}' "$log")" "90"
+st "$pm" "done" '{}'; tmux set -w -t u:6 @junban_ts $((now - 30))
+tmux select-window -t u:6; sleep 0.5
+eq  "opening a ✓ window clears it"  "$(get u:6 @junban)" "idle"
+eq  "…and logs it as a done wait"   "$(tail -n1 "$log" | cut -f3)" "done"
+lines=$(wc -l < "$log")
+st "$pm" running '{}'; st "$pm" "done" '{}'
+tmux set -w -t u:6 @junban "done"; st "$pm" clear
+eq  "closing an agent logs nothing" "$(wc -l < "$log" | tr -d ' ')" "$lines"
+printf '%s\t%s\twaiting\tu:old\n' $((now - 9 * 86400)) $((now - 9 * 86400 + 60)) >> "$log"
+printf '%s\t%s\tdone\tu:night\n' $((now - 20000)) "$now" >> "$log"
+line=$(bash "$S/stats.sh" --line)
+eq  "today: count excludes old days" "$(cut -f3 <<<"$line")" "$((lines + 1))"
+# the ✓ wait is ~30s (the select above takes a moment), so allow a few seconds
+near() { if [ "$2" -ge "$3" ] && [ "$2" -le $(($3 + 3)) ]; then ok "$1"; else bad "$1" "$2 (want ~$3)"; fi; }
+near "one long wait capped at 60m"  "$(cut -f1 <<<"$line")" "$((90 + 30 + 3600))"
+tmux set -g @junban-meter-cap 10
+near "cap is configurable"          "$(bash "$S/stats.sh" --line | cut -f1)" "$((90 + 30 + 600))"
+tmux set -gu @junban-meter-cap
+tmux set -w -t u:1 @junban_shared ""; for w in 1 2 3 4; do tmux set -w -t "u:$w" -u @junban_stale; done
+tmux set -w -t u:1 -u @junban_shared
+has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
+tmux set -g @junban-lang ja
+has "meter in Japanese"             "$(bash "$S/hints.sh")" "今日の待たせ時間 1時間"
+tmux set -gu @junban-lang
+tmux set -g @junban-meter off
+hasnt "meter can be turned off"     "$(bash "$S/hints.sh")" "kept waiting"
+tmux set -gu @junban-meter
+rep=$(bash "$S/stats.sh" 7)
+has "report lists today's windows"  "$rep" "u:night"
+hasnt "report skips older days"     "$rep" "u:old"
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t
