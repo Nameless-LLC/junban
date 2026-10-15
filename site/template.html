@@ -377,10 +377,10 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   document.querySelectorAll('.copy').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var el = document.getElementById(btn.dataset.copy);
+      flash('done', 'copied', 1500);
       var done = function () {
         var old = btn.innerHTML;
         btn.textContent = root.lang === 'ja' ? 'コピーしました' : 'Copied';
-        flash('done', 'copied', 1500);
         setTimeout(function () { btn.innerHTML = old; }, 1600);
       };
       var select = function () {
