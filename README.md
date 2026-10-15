@@ -54,7 +54,7 @@ Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
 |---|---|
 | **Alt+a** | Jump to the agent that needs you: waiting before finished, longest first |
 | **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview |
-| **Alt+n** | New agent window in the current directory |
+| **Alt+n** | New agent window in the current directory (in its own worktree if another agent already works there) |
 | **Alt+g** | Scratch shell in a popup that survives closing |
 | **Alt+/** | Cheat sheet, generated from your actual bindings |
 | Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | Go to window · prev/next · last · zoom |
@@ -71,9 +71,11 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Windows name themselves after the task, and stay named.** By default a window takes the first line of your prompt. Point it at any model (a small model resident in a local Ollama answers in under a second) and it summarises the last few prompts instead. Replies like "ok", "yes", "進めて" or "ครับ" never rename anything. A window you name yourself (`prefix ,`) is never touched again.
 
+**It catches the two habits that cost the most.** Two agents in one git working tree overwrite each other's edits and commit each other's half-done work; those windows get a ⚠ and the guide line names them. Alt+n then starts the second Claude Code in its own worktree (`claude --worktree`) instead. Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones.
+
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 36 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 53 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -96,6 +98,11 @@ set -g @junban-key-help M-/
 set -g @junban-nav-keys on         # Alt+1..9, Alt+[ ], Alt+Tab, Alt+z
 set -g @junban-prefix-keys on      # prefix a/f/C/g/ fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
+set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when the tree is taken | off
+
+# Hygiene
+set -g @junban-shared-check on     # ⚠ when two agents share a git working tree
+set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
 
 # Window names
 set -g @junban-rename prompt       # off | prompt | llm

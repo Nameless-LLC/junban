@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Status-right counter: ✋ waiting / ✓ done / ● running across all sessions.
-# Also the heartbeat that runs heal.py (stale-state repair) every status-interval.
+# Also the heartbeat that runs heal.py (stale-state repair) and scan.py
+# (shared trees, parked agents) every status-interval.
 . "$(dirname "$0")/lib.sh"
 if command -v python3 >/dev/null 2>&1; then
   python3 "$JUNBAN_SCRIPTS/heal.py" >/dev/null 2>&1
+  python3 "$JUNBAN_SCRIPTS/scan.py" >/dev/null 2>&1
 fi
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")

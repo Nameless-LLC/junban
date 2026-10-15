@@ -26,7 +26,7 @@ cur=$(t display -p -t "$pane" '#{@junban}')
 
 case "$st" in
   clear)
-    for o in @junban @junban_ts @junban_prompt; do t set -wu -t "$pane" "$o"; done
+    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale; do t set -wu -t "$pane" "$o"; done
     exit 0 ;;
   done)
     # You are looking at it right now: nothing to catch up on.

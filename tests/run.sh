@@ -8,6 +8,7 @@ trap 'tmux kill-server 2>/dev/null; rm -rf "$WORK"' EXIT
 unset TMUX TMUX_PANE
 export TMUX_TMPDIR="$WORK" HOME="$WORK/home" LANG=C.UTF-8
 mkdir -p "$HOME/.claude/sessions"
+cd "$WORK" || exit 1   # not inside a git repo, or every test window would share one tree
 
 pass=0; fail=0
 ok()   { pass=$((pass + 1)); printf '  \033[32m✓\033[0m %s\n' "$1"; }
@@ -118,6 +119,50 @@ rm "$HOME/.claude/sessions/$$.json"
 tmux set -w -t s:2 @junban running \; set -w -t s:2 @junban_ts 1
 python3 "$S/heal.py"
 eq  "agent exited to shell → cleared" "$(get s:2 @junban)" "idle"
+
+echo "shared trees and parked agents"
+tmux kill-server; sleep 0.2
+repo="$WORK/repo"; git init -q "$repo"; mkdir -p "$repo/sub"
+git -C "$repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m init
+git -C "$repo" worktree add -q "$WORK/wt" -b side
+tmux -f "$WORK/tmux.conf" new -d -s u -n a -c "$repo" -x 160 -y 40
+bash "$ROOT/junban.tmux"
+tmux new-window -d -t u:2 -n b -c "$repo/sub"
+tmux new-window -d -t u:3 -n c -c "$WORK/wt"
+tmux new-window -d -t u:4 -n d -c "$HOME"
+tmux new-window -d -t u:5 -n e -c "$repo"     # a plain shell: no agent registered
+for w in 1 2 3 4; do tmux set -w -t "u:$w" @junban idle \; set -w -t "u:$w" @junban_ts "$(date +%s)"; done
+sleep 0.3   # let pane_current_path settle
+scan() { tmux set -g @junban-scan-at 0; python3 "$S/scan.py"; }
+scan
+eq  "same tree flagged"             "$(get u:1 @junban_shared)" "2"
+eq  "subdir counts as same tree"    "$(get u:2 @junban_shared)" "2"
+eq  "separate worktree not flagged" "$(get u:3 @junban_shared)" ""
+eq  "\$HOME never flagged"          "$(get u:4 @junban_shared)" ""
+eq  "shell without agent ignored"   "$(get u:5 @junban_shared)" ""
+has "guide names the sharing windows" "$(bash "$S/hints.sh")" "a · b"
+has "badge shows ⚠"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
+eq  "new agent here → worktree"     "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$repo")" "claude --worktree"
+eq  "new agent in free tree → plain" "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$WORK")" "claude"
+tmux set -g @junban-new-worktree off
+eq  "worktree switch can be off"    "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$repo")" "claude"
+tmux set -gu @junban-new-worktree
+tmux set -g @junban-agent-cmd codex
+eq  "other agents start plain"      "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$repo")" "codex"
+tmux set -gu @junban-agent-cmd
+tmux set -w -t u:2 -u @junban; scan
+eq  "flag clears when one leaves"   "$(get u:1 @junban_shared)" ""
+tmux set -w -t u:3 @junban_ts $(( $(date +%s) - 30 * 3600 ))
+tmux set -w -t u:4 @junban running \; set -w -t u:4 @junban_ts 1
+scan
+eq  "idle for 30h → parked"         "$(get u:3 @junban_stale)" "30"
+eq  "running is never parked"       "$(get u:4 @junban_stale)" ""
+has "guide counts parked"           "$(bash "$S/hints.sh")" "1 agents untouched"
+tmux set -g @junban-scan-at "$(date +%s)"; tmux set -w -t u:3 @junban_ts "$(date +%s)"
+python3 "$S/scan.py"
+eq  "scan is throttled"             "$(get u:3 @junban_stale)" "30"
+scan
+eq  "parked clears on activity"     "$(get u:3 @junban_stale)" ""
 
 echo "theme off"
 tmux kill-server; sleep 0.2

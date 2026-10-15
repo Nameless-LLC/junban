@@ -19,6 +19,8 @@ sel=$(opt @junban-color-current-bg "#2c313c")
 
 # The badge, reusable in your own formats as #{E:@junban-badge}
 badge="#{?#{==:#{@junban},waiting},#[fg=$cw bold]✋ ,#{?#{==:#{@junban},done},#[fg=$cd_ bold]✓ ,#{?#{==:#{@junban},running},#[fg=$cr]● ,}}}"
+# ⚠ another agent works in the same git tree; z untouched for @junban-stale-hours
+badge="$badge#{?@junban_shared,#[fg=$cr bold]⚠ ,}#{?@junban_stale,#[fg=$dim nobold]z ,}"
 tmux set -g @junban-badge "$badge"
 
 if [ "$(opt @junban-theme on)" = on ]; then
@@ -63,15 +65,14 @@ tmux set-hook -g 'session-window-changed[42]' "$seen" \; set-hook -g 'client-ses
 tmux set -g focus-events on \; set -s extended-keys on \; set -s set-clipboard on \; \
      set -as terminal-features ",xterm*:RGB:clipboard:focus:extkeys"
 
-agent_cmd=$(opt @junban-agent-cmd "claude")
 bind_root() { [ -n "$1" ] && tmux bind -n "$1" "${@:2}"; }
 
 kj=$(opt @junban-key-jump M-a); kf=$(opt @junban-key-list M-f); kn=$(opt @junban-key-new M-n)
 kg=$(opt @junban-key-scratch M-g); kh=$(opt @junban-key-help M-/)
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
 popup_scratch=(display-popup -E -w 80% -h 75% -d "#{pane_current_path}" "tmux new -A -s scratch")
-popup_help=(display-popup -E -w 64 -h 26 "$S/help.sh")
-new_agent=(new-window -c "#{pane_current_path}" "$agent_cmd; exec \$SHELL")
+popup_help=(display-popup -E -w 64 -h 28 "$S/help.sh")
+new_agent=(run -b "$S/new.sh '#{pane_current_path}'")
 
 bind_root "$kj" run -b "$S/jump.sh"
 bind_root "$kf" "${popup_list[@]}"
