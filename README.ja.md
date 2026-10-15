@@ -81,7 +81,7 @@ curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh
 
 **何を求めているかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたとき、✋/✓ の帯と Alt+f の一覧に「何を求めているか／何が起きたか」を1行で出します（例:「テスト成功、PR #12 を作成」）。命名用のモデルを設定していればモデルが書き、なければ返答の最初の1行を使います。スマホ通知にも同じ1行が載ります。止めるときは `set -g @junban-recap off` です。
 
-**tmux と bash だけで動きます。** デーモンも常駐プロセスもありません。テストは91件あり、CI で Linux と macOS の両方で回しています。
+**tmux と bash だけで動きます。** デーモンも常駐プロセスもありません。テストは113件あり、CI で Linux と macOS の両方で回しています。
 
 ## 設定
 
@@ -101,7 +101,20 @@ set -g @junban-namer-model qwen3:8b
 
 ## Claude Code 以外のエージェント
 
-junban が見ているのは tmux の窓オプション1つだけです。コマンドを実行できるツールなら何でもつなげられます。
+| エージェント | 導入 | できること |
+|---|---|---|
+| Claude Code | プラグイン（上の2行） | ✋ ✓ ●、1行要約、窓の名前。Esc で止めてもバッジが自動で直る |
+| Codex CLI | `scripts/setup.sh codex` のあと、Codex で `/hooks` を開いて一度だけ信頼する | ✋ ✓ ●、実行したいコマンドを1行要約に出す、窓の名前。Esc でバッジが消える |
+| Gemini CLI | `scripts/setup.sh gemini` | ✓ ●、1行要約、窓の名前。許可待ちの ✋ は公式ドキュメントどおりに作ってあるが、実機ではまだ未確認 |
+
+```sh
+~/.tmux/plugins/junban/scripts/setup.sh codex    # ~/.codex/hooks.json に書く
+~/.tmux/plugins/junban/scripts/setup.sh gemini   # ~/.gemini/settings.json に書く
+```
+
+どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。元のファイルは `.bak` に残し、`--print` を付けると書き込まずに中身だけ見られます。`set -g @junban-agent-cmd codex` にすると Alt+n で Codex が起動します。
+
+ほかのツールも、コマンドを実行できれば何でもつなげられます。junban が見ているのは tmux の窓オプション1つだけです。
 
 ```sh
 ~/.tmux/plugins/junban/scripts/state.sh running   # waiting | done | idle | clear

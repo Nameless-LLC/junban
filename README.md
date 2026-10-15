@@ -81,7 +81,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 91 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 113 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -129,13 +129,24 @@ Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`
 
 ## Other agents
 
-junban only cares about a window option, so anything that can run a command can drive it:
+| Agent | Setup | What you get |
+|---|---|---|
+| Claude Code | the plugin (two lines above) | ✋ ✓ ●, one-line recap, names; badges heal themselves after Esc |
+| Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge |
+| Gemini CLI | `scripts/setup.sh gemini` | ✓ ●, recap, names; ✋ for permission follows the documented hook but is not yet tested on a live key |
+
+```sh
+~/.tmux/plugins/junban/scripts/setup.sh codex    # writes ~/.codex/hooks.json
+~/.tmux/plugins/junban/scripts/setup.sh gemini   # writes ~/.gemini/settings.json
+```
+
+Both keep your existing hooks, replace only junban's own entries (safe to re-run) and leave a `.bak`; `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
+
+Anything else that can run a command can drive junban too; it only cares about a window option:
 
 ```sh
 ~/.tmux/plugins/junban/scripts/state.sh running   # or waiting | done | idle | clear
 ```
-
-The script reads `$TMUX_PANE`, and that is all it needs. For Codex CLI, `notify` in `~/.codex/config.toml` can call `state.sh done`.
 
 ## How it works
 
