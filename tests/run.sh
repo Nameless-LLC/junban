@@ -27,8 +27,9 @@ get() { tmux display -p -t "$1" "#{$2}"; }
 echo "plugin"
 bash "$ROOT/junban.tmux"
 eq  "guide line enabled"            "$(tmux show -gv status)" "2"
-has "Alt+a bound"                   "$(tmux list-keys -T root M-a)" "jump.sh"
-has "prefix a bound"                "$(tmux list-keys -T prefix a)" "jump.sh"
+# list-keys with a key argument prints nothing on tmux 3.7, so search the table
+has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')" "jump.sh"
+has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
 has "badge in window format"        "$(tmux show -gv window-status-format)" "@junban-badge"
 
 echo "state"
