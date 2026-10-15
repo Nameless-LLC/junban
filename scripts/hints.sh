@@ -54,8 +54,16 @@ else
   done
   # How long agents sat on you today. Seeing the number is most of the fix.
   if [ "$(opt @junban-meter on)" = on ]; then
-    IFS=$'\t' read -r mt mm mc < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
-    [ "${mc:-0}" -gt 0 ] && left="$left#[fg=$cm]⏱ $(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")  "
+    IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
+    if [ "${mc:-0}" -gt 0 ]; then
+      left="$left#[fg=$cm]⏱ $(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
+      # Quicker than your own recent days is the one comparison worth making.
+      case "$mtr" in
+        -*) left="$left · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
+        +*) left="$left · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
+      esac
+      left="$left  "
+    fi
   fi
   # Parked agents can sit for days, so this rides along instead of taking over.
   [ "$z" -gt 0 ] && left="$left#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"

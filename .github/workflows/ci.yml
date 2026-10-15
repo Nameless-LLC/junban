@@ -15,4 +15,5 @@ jobs:
         if: runner.os == 'Linux'
         run: shellcheck -x junban.tmux install.sh scripts/*.sh i18n/*.sh tests/*.sh tools/*.sh
       - name: Test
+        timeout-minutes: 5
         run: tmux -V && bash tests/run.sh

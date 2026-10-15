@@ -205,6 +205,32 @@ rep=$(bash "$S/stats.sh" 7)
 has "report lists today's windows"  "$rep" "u:night"
 hasnt "report skips older days"     "$rep" "u:old"
 
+echo "graphs and mascot"
+# Last week: 6 waits of 4 min. This week: 3 min on days 1-3, 2 min five times today.
+: > "$log"
+for d in 8 9 10 11 12 13; do e=$((now - d * 86400)); printf '%s\t%s\twaiting\tu:a\n' $((e - 240)) "$e" >> "$log"; done
+for d in 0 0 0 0 0; do printf '%s\t%s\tdone\tu:b\n' $((now - 125)) $((now - 5)) >> "$log"; done
+for d in 1 2 3; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180)) "$e" >> "$log"; done
+rep=$(bash "$S/stats.sh" 7)
+has "bar for each day"              "$rep" "████████████████"
+has "this week against last"        "$rep" "median reply 4m00s → 2m00s (-50%)"
+has "personal best"                 "$rep" "Personal best: $(date +%m/%d), median reply 2m00s"
+has "streak within the goal"        "$rep" "days in a row with a median reply under 5 min"
+hasnt "mascot is opt-in"            "$rep" '\(^o^)/'
+tmux set -g @junban-mascot on
+rep=$(bash "$S/stats.sh" 7)
+has "mascot cheers a quicker week"  "$rep" '\(^o^)/'
+has "…and says why"                 "$rep" "a new personal best today! 50% quicker"
+eq  "trend needs 5 waits before"    "$(bash "$S/stats.sh" --line | cut -f4)" "-"
+for d in 4 5; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180)) "$e" >> "$log"; done
+eq  "trend: today vs last 7 days"   "$(bash "$S/stats.sh" --line | cut -f4)" "-33%"
+has "guide shows the trend"         "$(bash "$S/hints.sh")" "-33% vs the last 7 days"
+tmux set -w -t u:6 @junban waiting
+has "mascot calls when someone waits" "$(bash "$S/summary.sh")" "(O_O)"
+tmux set -w -t u:6 -u @junban
+tmux set -gu @junban-mascot
+hasnt "no mascot unless asked"      "$(bash "$S/summary.sh")" "_"
+
 echo "recap"
 tmux new-window -d -t u:7 -n r; pr=$(tmux display -p -t u:7 '#{pane_id}')
 rc() { TMUX_PANE=$pr python3 "$S/recap.py" "$1" <<<"$2"; }
@@ -252,8 +278,11 @@ rc "done" '{"last_assistant_message":"Deployed to staging"}'
 eq  "recap sends ✓ with the line"   "$(cat "$notes")" "✓ r: Deployed to staging"
 tmux set -gu @junban-notify-cmd
 # with a namer model set, the line comes from the model
-port=$((20000 + RANDOM % 20000))
-python3 - "$port" <<'PY' &
+# A one-shot stub model. It says when it is listening (a cold python3 on a CI
+# runner can take longer than any fixed sleep) and gives up after 20s, so a
+# request that never comes cannot hang the suite.
+ready="$WORK/stub-ready"; rm -f "$ready"
+python3 - "$ready" <<'PY' &
 import http.server, json, sys
 class H(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
@@ -262,14 +291,20 @@ class H(http.server.BaseHTTPRequestHandler):
         out = json.dumps({"message": {"content": "Model: 3 files fixed" if ok else "wrong prompt"}}).encode()
         self.send_response(200); self.end_headers(); self.wfile.write(out)
     def log_message(self, *a): pass
-http.server.HTTPServer(("127.0.0.1", int(sys.argv[1])), H).handle_request()
+srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+srv.timeout = 20
+open(sys.argv[1], "w").write(str(srv.server_address[1]))
+srv.handle_request()
 PY
-sleep 0.5
+stub=$!
+for _ in $(seq 100); do [ -s "$ready" ] && break; sleep 0.1; done
+port=$(cat "$ready" 2>/dev/null)
 tmux set -g @junban-namer-url "http://127.0.0.1:$port" \; set -g @junban-namer-model stub \; set -w -t u:7 @junban "done"
-rc "done" '{"last_assistant_message":"Long reply about fixing three files"}'
+# no_proxy: urllib honours system proxy settings (macOS runners), never wanted for a local stub.
+no_proxy='*' NO_PROXY='*' rc "done" '{"last_assistant_message":"Long reply about fixing three files"}'
 eq  "model writes the recap"        "$(get u:7 @junban_recap)" "Model: 3 files fixed"
 tmux set -gu @junban-namer-url \; set -gu @junban-namer-model
-wait
+kill "$stub" 2>/dev/null; wait "$stub" 2>/dev/null
 
 echo "theme off"
 tmux kill-server; sleep 0.2
