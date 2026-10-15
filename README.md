@@ -75,11 +75,13 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or what came of the turn ("tests pass, PR #12 opened"). With a namer model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
 
-**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a 7-day table and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+
+**An optional mascot.** `set -g @junban-mascot on` puts a small face on the status line that reacts to the board: `(O_O)/` when someone is waiting, `(^_^)b` when one finishes, `(._. )` while they run, `(-_-)zZ` when all is quiet. It also comments on your week in the Alt+/ report. Off by default.
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 79 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 91 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -109,6 +111,8 @@ set -g @junban-shared-check on     # ⚠ when two agents share a git working tre
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
 set -g @junban-meter on            # ⏱ today's wait total on the guide line
 set -g @junban-meter-cap 60        # minutes one wait can count for
+set -g @junban-goal 5              # streak: days with a median reply within this many minutes
+set -g @junban-mascot off          # on = a face on the status line that reacts to your agents
 
 # Window names
 set -g @junban-rename prompt       # off | prompt | llm
