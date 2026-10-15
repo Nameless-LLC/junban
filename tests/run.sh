@@ -307,6 +307,47 @@ eq  "model writes the recap"        "$(get u:7 @junban_recap)" "Model: 3 files f
 tmux set -gu @junban-namer-url \; set -gu @junban-namer-model
 kill "$stub" 2>/dev/null; wait "$stub" 2>/dev/null
 
+echo "other agents"
+tmux new-window -d -t u:8 -n x; px=$(tmux display -p -t u:8 '#{pane_id}')
+hk() { TMUX_PANE=$px bash "$S/hook.sh" "$1" "$2" <<<"$3"; }
+eq  "codex: hooks print nothing"    "$(hk codex SessionStart '{"source":"startup"}')" ""
+eq  "codex SessionStart → idle"     "$(get u:8 @junban)" "idle"
+hk codex UserPromptSubmit '{"prompt":"migrate the billing tables"}' >/dev/null
+eq  "codex prompt → running"        "$(get u:8 @junban)" "running"
+eq  "…and the prompt is kept"       "$(get u:8 @junban_prompt)" "migrate the billing tables"
+hk codex PermissionRequest '{"tool_name":"Bash","tool_input":{"command":"psql -c \"drop table t\""}}' >/dev/null; sleep 0.5
+eq  "codex approval → waiting"      "$(get u:8 @junban)" "waiting"
+eq  "…recap names the command"      "$(get u:8 @junban_recap)" 'Bash: psql -c "drop table t"'
+hk codex PostToolUse '{"tool_name":"Bash"}' >/dev/null
+eq  "approved → running again"      "$(get u:8 @junban)" "running"
+hk codex Interrupt '{}' >/dev/null
+eq  "Esc (Interrupt) → idle"        "$(get u:8 @junban)" "idle"
+hk codex Stop '{"last_assistant_message":"Migration applied, 3 tables"}' >/dev/null; sleep 0.5
+eq  "codex Stop → done"             "$(get u:8 @junban)" "done"
+eq  "…with its recap"               "$(get u:8 @junban_recap)" "Migration applied, 3 tables"
+hk codex SessionEnd '{}' >/dev/null
+eq  "codex exit clears the badge"   "$(get u:8 @junban)" ""
+eq  "gemini: hooks print JSON"      "$(hk gemini SessionStart '{"source":"startup"}')" "{}"
+hk gemini BeforeAgent '{"prompt":"fix the flaky test"}' >/dev/null
+eq  "gemini prompt → running"       "$(get u:8 @junban)" "running"
+hk gemini Notification '{"notification_type":"ToolPermission","message":"Allow shell: rm -rf build?"}' >/dev/null; sleep 0.5
+eq  "gemini permission → waiting"   "$(get u:8 @junban)" "waiting"
+eq  "…recap is its message"         "$(get u:8 @junban_recap)" "Allow shell: rm -rf build?"
+hk gemini AfterAgent '{"prompt_response":"[no response text]"}' >/dev/null; sleep 0.5
+eq  "gemini AfterAgent → done"      "$(get u:8 @junban)" "done"
+eq  "no recap from an empty reply"  "$(get u:8 @junban_recap)" "Allow shell: rm -rf build?"
+hk gemini SessionEnd '{}' >/dev/null
+eq  "gemini exit clears the badge"  "$(get u:8 @junban)" ""
+
+mkdir -p "$HOME/.codex"; printf '{"hooks":{"Stop":[{"hooks":[{"type":"command","command":"notify-me"}]}]}}' > "$HOME/.codex/hooks.json"
+bash "$S/setup.sh" codex >/dev/null; bash "$S/setup.sh" codex >/dev/null
+cx=$(cat "$HOME/.codex/hooks.json")
+has "setup keeps your own hooks"    "$cx" "notify-me"
+eq  "…and adds ours exactly once"   "$(grep -c 'hook.sh\\" codex Stop' <<<"$cx")" "1"
+has "setup: Codex timeouts in s"    "$cx" '"timeout": 5'
+bash "$S/setup.sh" gemini >/dev/null
+has "setup: Gemini timeouts in ms"  "$(cat "$HOME/.gemini/settings.json")" '"timeout": 5000'
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

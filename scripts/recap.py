@@ -4,6 +4,7 @@
     recap.py done     Stop hook: what came of the turn ("tests pass, PR #12 opened")
     recap.py ask      PreToolUse(AskUserQuestion): the question it is asking
     recap.py notify   Notification(permission_prompt…): what it wants permission for
+                      (or, from Codex's PermissionRequest, the tool call itself)
 
 The line goes on the window as @junban_recap; the guide line and the Alt+f list
 show it. A new prompt clears it (state.sh). Finished turns are also appended to
@@ -52,9 +53,11 @@ def first_line(text):
 def last_reply(data):
     """The agent's final message: from the hook payload when it carries it,
     otherwise the last assistant text in the transcript."""
-    text = data.get("last_assistant_message")
-    if isinstance(text, str) and text.strip():
-        return text
+    for key in ("last_assistant_message", "prompt_response"):  # Claude/Codex, Gemini
+        text = data.get(key)
+        # Gemini sends "[no response text]" when the turn failed before replying.
+        if isinstance(text, str) and text.strip() and text.strip() != "[no response text]":
+            return text
     path = data.get("transcript_path")
     try:
         with open(path, encoding="utf-8", errors="replace") as fh:
@@ -75,6 +78,24 @@ def last_reply(data):
         if any(p.strip() for p in parts):
             return "\n".join(parts)
     return ""
+
+
+def permission_line(data):
+    """Codex's PermissionRequest carries the tool call, not a message:
+    "Bash: psql -c 'drop table…'" says what you are about to approve."""
+    tool = str(data.get("tool_name") or "")
+    args = data.get("tool_input") or {}
+    detail = ""
+    if isinstance(args, dict):
+        for key in ("command", "cmd", "file_path", "path", "url", "description"):
+            v = args.get(key)
+            if v:
+                detail = " ".join(v) if isinstance(v, list) else str(v)
+                break
+    elif args:
+        detail = str(args)
+    detail = " ".join(detail.split())
+    return f"{tool}: {detail}" if tool and detail else tool or detail
 
 
 def recap_system():
@@ -116,7 +137,7 @@ def main():
         qs = ((data.get("tool_input") or {}).get("questions") or [{}])
         line = strip_md(str(qs[0].get("question") or "")) if qs else ""
     elif kind == "notify":
-        line = strip_md(str(data.get("message") or ""))
+        line = strip_md(str(data.get("message") or "")) or permission_line(data)
     elif kind == "done":
         line = summarise(last_reply(data))
     else:
