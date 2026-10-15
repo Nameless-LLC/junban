@@ -11,11 +11,11 @@ cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
 cr=$(opt @junban-color-running "#e5c07b")
 bg=$(opt @junban-color-bg "#1e2127")
-# @junban-mascot on: the call board's face, eyes only. It calls when someone
+# @junban-mascot (on by default; off hides it): the call board's face, eyes only. It calls when someone
 # waits [▮ ▮]!, smiles when work is done [◠ ◠], looks around while agents run,
 # blinks now and then while they idle, and dozes when there is nothing [▬ ▬]z.
 # Two frames, switching each refresh. ▮ ▬ ◠ are one cell wide in every locale.
-mascot=$(opt @junban-mascot off)
+mascot=$(opt @junban-mascot on)
 cdim=$(opt @junban-color-dim "#5c6370")
 cfg=$(opt @junban-color-fg "#abb2bf")
 tmux list-windows -a -F '#{@junban}' 2>/dev/null | awk -v cw="$cw" -v cd="$cd_" -v cr="$cr" -v bg="$bg" \

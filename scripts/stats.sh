@@ -117,7 +117,7 @@ all=$(capped 0)
 rows=$(printf '%s\n' "$all" | awk -F'\t' -v n="$days" 'NF && $1 < n')
 per_day=$(printf '%s\n' "$all" | awk NF | daily)
 b=$'\033[1m'; dim=$'\033[2m'; r=$'\033[0m'
-mascot=$(opt @junban-mascot off)
+mascot=$(opt @junban-mascot on)
 
 printf '\n  %s%s%s\n\n' "$b" "$(printf "$STATS_TITLE" "$days")" "$r"
 peak=$(printf '%s\n' "$per_day" | awk -F'\t' -v n="$days" 'NF && $1 < n && $2 > m { m = $2 } END { print m + 0 }')
