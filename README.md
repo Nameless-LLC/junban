@@ -77,7 +77,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
 
-**An optional mascot.** `set -g @junban-mascot on` puts a small face on the status line that reacts to the board: `(O_O)/` when someone is waiting, `(^_^)b` when one finishes, `(._. )` while they run, `(-_-)zZ` when all is quiet. It also comments on your week in the Alt+/ report. Off by default.
+**An optional mascot.** `set -g @junban-mascot on` puts the call board's eyes on the status line, reacting to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Off by default.
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 

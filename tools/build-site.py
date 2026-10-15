@@ -19,13 +19,14 @@ def data_uri(path, mime="image/svg+xml"):
 body = open(os.path.join(ROOT, "site/template.html"), encoding="utf-8").read()
 template = body
 body = body.replace("{{HERO_EN}}", data_uri("docs/hero-en.svg")).replace("{{HERO_JA}}", data_uri("docs/hero-ja.svg"))
+body = body.replace("{{FAVICON}}", data_uri("docs/favicon.svg"))
 body = body.replace("{{VIDEO_EN}}", data_uri("docs/media/junban-demo-en.mp4", "video/mp4"))
 body = body.replace("{{VIDEO_JA}}", data_uri("docs/media/junban-demo-ja.mp4", "video/mp4"))
 body = body.replace("{{VIDEO_MOBILE_EN}}", data_uri("docs/media/junban-demo-mobile-en.mp4", "video/mp4"))
 body = body.replace("{{VIDEO_MOBILE_JA}}", data_uri("docs/media/junban-demo-mobile-ja.mp4", "video/mp4"))
 open(os.path.join(ROOT, "site/index.html"), "w", encoding="utf-8").write(body)
 # Pages serves the assets next to the page, so link them instead of inlining.
-body = (template.replace("{{HERO_EN}}", "hero-en.svg").replace("{{HERO_JA}}", "hero-ja.svg")
+body = (template.replace("{{FAVICON}}", "favicon.svg").replace("{{HERO_EN}}", "hero-en.svg").replace("{{HERO_JA}}", "hero-ja.svg")
         .replace("{{VIDEO_EN}}", "media/junban-demo-en.mp4").replace("{{VIDEO_JA}}", "media/junban-demo-ja.mp4")
         .replace("{{VIDEO_MOBILE_EN}}", "media/junban-demo-mobile-en.mp4").replace("{{VIDEO_MOBILE_JA}}", "media/junban-demo-mobile-ja.mp4"))
 

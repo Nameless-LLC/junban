@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" class="m" data-state="idle" role="img" aria-label="junban">
+  <!-- junban's call-board face. Set data-state on the <svg> (idle|run|wait|done|sleep) when inlined;
+       as an <img> it stays in idle and blinks. -->
+  <style>
+    .m{--eye:#f1e9e2}
+    .m[data-state=run]{--eye:#e2b350}.m[data-state=wait]{--eye:#ff6b5e}.m[data-state=done]{--eye:#7cc483}.m[data-state=sleep]{--eye:#5f646e}
+    .eyes{color:var(--eye);transition:color .3s}
+    .pair,.eye{transform-box:fill-box;transform-origin:center}
+    .happy{display:none}.m[data-state=done] .open{display:none}.m[data-state=done] .happy{display:inline}
+    .m[data-state=idle] .eye{animation:blink 4.2s infinite}
+    .m[data-state=run] .pair{animation:look 2.6s ease-in-out infinite}
+    .m[data-state=wait] .eyes{animation:flash .9s steps(1) infinite}.m[data-state=wait] .eye{transform:scaleY(1.1)}
+    .m[data-state=done] .pair{animation:hop 1.4s ease-in-out infinite}
+    .m[data-state=sleep] .eye{transform:scaleY(.16)}.m[data-state=sleep] .eyes{animation:breathe 3.4s ease-in-out infinite}
+    @keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+    @keyframes look{0%,18%{transform:translateX(-9%)}45%,68%{transform:translateX(9%)}95%,100%{transform:translateX(-9%)}}
+    @keyframes flash{0%{opacity:1}50%{opacity:.35}}
+    @keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6%)}}
+    @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <defs>
+    <pattern id="jb-led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern>
+    <filter id="jb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+  <rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/>
+  <rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/>
+  <g class="eyes"><g class="pair">
+    <g class="open">
+      <g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g>
+      <rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/>
+      <rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/>
+      <rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/>
+      <rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/>
+    </g>
+    <g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g>
+  </g></g>
+</svg>
