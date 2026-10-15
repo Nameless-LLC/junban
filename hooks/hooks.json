@@ -1,5 +1,5 @@
 {
-  "description": "junban: mirror each agent's state (running / waiting for you / done) onto its tmux window, and keep the window named after the current task.",
+  "description": "junban: mirror each agent's state (running / waiting for you / done) onto its tmux window, keep the window named after the current task, and say in one line what each agent needs from you.",
   "hooks": {
     "SessionStart": [
       { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" idle", "timeout": 5 } ] }
@@ -12,7 +12,8 @@
     ],
     "PreToolUse": [
       { "matcher": "AskUserQuestion|ExitPlanMode",
-        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 } ] }
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 },
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" ask || true", "timeout": 5 } ] }
     ],
     "PostToolUse": [
       { "matcher": "*",
@@ -20,10 +21,12 @@
     ],
     "Notification": [
       { "matcher": "permission_prompt|elicitation_dialog",
-        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 } ] }
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 },
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" notify || true", "timeout": 5 } ] }
     ],
     "Stop": [
-      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 } ] }
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 },
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" done || true", "timeout": 20, "async": true } ] }
     ],
     "SessionEnd": [
       { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" clear", "timeout": 5 } ] }

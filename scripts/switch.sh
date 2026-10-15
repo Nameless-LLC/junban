@@ -11,7 +11,7 @@ if ! command -v fzf >/dev/null 2>&1; then
 fi
 
 now=$(date +%s)
-list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{window_index}	#{window_name}	#{@junban_prompt}	#{@junban_shared}	#{@junban_stale}" |
+list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{window_index}	#{window_name}	#{?@junban_recap,→ #{@junban_recap},#{@junban_prompt}}	#{@junban_shared}	#{@junban_stale}" |
   awk -F'\t' -v now="$now" '
     { rank = 4; icon = "  "
       if ($1 == "waiting")      { rank = 1; icon = "\033[31m✋\033[0m" }

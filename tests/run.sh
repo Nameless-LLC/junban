@@ -204,6 +204,72 @@ rep=$(bash "$S/stats.sh" 7)
 has "report lists today's windows"  "$rep" "u:night"
 hasnt "report skips older days"     "$rep" "u:old"
 
+echo "recap"
+tmux new-window -d -t u:7 -n r; pr=$(tmux display -p -t u:7 '#{pane_id}')
+rc() { TMUX_PANE=$pr python3 "$S/recap.py" "$1" <<<"$2"; }
+# shellcheck disable=SC2016  # literal backticks: markdown to strip
+rc ask '{"tool_input":{"questions":[{"question":"Merge into **main** or `release`?"}]}}'
+eq  "ask: the question, markdown gone" "$(get u:7 @junban_recap)" "Merge into main or release?"
+rc notify '{"message":"Claude needs your permission to use Bash"}'
+eq  "notify: the permission asked"  "$(get u:7 @junban_recap)" "Claude needs your permission to use Bash"
+tr="$WORK/t.jsonl"
+{ echo '{"type":"user","message":{"content":"go"}}'
+  echo '{"type":"assistant","message":{"content":[{"type":"text","text":"Earlier reply"}]}}'
+  echo '{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash"}]}}'
+  # shellcheck disable=SC2028  # \\n is JSON, not an escape for echo
+  echo '{"type":"assistant","message":{"content":[{"type":"text","text":"## Result\n\n**All 66 tests pass**; PR #12 opened.\n\nDetails…"}]}}'
+} > "$tr"
+tmux set -w -t u:7 @junban "done" \; set -w -t u:7 @junban_prompt "fix the flaky test"
+done_log="$HOME/.local/state/junban/done.tsv"; rm -f "$done_log"
+rc "done" "{\"transcript_path\":\"$tr\"}"
+eq  "done: first real line of the last reply" "$(get u:7 @junban_recap)" "All 66 tests pass; PR ＃12 opened."
+eq  "done: logged with window and prompt" "$(cut -f2- "$done_log")" "u:r	fix the flaky test	All 66 tests pass; PR ＃12 opened."
+rc "done" '{"last_assistant_message":"Blocked: need the API key for staging"}'
+eq  "done: payload message preferred" "$(get u:7 @junban_recap)" "Blocked: need the API key for staging"
+tmux set -w -t u:7 @junban running
+rc "done" '{"last_assistant_message":"Too late, you moved on"}'
+eq  "late recap after a new prompt dropped" "$(get u:7 @junban_recap)" "Blocked: need the API key for staging"
+st "$pr" running '{"prompt":"now deploy it"}'
+eq  "new prompt clears the recap"   "$(get u:7 @junban_recap)" ""
+tmux set -g @junban-recap off
+rc ask '{"tool_input":{"questions":[{"question":"Should not appear"}]}}'
+eq  "recap off respected"           "$(get u:7 @junban_recap)" ""
+tmux set -gu @junban-recap
+# banner names what the next window wants
+tmux set -w -t u:7 @junban "done" \; set -w -t u:7 @junban_ts 5 \; set -w -t u:7 @junban_recap "tests pass"
+has "✓ banner carries the recap"    "$(bash "$S/hints.sh")" "r: tests pass"
+tmux set -w -t u:6 @junban waiting \; set -w -t u:6 @junban_ts 9 \; set -w -t u:6 @junban_recap "which branch?"
+has "✋ beats ✓ in the banner"       "$(bash "$S/hints.sh")" "m: which branch?"
+tmux set -w -t u:6 @junban idle
+# notifications: the ✓ one comes from recap.py, with the line
+notes="$WORK/notes"; : > "$notes"
+tmux set -g @junban-notify-cmd "cat >> $notes"
+tmux set -w -t u:7 @junban running
+st "$pr" "done" '{}'; sleep 0.3
+eq  "state.sh leaves ✓ to recap"     "$(cat "$notes")" ""
+rc "done" '{"last_assistant_message":"Deployed to staging"}'
+eq  "recap sends ✓ with the line"   "$(cat "$notes")" "✓ r: Deployed to staging"
+tmux set -gu @junban-notify-cmd
+# with a namer model set, the line comes from the model
+port=$((20000 + RANDOM % 20000))
+python3 - "$port" <<'PY' &
+import http.server, json, sys
+class H(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        ok = "final message" in body["messages"][0]["content"] and body["options"]["num_predict"] == 48
+        out = json.dumps({"message": {"content": "Model: 3 files fixed" if ok else "wrong prompt"}}).encode()
+        self.send_response(200); self.end_headers(); self.wfile.write(out)
+    def log_message(self, *a): pass
+http.server.HTTPServer(("127.0.0.1", int(sys.argv[1])), H).handle_request()
+PY
+sleep 0.5
+tmux set -g @junban-namer-url "http://127.0.0.1:$port" \; set -g @junban-namer-model stub \; set -w -t u:7 @junban "done"
+rc "done" '{"last_assistant_message":"Long reply about fixing three files"}'
+eq  "model writes the recap"        "$(get u:7 @junban_recap)" "Model: 3 files fixed"
+tmux set -gu @junban-namer-url \; set -gu @junban-namer-model
+wait
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

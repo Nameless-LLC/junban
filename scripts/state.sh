@@ -31,7 +31,7 @@ cur=$(t display -p -t "$pane" '#{@junban}')
 case "$st" in
   clear)
     # Closing the agent is not answering it, so no wait is logged.
-    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale; do t set -wu -t "$pane" "$o"; done
+    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap; do t set -wu -t "$pane" "$o"; done
     exit 0 ;;
   done)
     # You are looking at it right now: nothing to catch up on.
@@ -67,14 +67,16 @@ except Exception:
     p = ""
 if p and not p.startswith("<"):
     print(" ".join(p.split())[:120])' 2>/dev/null)
-  [ -n "$prompt" ] && t set -w -t "$pane" @junban_prompt "$prompt"
+  [ -n "$prompt" ] && t set -w -t "$pane" @junban_prompt "$prompt" && t set -wu -t "$pane" @junban_recap
 fi
 
 # Optional desktop/phone notification, e.g.
 #   set -g @junban-notify-cmd 'notify-send junban'      (Linux)
 #   set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/my-topic'
+# With recaps on, recap.py sends the ✓ one itself once it knows what came of the turn.
+if [ "$st" = "done" ] && [ "$(t show -gqv @junban-recap)" != off ] && command -v python3 >/dev/null 2>&1; then ncmd=""
+else ncmd=$(t show -gqv @junban-notify-cmd); fi
 if [ "$st" != "$cur" ] && { [ "$st" = waiting ] || [ "$st" = "done" ]; }; then
-  ncmd=$(t show -gqv @junban-notify-cmd)
   if [ -n "$ncmd" ]; then
     name=$(t display -p -t "$pane" '#{window_name}')
     icon="✋"; [ "$st" = "done" ] && icon="✓"

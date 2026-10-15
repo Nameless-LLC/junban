@@ -84,24 +84,24 @@ def system_prompt():
     return ""
 
 
-def ask_llm(context):
+def ask_llm(context, system=None, max_tokens=32):
     url = tmux("show", "-gqv", "@junban-namer-url").rstrip("/")
     model = tmux("show", "-gqv", "@junban-namer-model")
     if not url or not model:
         return ""
-    msgs = [{"role": "system", "content": system_prompt()},
+    msgs = [{"role": "system", "content": system or system_prompt()},
             {"role": "user", "content": "\n".join("- " + c for c in context)}]
     headers = {"Content-Type": "application/json"}
     if url.endswith("/v1"):  # OpenAI-compatible
         endpoint = url + "/chat/completions"
-        body = {"model": model, "messages": msgs, "temperature": 0.2, "max_tokens": 32}
+        body = {"model": model, "messages": msgs, "temperature": 0.2, "max_tokens": max_tokens}
         key = os.environ.get(tmux("show", "-gqv", "@junban-namer-key") or "OPENAI_API_KEY", "")
         if key:
             headers["Authorization"] = "Bearer " + key
     else:  # Ollama native: lets us switch thinking off, which /v1 does not
         endpoint = url + "/api/chat"
         body = {"model": model, "messages": msgs, "stream": False, "think": False,
-                "options": {"temperature": 0.2, "num_predict": 32}}
+                "options": {"temperature": 0.2, "num_predict": max_tokens}}
     req = urllib.request.Request(endpoint, json.dumps(body).encode(), headers)
     got = json.loads(urllib.request.urlopen(req, timeout=TIMEOUT).read())
     text = (got.get("message") or {}).get("content") or \
@@ -146,8 +146,9 @@ def main():
     tmux("rename-window", "-t", pane, name)
 
 
-try:
-    main()
-except Exception:
-    pass
-sys.exit(0)
+if __name__ == "__main__":  # recap.py imports ask_llm from here
+    try:
+        main()
+    except Exception:
+        pass
+    sys.exit(0)

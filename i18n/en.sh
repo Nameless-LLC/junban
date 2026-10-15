@@ -41,6 +41,7 @@ TIPS=(
   "If Alt is swallowed by your terminal, use prefix a / f / g"
   "Alt+n opens a second agent in its own worktree when one already works here"
   "⏱ on the guide line is how long agents sat waiting on you today"
+  "The banner says what the next agent wants, so you can decide before you switch"
 )
 HELP_TITLE="junban — whose turn is it?"
 HELP_BADGES="Badges"
@@ -59,4 +60,5 @@ HELP_K_ZOOM="zoom pane"
 HELP_K_HELP="this screen"
 HELP_PREFIX="Same actions after the prefix key"
 HELP_CLOSE="q to close"
+RECAP_SYSTEM="Below is an AI coding agent's final message. In one line of at most 12 words, say what came of it, or what it needs from the user if it is waiting. Lead with the outcome. Keep file, PR and product names. Reply with the line only."
 NAMER_SYSTEM="You name terminal windows. From the recent messages, pick the one task being worked on now and reply with a name of at most 4 words. Prefer the latest topic. Keep product and host names. Reply with the name only."
