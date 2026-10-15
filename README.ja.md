@@ -26,19 +26,19 @@ Claude Code を6つ並べて仕事を頼んだとします。そのうち1つが
 **1. tmux**（[TPM](https://github.com/tmux-plugins/tpm) を使う場合）
 
 ```tmux
-set -g @plugin 'namelessjp/junban'
+set -g @plugin 'Nameless-LLC/junban'
 ```
 
 TPM を使わない場合:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/namelessjp/junban/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
 **2. Claude Code**（どのセッションの中でも）
 
 ```
-/plugin marketplace add namelessjp/junban
+/plugin marketplace add Nameless-LLC/junban
 /plugin install junban@junban
 ```
 
@@ -53,7 +53,7 @@ curl -fsSL https://raw.githubusercontent.com/namelessjp/junban/main/install.sh |
 | キー | |
 |---|---|
 | **Alt+a** | 次に見るべき窓へ飛ぶ。返事待ちが先、次に完了。それぞれ待った時間が長い順 |
-| **Alt+f** | 全エージェントの一覧。困っている順に並び、文字を打つと絞り込め、画面のプレビューも出る。`Ctrl-x` でその窓を閉じる |
+| **Alt+f** | 全エージェントの一覧。困っている順に並び、文字を打つと絞り込め、画面のプレビューも出る |
 | **Alt+n** | 今のディレクトリで新しいエージェントを開く |
 | **Alt+g** | 小窓のシェル。閉じても中身が残る |
 | **Alt+/** | 早見表。実際に割り当てたキーから自動で作る |

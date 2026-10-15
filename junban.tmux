@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # junban — whose turn is it? A tmux cockpit for running many AI agents at once.
-# Loaded by TPM (set -g @plugin 'namelessjp/junban') or by `run-shell /path/junban.tmux`.
+# Loaded by TPM (set -g @plugin 'Nameless-LLC/junban') or by `run-shell /path/junban.tmux`.
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 S="$CURRENT_DIR/scripts"
 . "$S/lib.sh"

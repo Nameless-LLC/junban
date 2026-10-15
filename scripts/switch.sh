@@ -30,7 +30,6 @@ sel=$(printf '%s\n' "$list" | fzf --ansi --delimiter='\t' --with-nth=2 --no-sort
   --header="$T_SWITCH_HEADER" \
   --preview='tmux capture-pane -ep -t {1} | grep -v "^[[:space:]]*$" | tail -n "$FZF_PREVIEW_LINES"' \
   --preview-window='down,55%,border-top' \
-  --bind='ctrl-x:execute-silent(tmux kill-window -t {1})+abort' \
   --color='bg+:#2a2f3a,hl:#e5c07b,hl+:#e5c07b,pointer:#61afef,prompt:#61afef,header:#5c6370')
 [ -n "$sel" ] && tmux switch-client -t "$(printf '%s' "$sel" | cut -f1)"
 exit 0

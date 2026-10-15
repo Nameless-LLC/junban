@@ -26,19 +26,19 @@ Then one key, **Alt+a**, takes you to whoever has waited longest.
 **1. tmux** with [TPM](https://github.com/tmux-plugins/tpm):
 
 ```tmux
-set -g @plugin 'namelessjp/junban'
+set -g @plugin 'Nameless-LLC/junban'
 ```
 
 Or without TPM:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/namelessjp/junban/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
 **2. Claude Code**, inside any session:
 
 ```
-/plugin marketplace add namelessjp/junban
+/plugin marketplace add Nameless-LLC/junban
 /plugin install junban@junban
 ```
 
@@ -53,7 +53,7 @@ Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
 | Key | |
 |---|---|
 | **Alt+a** | Jump to the agent that needs you: waiting before finished, longest first |
-| **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview. `Ctrl-x` closes one |
+| **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview |
 | **Alt+n** | New agent window in the current directory |
 | **Alt+g** | Scratch shell in a popup that survives closing |
 | **Alt+/** | Cheat sheet, generated from your actual bindings |
