@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@700;900&family=Noto+Sans+Thai:wght@400;600&display=swap">
 </head>
 <body>
 <style>
@@ -33,8 +33,8 @@
   --board-lit: #ff6b5e;
   --board-dim: #3a2a29;
   --board-text: #f1e9e2;
-  --f-display: "Zen Kaku Gothic New", "IBM Plex Sans JP", system-ui, sans-serif;
-  --f-body: "IBM Plex Sans", "IBM Plex Sans JP", system-ui, sans-serif;
+  --f-display: "Zen Kaku Gothic New", "IBM Plex Sans JP", "Noto Sans Thai", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "IBM Plex Sans JP", "Noto Sans Thai", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
   --f-sign: "DotGothic16", "JetBrains Mono", ui-monospace, monospace;
   --step: clamp(1rem, .96rem + .2vw, 1.075rem);
@@ -143,6 +143,28 @@ h2 { font: 900 clamp(1.8rem, 1.3rem + 2.2vw, 2.9rem)/1.1 var(--f-display); lette
 
 footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: .88rem; color: var(--muted); }
 
+
+/* calls to action */
+.ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 .92rem/1 var(--f-body); text-decoration: none; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--line); color: var(--text); background: transparent; }
+.btn.primary { background: var(--text); color: var(--ink); border-color: var(--text); }
+.btn .count { font: 600 .8rem/1 var(--f-mono); padding: 3px 7px; border-radius: 6px; background: color-mix(in srgb, var(--ink) 18%, transparent); }
+.btn .count:empty { display: none; }
+.btn:hover { transform: translateY(-1px); }
+/* live call board */
+.num.flip { animation: flip .35s ease-out; }
+@keyframes flip { from { transform: translateY(-12px); opacity: 0; } to { transform: none; opacity: 1; } }
+.queue li.called { color: var(--board-text); }
+.try { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.try button { font: 400 .85rem/1 var(--f-sign); color: var(--board-text); background: #24201f; border: 1px solid #4a4440; border-bottom-width: 3px; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.try button:hover { border-color: var(--board-lit); }
+.try .nudge { color: var(--board-lit); animation: blink 1.6s steps(2, end) infinite; }
+.calm .num { color: #7cc483; text-shadow: 0 0 18px rgba(124,196,131,.35); }
+/* video: wide on desktop, a readable portrait crop on phones */
+.shot video.tall { display: none; aspect-ratio: 4 / 5; }
+@media (max-width: 640px) { .shot video.wide { display: none !important; } .shot video.tall:not([hidden]) { display: block; } }
+@media (prefers-reduced-motion: reduce) { .num.flip, .try .nudge { animation: none; } }
+
 @media (max-width: 820px) {
   .hero, .onekey { grid-template-columns: minmax(0, 1fr); }
   .why-row { grid-template-columns: minmax(0, 1fr); }
@@ -177,19 +199,23 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         </div>
         <p class="hint" lang="en">Then in Claude Code: <code>/plugin marketplace add Nameless-LLC/junban</code> · MIT · tmux ≥ 3.2</p>
         <p class="hint" lang="ja">続けて Claude Code で <code>/plugin marketplace add Nameless-LLC/junban</code> · MIT · tmux 3.2 以上</p>
+        <div class="ctas">
+          <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="stars"></span></a>
+          <a class="btn" href="#install"><span lang="en">Install in two lines</span><span lang="ja">2行で導入</span></a>
+        </div>
       </div>
 
-      <div class="board" aria-label="Example: the agent queue right now">
+      <div class="board" id="board" aria-live="polite" aria-label="Example: the agent queue right now">
         <div class="board-head"><span lang="en">Now calling</span><span lang="ja">お呼び出し中</span><span class="live">Alt+a</span></div>
         <div class="now">
-          <div class="num">4</div>
+          <div class="num" id="b-num">4</div>
           <div class="who">
-            <div class="name">✋ db migration</div>
-            <div class="why" lang="en">Wants to run psql on dev · waited 4m</div>
-            <div class="why" lang="ja">開発 DB で psql の許可待ち · 4分</div>
+            <div class="name" id="b-name">✋ db migration</div>
+            <div class="why" lang="en" id="b-why-en">Wants to run psql on dev · waited 4m</div>
+            <div class="why" lang="ja" id="b-why-ja">開発 DB で psql の許可待ち · 4分</div>
           </div>
         </div>
-        <ol class="queue">
+        <ol class="queue" id="b-queue">
           <li><span class="t">2</span><span class="st-wait">✋</span><span lang="en">fix flaky CI · asks which fix</span><span lang="ja">CI の不安定テスト · 直し方の質問</span><span class="t">2m</span></li>
           <li><span class="t">3</span><span class="st-done">✓</span><span lang="en">pricing page copy · done</span><span lang="ja">料金ページの文言 · 完了</span><span class="t">3m</span></li>
           <li><span class="t">1</span><span class="st-run">●</span><span lang="en">billing refactor · running tests</span><span lang="ja">請求モジュール分割 · テスト中</span><span class="t">1m</span></li>
@@ -197,12 +223,18 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         </ol>
         <div class="board-foot" lang="en">Longest-waiting first. Press <kbd>Alt+a</kbd> and you're there.</div>
         <div class="board-foot" lang="ja">待たせている順。<kbd>Alt+a</kbd> を押せばその窓へ。</div>
+        <div class="try">
+          <span class="nudge" lang="en">Try it: press a</span><span class="nudge" lang="ja">押してみる: a キー</span>
+          <button type="button" id="board-next"><span lang="en">Answer &amp; next →</span><span lang="ja">返事して次へ →</span></button>
+        </div>
       </div>
     </div>
 
     <figure class="shot">
-      <video lang="en" src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
-      <video lang="ja" src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つ窓へ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
+      <video class="wide" lang="en" src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
+      <video class="wide" lang="ja" src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つ窓へ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
+      <video class="tall" lang="en" data-src="media/junban-demo-mobile-en.mp4" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
+      <video class="tall" lang="ja" data-src="media/junban-demo-mobile-ja.mp4" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds, no mock-ups.</figcaption>
       <figcaption lang="ja">本物の tmux 画面を場面ごとに記録した25秒。作り物の画面はありません。</figcaption>
     </figure>
@@ -242,6 +274,21 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
           <p lang="ja">Alt+a は、いちばん長く待たせている窓へ飛びます。質問・許可が先、終わった作業が後です。</p>
         </div>
         <div class="why-row">
+          <h3 lang="en">One line on what it needs</h3><h3 lang="ja">何を求めているかを1行で</h3>
+          <p lang="en">When an agent asks, needs permission or finishes, the banner and the Alt+f list say in one line what it wants or what came of the turn: "tests pass, PR #12 opened". Phone notifications carry the same line.</p>
+          <p lang="ja">エージェントが質問・許可を求めたときや作業を終えたとき、帯と Alt+f の一覧に「何を求めているか／何が起きたか」を1行で出します（例:「テスト成功、PR #12 を作成」）。スマホ通知にも同じ1行が載ります。</p>
+        </div>
+        <div class="why-row">
+          <h3 lang="en">Catches the costly habits</h3><h3 lang="ja">高くつく癖を見つける</h3>
+          <p lang="en">Two agents in one git tree overwrite each other, so those windows get a ⚠ and Alt+n starts the next one in its own worktree. Agents parked for a day get a dim z and sink to the bottom.</p>
+          <p lang="ja">同じ Git の作業場所で2体が動くと互いの変更を上書きします。その窓に ⚠ を付け、Alt+n は別の作業場所（worktree）で次の1体を起動します。1日放置された窓には z が付き、一覧の下に沈みます。</p>
+        </div>
+        <div class="why-row">
+          <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待たせた時間を測る</h3>
+          <p lang="en">The guide line shows how long agents sat waiting on you today and your median reply time. Alt+/ adds the last seven days. It all stays in a local file.</p>
+          <p lang="ja">今日エージェントを待たせた合計と、返事までの中央値を案内行に出します。Alt+/ で直近7日分も見られます。データは手元のファイルにだけ残ります。</p>
+        </div>
+        <div class="why-row">
           <h3 lang="en">Names that stay put</h3><h3 lang="ja">相槌で名前が変わらない</h3>
           <p lang="en">Windows are named after the task, optionally by a local model in under a second. "ok", "yes", "進めて" or "ครับ" never rename anything, and a name you set yourself is never touched.</p>
           <p lang="ja">窓には作業内容から名前が付きます。手元のモデルを使えば1秒以内です。「OK」「進めて」「ครับ」では変わらず、自分で付けた名前は上書きしません。</p>
@@ -253,8 +300,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         </div>
         <div class="why-row">
           <h3 lang="en">Just tmux and bash</h3><h3 lang="ja">tmux と bash だけ</h3>
-          <p lang="en">No daemon, nothing to keep alive. 66 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">デーモンなし、常駐なし。テスト66件を Linux と macOS の CI で回しています。</p>
+          <p lang="en">No daemon, nothing to keep alive. 79 tests, run in CI on Linux and macOS.</p>
+          <p lang="ja">デーモンなし、常駐なし。テスト79件を Linux と macOS の CI で回しています。</p>
         </div>
       </div>
     </section>
@@ -321,6 +368,87 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       } else { select(); }
     });
   });
+
+  // live call board: press "a" (or the button) to answer the agent being called
+  var Q = [
+    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB マイグレーション' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'migrating', ja: '移行中' } },
+    { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI の不安定テスト' }, why: { en: 'Asks which fix you want', ja: '直し方の質問' }, back: { en: 'running e2e ×20', ja: 'e2e を20回実行中' } },
+    { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル +41 −88' }, back: { en: 'reviewed', ja: '確認済み' } },
+    { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュール分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'running tests', ja: 'テスト中' } },
+    { n: 5, st: 'run', t: 5, name: { en: 'k8s 1.31 upgrade', ja: 'k8s 1.31 更新' }, why: { en: 'Finished: all nodes on 1.31', ja: '完了: 全ノード 1.31' }, back: { en: 'draining', ja: 'ノード退避中' } }
+  ];
+  var ICON = { wait: '✋', done: '✓', run: '●', ok: '●' };
+  var CLS = { wait: 'st-wait', done: 'st-done', run: 'st-run', ok: 'st-run' };
+  function L() { return root.lang === 'ja' ? 'ja' : 'en'; }
+  function pick() {
+    var w = Q.filter(function (q) { return q.st === 'wait'; }).sort(function (a, b) { return b.t - a.t; });
+    if (w.length) return w[0];
+    var d = Q.filter(function (q) { return q.st === 'done'; }).sort(function (a, b) { return b.t - a.t; });
+    return d[0] || null;
+  }
+  function esc(x) { return String(x).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function render(animate) {
+    var cur = pick(), board = document.getElementById('board');
+    var num = document.getElementById('b-num');
+    board.classList.toggle('calm', !cur);
+    num.textContent = cur ? cur.n : '✓';
+    if (animate) { num.classList.remove('flip'); void num.offsetWidth; num.classList.add('flip'); }
+    document.getElementById('b-name').textContent = cur ? ICON[cur.st] + ' ' + cur.name[L()] : (L() === 'ja' ? '返事待ちはありません' : 'Nobody is waiting on you');
+    var m = function (q, l) { return l === 'ja' ? q.t + '分' : 'waited ' + q.t + 'm'; };
+    document.getElementById('b-why-en').textContent = cur ? cur.why.en + ' · ' + m(cur, 'en') : 'Every agent is back at work.';
+    document.getElementById('b-why-ja').textContent = cur ? cur.why.ja + ' · ' + m(cur, 'ja') : '全員が作業に戻りました。';
+    var rest = Q.filter(function (q) { return q !== cur; }).sort(function (a, b) {
+      var r = { wait: 0, done: 1, run: 2, ok: 2 }; return (r[a.st] - r[b.st]) || (b.t - a.t);
+    });
+    document.getElementById('b-queue').innerHTML = rest.map(function (q) {
+      var label = q.st === 'wait' ? q.why : q.st === 'done' ? q.why : q.back;
+      return '<li><span class="t">' + q.n + '</span><span class="' + CLS[q.st] + '">' + ICON[q.st] + '</span>' +
+        '<span lang="en">' + esc(q.name.en + ' · ' + label.en) + '</span><span lang="ja">' + esc(q.name.ja + ' · ' + label.ja) + '</span>' +
+        '<span class="t">' + q.t + 'm</span></li>';
+    }).join('');
+  }
+  var timer = null;
+  function next() {
+    var cur = pick();
+    if (cur) { cur.st = 'ok'; cur.t = 0; }
+    Q.forEach(function (q) { if (q.st !== 'ok') q.t += 1; });
+    render(true);
+    if (!pick()) {
+      // a calm moment, then the next agents need you again
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        Q.forEach(function (q) { q.st = 'run'; });
+        var a = Q[3], b = Q[1], c = Q[4];
+        a.st = 'wait'; a.t = 3; b.st = 'wait'; b.t = 1; c.st = 'done'; c.t = 2;
+        render(true);
+      }, 2600);
+    }
+  }
+  document.getElementById('board-next').addEventListener('click', next);
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target && e.target.tagName) || '';
+    if (/INPUT|TEXTAREA|SELECT/.test(tag) || e.ctrlKey || e.metaKey) return;
+    if (e.code === 'KeyA' || e.key === 'a' || e.key === 'A') { e.preventDefault(); next(); }
+  });
+  document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { render(false); }); });
+  render(false);
+
+  // phones get the portrait crop; load it only there
+  var mq = window.matchMedia('(max-width: 640px)');
+  function videos() {
+    document.querySelectorAll('.shot video.tall').forEach(function (v) {
+      if (mq.matches && !v.src) { v.src = v.dataset.src; v.autoplay = true; v.play && v.play().catch(function () {}); }
+    });
+  }
+  videos(); if (mq.addEventListener) mq.addEventListener('change', videos);
+
+  // live star count (silently skipped if the API is unreachable)
+  try {
+    fetch('https://api.github.com/repos/Nameless-LLC/junban').then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.stargazers_count) document.getElementById('stars').textContent = d.stargazers_count; })
+      .catch(function () {});
+  } catch (e) {}
+
 })();
 </script>
 
