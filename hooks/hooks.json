@@ -1,0 +1,32 @@
+{
+  "description": "junban: mirror each agent's state (running / waiting for you / done) onto its tmux window, and keep the window named after the current task.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" idle", "timeout": 5 } ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [
+        { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" running", "timeout": 5 },
+        { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/name.py\" || true", "timeout": 20, "async": true }
+      ] }
+    ],
+    "PreToolUse": [
+      { "matcher": "AskUserQuestion|ExitPlanMode",
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "*",
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" running", "timeout": 5 } ] }
+    ],
+    "Notification": [
+      { "matcher": "permission_prompt|elicitation_dialog",
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" waiting", "timeout": 5 } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 } ] }
+    ],
+    "SessionEnd": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" clear", "timeout": 5 } ] }
+    ]
+  }
+}

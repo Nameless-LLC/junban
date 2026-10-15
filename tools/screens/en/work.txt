@@ -1,0 +1,21 @@
+[38;5;173m❯[0m Split BillingService into invoice and payment modules, keep the public API
+
+[38;5;173m●[0m I'll start by mapping every caller of BillingService.
+  [32mSearch[0m([2m"BillingService\.", path: src/[0m)
+  [90m⎿  Found 23 references in 9 files[0m
+
+[38;5;173m●[0m Moving invoice logic into [1msrc/billing/invoice.ts[0m
+  [32mWrite[0m([2msrc/billing/invoice.ts[0m)
+  [90m⎿  Wrote 184 lines[0m
+  [32mUpdate[0m([2msrc/billing/service.ts[0m)
+  [90m⎿  Removed 141 lines, added 12[0m
+
+[38;5;173m●[0m Running the billing tests before touching payments.
+  [32mBash[0m([2mpnpm test src/billing[0m)
+  [90m⎿  Running…[0m
+
+[38;5;173m✻ Refactoring…[0m [90m(2m 14s · ↓ 6.1k tokens · esc to interrupt)[0m
+
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[38;5;173m❯[0m 
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m

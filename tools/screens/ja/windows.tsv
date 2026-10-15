@@ -1,0 +1,6 @@
+請求モジュール分割	running	work.txt
+CI の不安定テスト	waiting	ci.txt
+料金ページの文言	done	price.txt
+DB マイグレーション	waiting	db.txt
+k8s 1.31 更新	running	k8s.txt
+タイ語ドキュメント	-	docs.txt

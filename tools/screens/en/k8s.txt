@@ -1,0 +1,13 @@
+[38;5;173m❯[0m Upgrade the staging cluster to 1.31 and fix whatever breaks
+
+[38;5;173m●[0m Control plane upgraded. Draining nodes one at a time.
+  [32mBash[0m([2mkubectl drain node-2 --ignore-daemonsets[0m)
+  [90m⎿  node/node-2 drained[0m
+  [32mBash[0m([2mkubectl get pods -A | grep -v Running[0m)
+  [90m⎿  2 pods pending: PodDisruptionBudget[0m
+
+[38;5;173m✻ Upgrading…[0m [90m(6m 02s · ↓ 3.4k tokens · esc to interrupt)[0m
+
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[38;5;173m❯[0m 
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m

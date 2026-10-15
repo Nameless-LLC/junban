@@ -1,0 +1,18 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tmux
+        run: |
+          if [ "$RUNNER_OS" = macOS ]; then brew install tmux bash; else sudo apt-get update -q && sudo apt-get install -yq tmux shellcheck; fi
+      - name: Lint
+        if: runner.os == 'Linux'
+        run: shellcheck -x junban.tmux install.sh scripts/*.sh i18n/*.sh tests/*.sh tools/*.sh
+      - name: Test
+        run: tmux -V && bash tests/run.sh

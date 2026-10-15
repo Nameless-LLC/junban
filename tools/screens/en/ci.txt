@@ -1,0 +1,16 @@
+[38;5;173m❯[0m The e2e suite fails about 1 in 5 runs on CI. Find out why
+
+[38;5;173m●[0m Pulled the last 40 CI runs. All 8 failures are in checkout.spec.ts, always at the same step.
+  [32mBash[0m([2mgh run list --workflow e2e --limit 40[0m)
+  [90m⎿  8 failed / 32 passed[0m
+
+[38;5;173m●[0m The test clicks Pay before the Stripe iframe finishes loading. Two ways to fix it:
+
+[36m╭──────────────────────────────────────────────────────────────────────────────────────╮[0m
+[36m│[0m [1mWhich fix do you want?[0m                                                               [36m│[0m
+[36m│[0m                                                                                      [36m│[0m
+[36m│[0m                                                                                      [36m│[0m
+[36m│[0m [38;5;173m❯ 1. Wait for the iframe's ready event (precise, 6 lines)[0m                            [36m│[0m
+[36m│[0m   2. Retry the click up to 3 times (quick, hides real slowness)[0m                      [36m│[0m
+[36m│[0m   3. Something else[0m                                                                  [36m│[0m
+[36m╰──────────────────────────────────────────────────────────────────────────────────────╯[0m

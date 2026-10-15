@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "junban",
+  "description": "junban — a tmux cockpit for running many Claude Code sessions in parallel.",
+  "owner": { "name": "Nameless", "url": "https://namelessjp.com" },
+  "plugins": [
+    {
+      "name": "junban",
+      "description": "Mirror each Claude Code session's state onto its tmux window: ✋ waiting for you, ✓ done, ● working.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/namelessjp/junban"
+    }
+  ]
+}

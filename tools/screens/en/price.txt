@@ -1,0 +1,13 @@
+[38;5;173m❯[0m Tighten the pricing page copy. Shorter, no jargon
+
+[38;5;173m●[0m Rewrote the three plan cards and the FAQ. Hero went from 31 to 12 words.
+  [32mUpdate[0m([2mapp/pricing/page.tsx[0m)
+  [90m⎿  Updated 3 sections[0m
+  [32mBash[0m([2mpnpm lint && pnpm test pricing[0m)
+  [90m⎿  All checks passed[0m
+
+[38;5;173m●[0m [1mDone.[0m Diff is ready for review: 3 files, +41 −88.
+
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[38;5;173m❯[0m 
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m

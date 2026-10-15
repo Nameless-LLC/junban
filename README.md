@@ -1,0 +1,153 @@
+<div align="center">
+
+# junban
+
+**Whose turn is it?**<br>
+A tmux cockpit for running many AI coding agents at once.
+
+[English](README.md) · [日本語](README.ja.md)
+
+<img src="docs/hero-en.svg" alt="junban: six Claude Code sessions in tmux; a red banner says two are waiting on you, Alt+a jumps to the one that has waited longest, Alt+f lists every agent with a live preview" width="100%">
+
+</div>
+
+You started six Claude Code sessions. One has been waiting twenty minutes for you to approve a `psql` command. You only find out when you click through every window.
+
+**junban** (順番, Japanese for *"whose turn"*) fixes that, and tells you what to press next.
+
+- **✋ red**: an agent is waiting for you (permission or question)
+- **✓ green**: it finished and you haven't looked yet
+- **● yellow**: it is working
+
+Then one key, **Alt+a**, takes you to whoever has waited longest.
+
+## Install
+
+**1. tmux** with [TPM](https://github.com/tmux-plugins/tpm):
+
+```tmux
+set -g @plugin 'namelessjp/junban'
+```
+
+Or without TPM:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/namelessjp/junban/main/install.sh | bash
+```
+
+**2. Claude Code**, inside any session:
+
+```
+/plugin marketplace add namelessjp/junban
+/plugin install junban@junban
+```
+
+That's it. New Claude Code sessions report their state from the first prompt.
+
+Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
+
+## The only key you need
+
+**Alt+a.** When nothing is waiting, the second status line shows the five keys worth knowing. When something is, it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
+
+| Key | |
+|---|---|
+| **Alt+a** | Jump to the agent that needs you: waiting before finished, longest first |
+| **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview. `Ctrl-x` closes one |
+| **Alt+n** | New agent window in the current directory |
+| **Alt+g** | Scratch shell in a popup that survives closing |
+| **Alt+/** | Cheat sheet, generated from your actual bindings |
+| Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | Go to window · prev/next · last · zoom |
+
+Terminal swallows Alt? Every action also works after the prefix: `prefix a`, `f`, `C`, `g`, `/`.
+
+## What makes it different
+
+There are [good plugins](#prior-art) that put a status icon on your tabs. junban began as one of those and kept going after we used it eight agents deep every day.
+
+**It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding. A tip rotates in the corner once a minute.
+
+**Badges don't get stuck.** Hooks have blind spots: press Esc mid-turn and no "stop" event ever fires, so hook-only tools show "working" forever. junban cross-checks Claude Code's own live session records (`~/.claude/sessions`) and verifies the process really runs in that pane. A pane id is only unique per tmux server, so it checks the process tree too.
+
+**Windows name themselves after the task, and stay named.** By default a window takes the first line of your prompt. Point it at any model (a small model resident in a local Ollama answers in under a second) and it summarises the last few prompts instead. Replies like "ok", "yes", "進めて" or "ครับ" never rename anything. A window you name yourself (`prefix ,`) is never touched again.
+
+**Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
+
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 36 tests; CI runs them on Linux and macOS.
+
+## Configuration
+
+Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line.
+
+```tmux
+# Look
+set -g @junban-theme on            # off = keep your theme, only add badges + counter
+set -g @junban-position top        # top | bottom
+set -g @junban-guide on            # the second status line
+set -g @junban-tips on             # rotating tip on the right
+set -g @junban-lang ja             # en | ja | th (default: from $LANG)
+
+# Keys ("" to unbind)
+set -g @junban-key-jump M-a
+set -g @junban-key-list M-f
+set -g @junban-key-new M-n
+set -g @junban-key-scratch M-g
+set -g @junban-key-help M-/
+set -g @junban-nav-keys on         # Alt+1..9, Alt+[ ], Alt+Tab, Alt+z
+set -g @junban-prefix-keys on      # prefix a/f/C/g/ fallbacks
+set -g @junban-agent-cmd claude    # what Alt+n starts
+
+# Window names
+set -g @junban-rename prompt       # off | prompt | llm
+set -g @junban-namer-url http://localhost:11434   # Ollama, or an OpenAI-compatible …/v1
+set -g @junban-namer-model qwen3:8b
+set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only)
+
+# Notifications when an agent starts waiting or finishes (message on stdin)
+set -g @junban-notify-cmd 'xargs -0 notify-send junban'
+set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'
+```
+
+Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.
+
+## Other agents
+
+junban only cares about a window option, so anything that can run a command can drive it:
+
+```sh
+~/.tmux/plugins/junban/scripts/state.sh running   # or waiting | done | idle | clear
+```
+
+The script reads `$TMUX_PANE`, and that is all it needs. For Codex CLI, `notify` in `~/.codex/config.toml` can call `state.sh done`.
+
+## How it works
+
+```
+Claude Code hook ──► scripts/state.sh ──► tmux window option @junban
+                                               │
+                         status line, Alt+a, Alt+f read it
+                                               │
+     every 5 s: heal.py checks ~/.claude/sessions and fixes stale states
+```
+
+`hooks/hooks.json` is the whole Claude Code side. Read it; it is 40 lines.
+
+## Prior art
+
+Credit where it's due. These do overlapping things and some may suit you better:
+[tmux-agent-indicator](https://github.com/accessd/tmux-agent-indicator) ·
+[tmux-agent-status (RatulMaharaj)](https://github.com/RatulMaharaj/tmux-agent-status) ·
+[tmux-agent-status (rorhcdream)](https://github.com/rorhcdream/tmux-agent-status), which showed that session files beat hooks ·
+[tmux-handlr](https://github.com/CRThaze/tmux-handlr) ·
+[claude-code-tmux-status](https://github.com/XavierYounan/claude-code-tmux-status) ·
+[tmux-window-notifier](https://github.com/mrf/tmux-window-notifier)
+
+## Develop
+
+```sh
+bash tests/run.sh          # isolated tmux server; never touches yours
+bash tools/demo.sh         # a fake busy morning: tmux -L junban-demo attach
+bash tools/hero.sh en      # regenerate the README image from a live session
+```
+
+MIT. Built at [Nameless](https://namelessjp.com), where it runs all day.

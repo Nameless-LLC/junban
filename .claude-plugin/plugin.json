@@ -1,0 +1,10 @@
+{
+  "name": "junban",
+  "version": "0.1.0",
+  "description": "Whose turn is it? Shows which of your parallel Claude Code sessions is waiting for you, right on your tmux tabs. Pair with the junban tmux plugin.",
+  "author": { "name": "Nameless", "url": "https://namelessjp.com" },
+  "homepage": "https://github.com/namelessjp/junban",
+  "repository": "https://github.com/namelessjp/junban",
+  "license": "MIT",
+  "keywords": ["tmux", "parallel", "agents", "status", "notifications"]
+}
