@@ -78,12 +78,37 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .copy { font: 600 .8rem/1 var(--f-body); color: var(--ink); background: var(--text); border: 0; border-radius: 7px; padding: 9px 12px; cursor: pointer; flex: none; }
 .hint { font-size: .85rem; color: var(--muted); margin: 12px 0 0; }
 
+/* mascot: the call board's eyes */
+.jbm { --eye: #f1e9e2; display: block; overflow: visible; }
+.jbm[data-state=run] { --eye: #e2b350; } .jbm[data-state=wait] { --eye: #ff6b5e; } .jbm[data-state=done] { --eye: #7cc483; } .jbm[data-state=sleep] { --eye: #5f646e; }
+.jbm .eyes { color: var(--eye); transition: color .3s; }
+.jbm .look { transition: transform .18s ease-out; }
+.jbm .pair, .jbm .eye { transform-box: fill-box; transform-origin: center; }
+.jbm .happy { display: none; } .jbm[data-state=done] .open { display: none; } .jbm[data-state=done] .happy { display: inline; }
+.jbm[data-state=idle] .eye { animation: jbm-blink 4.2s infinite; }
+.jbm[data-state=run] .pair { animation: jbm-look 2.6s ease-in-out infinite; }
+.jbm[data-state=wait] .eyes { animation: jbm-flash .9s steps(1) infinite; } .jbm[data-state=wait] .eye { transform: scaleY(1.1); }
+.jbm[data-state=done] .pair { animation: jbm-hop .7s ease-in-out 2; }
+.jbm[data-state=sleep] .eye { transform: scaleY(.16); } .jbm[data-state=sleep] .eyes { animation: jbm-breathe 3.4s ease-in-out infinite; }
+@keyframes jbm-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@keyframes jbm-look { 0%, 18% { transform: translateX(-9%); } 45%, 68% { transform: translateX(9%); } 95%, 100% { transform: translateX(-9%); } }
+@keyframes jbm-flash { 0% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes jbm-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14%); } }
+@keyframes jbm-breathe { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+.stage { display: grid; gap: 10px; min-width: 0; }
+.buddy { display: flex; align-items: flex-end; justify-content: flex-end; gap: 12px; margin-bottom: -22px; position: relative; z-index: 1; padding-right: 18px; }
+.buddy .jbm { width: clamp(104px, 9vw + 30px, 168px); height: auto; filter: drop-shadow(0 10px 18px rgba(0,0,0,.25)); }
+.say { font: 400 .95rem/1.2 var(--f-sign); color: var(--board-text); background: var(--board); border-radius: 10px; padding: 8px 12px; margin-bottom: 52px; position: relative; white-space: nowrap; transition: opacity .2s; }
+.say::after { content: ""; position: absolute; right: -6px; bottom: 10px; border: 6px solid transparent; border-right: 0; border-left-color: var(--board); }
+.say:empty { opacity: 0; }
+footer .zz { display: inline-flex; align-items: center; gap: 8px; }
+footer .jbm { width: 30px; height: auto; }
+@media (prefers-reduced-motion: reduce) { .jbm *, .jbm .look { animation: none !important; transition: none !important; } }
+
 /* the call board */
 .board { background: var(--board); color: var(--board-text); border-radius: 14px; padding: 22px 24px 20px; box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 24px 60px -30px rgba(0,0,0,.6); font-family: var(--f-sign); }
 .board-head { display: flex; justify-content: space-between; font-size: .85rem; color: #8d8580; letter-spacing: .14em; text-transform: uppercase; }
 .board-head .live { color: var(--board-lit); }
-.bh-r { display: inline-flex; align-items: center; gap: 10px; }
-.bh-r svg { width: 30px; height: 22.5px; margin: -4px 0; }
 .board-head .live::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 7px; vertical-align: 1px; animation: blink 1.6s steps(2, end) infinite; }
 .now { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; margin: 16px 0 18px; }
 .num { font: 400 clamp(4.5rem, 3rem + 6vw, 7.2rem)/.9 var(--f-sign); color: var(--board-lit); text-shadow: 0 0 18px rgba(255,107,94,.45); min-width: 1.1em; text-align: center; }
@@ -200,8 +225,10 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         </div>
       </div>
 
+      <div class="stage">
+      <div class="buddy"><span class="say" id="say" aria-live="polite"></span>{{FACE hero wait}}</div>
       <div class="board" id="board" aria-live="polite" aria-label="Example: the agent queue right now">
-        <div class="board-head"><span lang="en">Now calling</span><span lang="ja">お呼び出し中</span><span class="bh-r"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" class="jbm" id="b-face" aria-hidden="true" focusable="false" data-state="wait" > <style> .jbm{--eye:#f1e9e2} .jbm[data-state=run]{--eye:#e2b350}.jbm[data-state=wait]{--eye:#ff6b5e}.jbm[data-state=done]{--eye:#7cc483}.jbm[data-state=sleep]{--eye:#5f646e} .eyes{color:var(--eye);transition:color .3s} .pair,.eye{transform-box:fill-box;transform-origin:center} .happy{display:none}.jbm[data-state=done] .open{display:none}.jbm[data-state=done] .happy{display:inline} .jbm[data-state=idle] .eye{animation:blink 4.2s infinite} .jbm[data-state=run] .pair{animation:look 2.6s ease-in-out infinite} .jbm[data-state=wait] .eyes{animation:flash .9s steps(1) infinite}.jbm[data-state=wait] .eye{transform:scaleY(1.1)} .jbm[data-state=done] .pair{animation:hop 1.4s ease-in-out infinite} .jbm[data-state=sleep] .eye{transform:scaleY(.16)}.jbm[data-state=sleep] .eyes{animation:breathe 3.4s ease-in-out infinite} @keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}} @keyframes look{0%,18%{transform:translateX(-9%)}45%,68%{transform:translateX(9%)}95%,100%{transform:translateX(-9%)}} @keyframes flash{0%{opacity:1}50%{opacity:.35}} @keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6%)}} @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}} @media (prefers-reduced-motion:reduce){.jbm *{animation:none!important}} </style> <defs> <pattern id="jb-led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern> <filter id="jb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter> </defs> <rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/> <rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/> <g class="eyes"><g class="pair"> <g class="open"> <g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g> <rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/> <rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/> <rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/> <rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/> </g> <g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g> </g></g> </svg><span class="live">Alt+a</span></span></div>
+        <div class="board-head"><span lang="en">Now calling</span><span lang="ja">お呼び出し中</span><span class="live">Alt+a</span></div>
         <div class="now">
           <div class="num" id="b-num">4</div>
           <div class="who">
@@ -222,6 +249,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
           <span class="nudge" lang="en">Try it: press a</span><span class="nudge" lang="ja">押してみる: a キー</span>
           <button type="button" id="board-next"><span lang="en">Answer &amp; next →</span><span lang="ja">返事して次へ →</span></button>
         </div>
+      </div>
       </div>
     </div>
 
@@ -324,8 +352,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   </main>
 
   <footer>
-    <span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
-    <span lang="ja">MIT · <a href="https://namelessjp.com">Nameless</a> で毎日使っています。</span>
+    <span class="zz">{{FACE foot sleep}}<span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
+    <span lang="ja">MIT · <a href="https://namelessjp.com">Nameless</a> で毎日使っています。</span></span>
     <a href="https://github.com/Nameless-LLC/junban#prior-art"><span lang="en">Prior art we learned from</span><span lang="ja">参考にした先行事例</span></a>
   </footer>
 </div>
@@ -344,7 +372,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   try { saved = localStorage.getItem('junban-lang'); } catch (e) {}
   setLang(saved || ((navigator.language || '').slice(0, 2) === 'ja' ? 'ja' : 'en'));
   document.querySelectorAll('.lang button').forEach(function (b) {
-    b.addEventListener('click', function () { setLang(b.dataset.set); });
+    b.addEventListener('click', function () { setLang(b.dataset.set); if (SAY) show(faceNow[0], faceNow[1]); });
   });
   document.querySelectorAll('.copy').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -352,6 +380,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       var done = function () {
         var old = btn.innerHTML;
         btn.textContent = root.lang === 'ja' ? 'コピーしました' : 'Copied';
+        flash('done', 'copied', 1500);
         setTimeout(function () { btn.innerHTML = old; }, 1600);
       };
       var select = function () {
@@ -363,6 +392,25 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       } else { select(); }
     });
   });
+
+
+  // mascot: reacts to the board, looks at your pointer
+  var FACE = document.getElementById('hero-face'), SAY = document.getElementById('say');
+  var LINES = { turn: { en: 'Your turn!', ja: 'あなたの番！' }, look: { en: 'Done. Take a look?', ja: '終わったよ、見てね' },
+    clear: { en: 'All clear!', ja: 'ぜんぶ片づいた！' }, copied: { en: 'Copied!', ja: 'コピーしたよ' } };
+  var faceNow = ['wait', 'turn'], faceTimer = null;
+  function show(st, line) { FACE.setAttribute('data-state', st); SAY.textContent = line ? LINES[line][L()] : ''; }
+  function face(st, line) { faceNow = [st, line]; clearTimeout(faceTimer); show(st, line); }
+  function flash(st, line, ms) { clearTimeout(faceTimer); show(st, line); faceTimer = setTimeout(function () { show(faceNow[0], faceNow[1]); }, ms); }
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!still) {
+    var look = FACE.querySelector('.look');
+    document.addEventListener('pointermove', function (e) {
+      var r = FACE.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var dx = e.clientX - cx, dy = e.clientY - cy, d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 300);
+      look.style.transform = 'translate(' + (dx / d * 12 * k).toFixed(1) + 'px,' + (dy / d * 9 * k).toFixed(1) + 'px)';
+    }, { passive: true });
+  }
 
   // live call board: press "a" (or the button) to answer the agent being called
   var Q = [
@@ -386,7 +434,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
     var cur = pick(), board = document.getElementById('board');
     var num = document.getElementById('b-num');
     board.classList.toggle('calm', !cur);
-    document.getElementById('b-face').setAttribute('data-state', !cur ? 'idle' : cur.st === 'wait' ? 'wait' : 'done');
+    face(!cur ? 'done' : cur.st === 'wait' ? 'wait' : 'done', !cur ? 'clear' : cur.st === 'wait' ? 'turn' : 'look');
     num.textContent = cur ? cur.n : '✓';
     if (animate) { num.classList.remove('flip'); void num.offsetWidth; num.classList.add('flip'); }
     document.getElementById('b-name').textContent = cur ? ICON[cur.st] + ' ' + cur.name[L()] : (L() === 'ja' ? '返事待ちはありません' : 'Nobody is waiting on you');
