@@ -91,7 +91,7 @@ summarise() {
 bar() {
   local e=$(( $2 > 0 ? $1 * $3 * 8 / $2 : 0 )) out="" i
   local parts=("" ▏ ▎ ▍ ▌ ▋ ▊ ▉)
-  for ((i = 0; i < e / 8; i++)); do out="$out█"; done
+  for ((i = 0; i < e / 8; i++)); do out="${out}█"; done
   [ "$1" -gt 0 ] && [ "$e" -eq 0 ] && e=1   # any wait at all shows
   printf '%s%s' "$out" "${parts[e % 8]}"
 }

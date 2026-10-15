@@ -283,7 +283,7 @@ tmux set -gu @junban-notify-cmd
 # request that never comes cannot hang the suite.
 ready="$WORK/stub-ready"; rm -f "$ready"
 python3 - "$ready" <<'PY' &
-import http.server, json, sys
+import http.server, json, socketserver, sys
 class H(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
@@ -291,7 +291,9 @@ class H(http.server.BaseHTTPRequestHandler):
         out = json.dumps({"message": {"content": "Model: 3 files fixed" if ok else "wrong prompt"}}).encode()
         self.send_response(200); self.end_headers(); self.wfile.write(out)
     def log_message(self, *a): pass
-srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+# socketserver, not HTTPServer: HTTPServer looks up its own hostname on bind,
+# which takes seconds on macOS runners.
+srv = socketserver.TCPServer(("127.0.0.1", 0), H)
 srv.timeout = 20
 open(sys.argv[1], "w").write(str(srv.server_address[1]))
 srv.handle_request()
