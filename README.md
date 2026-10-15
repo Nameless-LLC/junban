@@ -5,9 +5,9 @@
 **Whose turn is it?**<br>
 A tmux cockpit for running many AI coding agents at once.
 
-[English](README.md) · [日本語](README.ja.md)
+[English](README.md) · [日本語](README.ja.md) · [▶ 25-second demo](https://junban.namelessjp.com/)
 
-<img src="docs/hero-en.svg" alt="junban: six Claude Code sessions in tmux; a red banner says two are waiting on you, Alt+a jumps to the one that has waited longest, Alt+f lists every agent with a live preview" width="100%">
+<a href="https://junban.namelessjp.com/"><img src="docs/hero-en.svg" alt="junban: six Claude Code sessions in tmux; a red banner says two are waiting on you, Alt+a jumps to the one that has waited longest, Alt+f lists every agent with a live preview" width="100%"></a>
 
 </div>
 

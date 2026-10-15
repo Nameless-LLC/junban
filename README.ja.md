@@ -5,9 +5,9 @@
 **いま、誰の番？**<br>
 AI エージェントを何体も並列で回すための tmux 操縦席。
 
-[English](README.md) · [日本語](README.ja.md)
+[English](README.md) · [日本語](README.ja.md) · [▶ 25秒のデモ](https://junban.namelessjp.com/)
 
-<img src="docs/hero-ja.svg" alt="junban の画面。tmux で Claude Code を6つ動かしていて、赤い帯が「2窓があなたの返事待ち」と表示。Alt+a でいちばん長く待っている窓へ飛び、Alt+f で全エージェントをプレビュー付きで一覧する" width="100%">
+<a href="https://junban.namelessjp.com/"><img src="docs/hero-ja.svg" alt="junban の画面。tmux で Claude Code を6つ動かしていて、赤い帯が「2窓があなたの返事待ち」と表示。Alt+a でいちばん長く待っている窓へ飛び、Alt+f で全エージェントをプレビュー付きで一覧する" width="100%"></a>
 
 </div>
 
