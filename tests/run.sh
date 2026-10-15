@@ -177,7 +177,7 @@ st "$pm" "done" '{}'; tmux set -w -t u:6 @junban_ts $((now - 30))
 tmux select-window -t u:6; sleep 0.5
 eq  "opening a ✓ window clears it"  "$(get u:6 @junban)" "idle"
 eq  "…and logs it as a done wait"   "$(tail -n1 "$log" | cut -f3)" "done"
-lines=$(wc -l < "$log")
+lines=$(wc -l < "$log" | tr -d " ")
 st "$pm" running '{}'; st "$pm" "done" '{}'
 tmux set -w -t u:6 @junban "done"; st "$pm" clear
 eq  "closing an agent logs nothing" "$(wc -l < "$log" | tr -d ' ')" "$lines"

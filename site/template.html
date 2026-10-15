@@ -1,6 +1,11 @@
 <title>junban</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="junban tells you which of your parallel AI coding agents is waiting on you, right on your tmux tabs, and which key to press next.">
+<meta property="og:title" content="junban: whose turn is it?">
+<meta property="og:description" content="A tmux cockpit that shows which of your parallel AI coding agents is waiting on you, and the one key to press.">
+<meta property="og:image" content="https://junban.namelessjp.com/social/og.png">
+<meta property="og:url" content="https://junban.namelessjp.com/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
@@ -93,7 +98,7 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 
 /* real terminal */
 .shot { margin: 8px 0 0; }
-.shot img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 30px 70px -40px rgba(0,0,0,.55); }
+.shot video { display: block; background: #0e1013; width: 100%; height: auto; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 12px; box-shadow: 0 30px 70px -40px rgba(0,0,0,.55); }
 .shot figcaption { font-size: .85rem; color: var(--muted); margin-top: 12px; }
 
 section { padding-block: clamp(56px, 9vw, 104px) 0; }
@@ -188,10 +193,10 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
     </div>
 
     <figure class="shot">
-      <img lang="en" src="{{HERO_EN}}" width="1292" height="694" alt="junban in a real tmux session: a red banner says two agents are waiting, Alt+a jumps to the one that waited longest, Alt+f lists every agent with a live preview">
-      <img lang="ja" src="{{HERO_JA}}" width="1292" height="694" alt="実際の tmux での junban。赤い帯で2窓が返事待ちと表示し、Alt+a で最も長く待つ窓へ、Alt+f で全エージェントをプレビュー付きで一覧">
-      <figcaption lang="en">A real capture, not a mock-up: six agents, the guide line, Alt+a, then Alt+f.</figcaption>
-      <figcaption lang="ja">作り物ではなく実際の画面です。6つのエージェント、案内行、Alt+a、そして Alt+f。</figcaption>
+      <video lang="en" src="{{VIDEO_EN}}" poster="{{HERO_EN}}" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
+      <video lang="ja" src="{{VIDEO_JA}}" poster="{{HERO_JA}}" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つ窓へ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
+      <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds, no mock-ups.</figcaption>
+      <figcaption lang="ja">本物の tmux 画面を場面ごとに記録した25秒。作り物の画面はありません。</figcaption>
     </figure>
 
     <section>
