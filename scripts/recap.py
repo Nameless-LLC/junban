@@ -98,6 +98,18 @@ def permission_line(data):
     return f"{tool}: {detail}" if tool and detail else tool or detail
 
 
+def gemini_line(data):
+    """Gemini's ToolPermission message is generic ("Tool Confirm Shell Command
+    requires execution"); its details carry what it actually wants to do."""
+    d = data.get("details")
+    if not isinstance(d, dict):
+        return ""
+    what = next((str(d[k]) for k in ("command", "filePath", "fileName", "url", "prompt") if d.get(k)), "")
+    label = "Shell" if d.get("type") == "exec" else str(d.get("title") or d.get("type") or "")
+    what = " ".join(what.split())
+    return f"{label}: {what}" if label and what else what
+
+
 def recap_system():
     lang = tmux("show", "-gqv", "@junban-lang")
     if not lang:
@@ -137,7 +149,7 @@ def main():
         qs = ((data.get("tool_input") or {}).get("questions") or [{}])
         line = strip_md(str(qs[0].get("question") or "")) if qs else ""
     elif kind == "notify":
-        line = strip_md(str(data.get("message") or "")) or permission_line(data)
+        line = gemini_line(data) or strip_md(str(data.get("message") or "")) or permission_line(data)
     elif kind == "done":
         line = summarise(last_reply(data))
     else:

@@ -333,9 +333,11 @@ eq  "gemini prompt → running"       "$(get u:8 @junban)" "running"
 hk gemini Notification '{"notification_type":"ToolPermission","message":"Allow shell: rm -rf build?"}' >/dev/null; sleep 0.5
 eq  "gemini permission → waiting"   "$(get u:8 @junban)" "waiting"
 eq  "…recap is its message"         "$(get u:8 @junban_recap)" "Allow shell: rm -rf build?"
+hk gemini Notification '{"notification_type":"ToolPermission","message":"Tool Confirm Shell Command requires execution","details":{"type":"exec","title":"Confirm Shell Command","command":"mkdir -p build/out","rootCommand":"mkdir"}}' >/dev/null; sleep 0.5
+eq  "…or the command it will run"   "$(get u:8 @junban_recap)" "Shell: mkdir -p build/out"
 hk gemini AfterAgent '{"prompt_response":"[no response text]"}' >/dev/null; sleep 0.5
 eq  "gemini AfterAgent → done"      "$(get u:8 @junban)" "done"
-eq  "no recap from an empty reply"  "$(get u:8 @junban_recap)" "Allow shell: rm -rf build?"
+eq  "no recap from an empty reply"  "$(get u:8 @junban_recap)" "Shell: mkdir -p build/out"
 hk gemini SessionEnd '{}' >/dev/null
 eq  "gemini exit clears the badge"  "$(get u:8 @junban)" ""
 
