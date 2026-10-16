@@ -46,6 +46,10 @@ That's it. New Claude Code sessions report their state from the first prompt.
 
 Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
 
+### Something wrong?
+
+Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions and setups go to [Discussions](https://github.com/Nameless-LLC/junban/discussions).
+
 ## The only key you need
 
 **Alt+a.** When nothing is waiting, the second status line shows the five keys worth knowing. When something is, it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
@@ -81,7 +85,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 114 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 121 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 

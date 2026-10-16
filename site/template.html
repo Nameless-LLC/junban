@@ -58,7 +58,10 @@ a { color: inherit; text-underline-offset: 3px; }
 html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !important; }
 
 /* top bar */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--ink); box-shadow: 0 0 0 100vmax var(--ink); clip-path: inset(0 -100vmax); transition: padding .2s; }
+.top.stuck { padding-block: 12px; box-shadow: 0 0 0 100vmax var(--ink), 0 1px 0 100vmax var(--line); clip-path: inset(0 -100vmax -1px); }
+.hstar { padding: 8px 12px; font-size: .85rem; transition: opacity .25s, transform .25s; }
+.hstar.off { opacity: 0; transform: translateY(-6px); pointer-events: none; }
 .mark { display: flex; align-items: baseline; gap: 10px; font: 900 1.35rem/1 var(--f-display); letter-spacing: -.01em; text-decoration: none; }
 .mark small { font: 400 .95rem/1 var(--f-sign); color: var(--muted); }
 .top nav { display: flex; align-items: center; gap: 18px; font-size: .92rem; }
@@ -106,6 +109,7 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .pal .jbm { width: clamp(60px, 4vw + 40px, 84px); height: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.3)); }
 .pal .say { margin-bottom: 26px; font-size: .85rem; }
 .pal:hover .jbm { transform: translateY(-3px); }
+footer .flinks { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 footer .zz { display: inline-flex; align-items: center; gap: 8px; }
 footer .jbm { width: 30px; height: auto; }
 @media (prefers-reduced-motion: reduce) { .jbm *, .jbm .look, .pal { animation: none !important; transition: none !important; } }
@@ -160,9 +164,10 @@ h2 { font: 900 clamp(1.8rem, 1.3rem + 2.2vw, 2.9rem)/1.1 var(--f-display); lette
 
 /* install */
 .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
+.step p code { overflow-wrap: anywhere; }
 .step { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
 .step h3 { font: 700 1rem/1.3 var(--f-display); margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
-.step h3 span { font: 600 .8rem/1 var(--f-mono); color: var(--wait); }
+.step h3 span:first-child { font: 600 .8rem/1 var(--f-mono); color: var(--wait); }
 .step pre { margin: 0; font: 400 .85rem/1.6 var(--f-mono); overflow-x: auto; white-space: pre; }
 .step p { margin: 12px 0 0; font-size: .88rem; color: var(--muted); }
 
@@ -203,6 +208,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   <header class="top">
     <a class="mark" href="#top">junban <small>順番</small></a>
     <nav>
+      <a class="btn primary hstar off" id="hstar" href="https://github.com/Nameless-LLC/junban" tabindex="-1"><span aria-hidden="true">★</span><span lang="en">Star</span><span lang="ja">スター</span><span class="count" id="hstars"></span></a>
       <a href="https://github.com/Nameless-LLC/junban"><span class="gh-text">GitHub</span><span aria-hidden="true"> ↗</span></a>
       <div class="lang" role="group" aria-label="Language">
         <button type="button" id="lang-en" data-set="en" aria-pressed="true">EN</button>
@@ -333,8 +339,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         </div>
         <div class="why-row">
           <h3 lang="en">Just tmux and bash</h3><h3 lang="ja">tmux と bash だけ</h3>
-          <p lang="en">No daemon, nothing to keep alive. 114 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">デーモンなし、常駐なし。テスト114件を Linux と macOS の CI で回しています。</p>
+          <p lang="en">No daemon, nothing to keep alive. 121 tests, run in CI on Linux and macOS.</p>
+          <p lang="ja">デーモンなし、常駐なし。テスト121件を Linux と macOS の CI で回しています。</p>
         </div>
       </div>
     </section>
@@ -366,7 +372,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   <footer>
     <span class="zz">{{FACE foot sleep}}<span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
     <span lang="ja">MIT · <a href="https://namelessjp.com">Nameless</a> で毎日使っています。</span></span>
-    <a href="https://github.com/Nameless-LLC/junban#prior-art"><span lang="en">Prior art we learned from</span><span lang="ja">参考にした先行事例</span></a>
+    <span class="flinks"><a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml"><span lang="en">Report a bug</span><span lang="ja">不具合を報告</span></a><a href="https://github.com/Nameless-LLC/junban/discussions"><span lang="en">Ideas &amp; questions</span><span lang="ja">要望・質問</span></a><a href="https://github.com/Nameless-LLC/junban#prior-art"><span lang="en">Prior art we learned from</span><span lang="ja">参考にした先行事例</span></a></span>
   </footer>
 </div>
 
@@ -540,10 +546,19 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   }
   videos(); if (mq.addEventListener) mq.addEventListener('change', videos);
 
+  // once the hero buttons scroll away, the header keeps a Star button in reach
+  if ('IntersectionObserver' in window) {
+    var hs = document.getElementById('hstar'), top = document.querySelector('.top');
+    new IntersectionObserver(function (es) {
+      var gone = !es[0].isIntersecting && es[0].boundingClientRect.top < 0;
+      hs.classList.toggle('off', !gone); hs.tabIndex = gone ? 0 : -1; top.classList.toggle('stuck', gone);
+    }).observe(document.querySelector('.ctas'));
+  }
+
   // live star count (silently skipped if the API is unreachable)
   try {
     fetch('https://api.github.com/repos/Nameless-LLC/junban').then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && d.stargazers_count) document.getElementById('stars').textContent = d.stargazers_count; })
+      .then(function (d) { if (d && d.stargazers_count) { document.getElementById('stars').textContent = d.stargazers_count; document.getElementById('hstars').textContent = d.stargazers_count; } })
       .catch(function () {});
   } catch (e) {}
 

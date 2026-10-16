@@ -46,6 +46,10 @@ curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh
 
 必要なのは tmux 3.2 以上と bash です。fzf と python3 は任意ですが、入れておくのがおすすめです。
 
+### うまく動かないとき
+
+`~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。それでも直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。窓の名前や依頼の内容は出力に含まれません。質問や使い方の相談は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へどうぞ。
+
 ## 覚えるキーは1つだけ
 
 **Alt+a** です。何も待っていないとき、ステータスバーの2行目には覚えておくと便利な5つのキーが出ます。誰かが待っているときは、そこが「Alt+a で飛ぶ」という帯に変わります。何も覚えなくても、画面が次の操作を教えてくれます。
@@ -81,7 +85,7 @@ curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh
 
 **何を求めているかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたとき、✋/✓ の帯と Alt+f の一覧に「何を求めているか／何が起きたか」を1行で出します（例:「テスト成功、PR #12 を作成」）。命名用のモデルを設定していればモデルが書き、なければ返答の最初の1行を使います。スマホ通知にも同じ1行が載ります。止めるときは `set -g @junban-recap off` です。
 
-**tmux と bash だけで動きます。** デーモンも常駐プロセスもありません。テストは114件あり、CI で Linux と macOS の両方で回しています。
+**tmux と bash だけで動きます。** デーモンも常駐プロセスもありません。テストは121件あり、CI で Linux と macOS の両方で回しています。
 
 ## 設定
 
