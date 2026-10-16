@@ -1,6 +1,6 @@
 ---
 description: Check the junban setup (tmux, hooks, badges) and print a report for bug reports
-allowed-tools: Bash(bash:*)
+allowed-tools: Bash(bash *scripts/doctor.sh*)
 ---
 
 junban doctor output:

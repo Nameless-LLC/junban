@@ -121,7 +121,7 @@ while IFS= read -r line; do
   name=${line%% *}; val=${line#* }
   case "$name" in
     @junban-dir | @junban-badge | @junban-scan-at) continue ;;
-    @junban-notify-cmd | @junban-namer-url | @junban-namer-key) val="(set)" ;;  # may hold hosts or topics
+    @junban-notify-cmd | @junban-namer-url | @junban-namer-key | @junban-agent-cmd) val="(set)" ;;  # may hold hosts, topics or flags
   esac
   printf '  %s %s\n' "$name" "$val"; shown=1
 done < <(tmux show -g 2>/dev/null | grep '^@junban-')
