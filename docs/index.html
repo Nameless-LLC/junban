@@ -68,6 +68,8 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 /* top bar */
 .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--ink); box-shadow: 0 0 0 100vmax var(--ink); clip-path: inset(0 -100vmax); transition: padding .2s; }
 .top.stuck { padding-block: 12px; box-shadow: 0 0 0 100vmax var(--ink), 0 1px 0 100vmax var(--line); clip-path: inset(0 -100vmax -1px); }
+.mark, .btn, .lang button { white-space: nowrap; }
+@media (max-width: 480px) { .mark small { display: none; } .top.stuck nav > a:not(.hstar) { display: none; } .top nav { gap: 12px; } }
 .hstar { padding: 8px 12px; font-size: .85rem; transition: opacity .25s, transform .25s; }
 .hstar.off { opacity: 0; transform: translateY(-6px); pointer-events: none; }
 .mark { display: flex; align-items: baseline; gap: 10px; font: 900 1.35rem/1 var(--f-display); letter-spacing: -.01em; text-decoration: none; }
