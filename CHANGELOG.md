@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Security
+
+- `SECURITY.md`: report vulnerabilities privately through GitHub Security Advisories. It also lists what junban stores and what can leave your machine (namer URL, notify command).
+- `/junban:doctor` may run only `scripts/doctor.sh`, and the report masks `@junban-agent-cmd`.
+- CI runs with read-only repository permissions.
+
 ## 0.3.1 — 2026-10-16
 
 ### Security

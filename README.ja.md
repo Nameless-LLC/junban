@@ -48,7 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh
 
 ### うまく動かないとき
 
-`~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。それでも直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。窓の名前や依頼の内容は出力に含まれません。質問や使い方の相談は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へどうぞ。
+`~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。それでも直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。窓の名前や依頼の内容は出力に含まれません。質問や使い方の相談は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へどうぞ。セキュリティの問題は公開せずに報告してください（[SECURITY.md](SECURITY.md)）。
 
 ## 覚えるキーは1つだけ
 

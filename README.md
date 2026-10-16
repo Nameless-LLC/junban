@@ -48,7 +48,7 @@ Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
 
 ### Something wrong?
 
-Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions and setups go to [Discussions](https://github.com/Nameless-LLC/junban/discussions).
+Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions and setups go to [Discussions](https://github.com/Nameless-LLC/junban/discussions). Security issues: please report privately, see [SECURITY.md](SECURITY.md).
 
 ## The only key you need
 
@@ -126,7 +126,7 @@ set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…
 
 # Notifications when an agent starts waiting or finishes (message on stdin)
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
-set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'
+set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # the message includes the recap line; a public ntfy.sh topic is readable by anyone who knows its name
 ```
 
 Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.
