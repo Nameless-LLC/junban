@@ -205,6 +205,11 @@ rep=$(bash "$S/stats.sh" 7)
 has "report lists today's windows"  "$rep" "u:night"
 hasnt "report skips older days"     "$rep" "u:old"
 
+# shellcheck disable=SC2012  # ls -l is the portable way to read modes (stat differs on macOS)
+eq  "wait log is private"           "$(ls -ld "$log" | cut -c1-10)" "-rw-------"
+# shellcheck disable=SC2012
+eq  "…and so is its folder"         "$(ls -ld "${log%/*}" | cut -c1-10)" "drwx------"
+
 echo "graphs and mascot"
 # Last week: 6 waits of 4 min. This week: 3 min on days 1-3, 2 min five times today.
 : > "$log"
@@ -345,7 +350,7 @@ mkdir -p "$HOME/.codex"; printf '{"hooks":{"Stop":[{"hooks":[{"type":"command","
 bash "$S/setup.sh" codex >/dev/null; bash "$S/setup.sh" codex >/dev/null
 cx=$(cat "$HOME/.codex/hooks.json")
 has "setup keeps your own hooks"    "$cx" "notify-me"
-eq  "…and adds ours exactly once"   "$(grep -c 'hook.sh\\" codex Stop' <<<"$cx")" "1"
+eq  "…and adds ours exactly once"   "$(grep -c 'hook.sh codex Stop' <<<"$cx")" "1"
 has "setup: Codex timeouts in s"    "$cx" '"timeout": 5'
 bash "$S/setup.sh" gemini >/dev/null
 has "setup: Gemini timeouts in ms"  "$(cat "$HOME/.gemini/settings.json")" '"timeout": 5000'
@@ -364,6 +369,13 @@ tmux set -gu @junban-dir
 has "doctor: says when not loaded"  "$(bash "$S/doctor.sh")" "FAIL  junban.tmux is not loaded"
 tmux set -g @junban-dir "$ROOT"
 has "help points at the doctor"     "$(bash "$S/help.sh" </dev/null | cat)" "doctor.sh"
+
+echo "quoting"
+qd="$WORK/a'; touch $WORK/PWNED; ' b"; mkdir -p "$qd"
+tmux new-window -d -t u:9 -c "$qd"; tmux set -g @junban-agent-cmd true
+tmux run -t u:9 "$(tmux list-keys -T root M-n | sed 's/.*run-shell -b "//; s/"$//')"; sleep 1
+eq  "Alt+n: a quote in a path runs nothing" "$([ -e "$WORK/PWNED" ] && echo yes || echo no)" "no"
+tmux set -gu @junban-agent-cmd
 
 echo "theme off"
 tmux kill-server; sleep 0.2

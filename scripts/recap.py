@@ -166,8 +166,13 @@ def main():
     prompt = tmux("display", "-p", "-t", pane, "#{@junban_prompt}").replace("\t", " ")
     state_dir = os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.expanduser("~/.local/state"), "junban")
     try:
-        os.makedirs(state_dir, exist_ok=True)
-        with open(os.path.join(state_dir, "done.tsv"), "a", encoding="utf-8") as fh:
+        # Prompts and recaps can name clients and code: readable by you only.
+        os.makedirs(state_dir, mode=0o700, exist_ok=True)
+        os.chmod(state_dir, 0o700)
+        path = os.path.join(state_dir, "done.tsv")
+        fd = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "a", encoding="utf-8") as fh:
             if line:
                 fh.write(f"{int(time.time())}\t{win}\t{prompt}\t{line}\n")
     except OSError:

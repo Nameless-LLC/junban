@@ -50,8 +50,10 @@ if [ "$st" != "$cur" ]; then
       if [ -n "$since" ]; then
         log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
         name=$(t display -p -t "$pane" '#{session_name}:#{window_name}' | tr '\t' ' ')
-        mkdir -p "${log%/*}" 2>/dev/null &&
-          printf '%s\t%s\t%s\t%s\n' "$since" "$(date +%s)" "$cur" "$name" >> "$log" 2>/dev/null
+        # Window names can say what you work on: keep the log to yourself.
+        (umask 077; mkdir -p "${log%/*}" 2>/dev/null &&
+          printf '%s\t%s\t%s\t%s\n' "$since" "$(date +%s)" "$cur" "$name" >> "$log" 2>/dev/null &&
+          chmod go-rwx "${log%/*}" "$log" 2>/dev/null)
       fi ;;
   esac
   t set -w -t "$pane" @junban "$st"

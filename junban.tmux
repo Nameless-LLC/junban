@@ -72,7 +72,8 @@ kg=$(opt @junban-key-scratch M-g); kh=$(opt @junban-key-help M-/)
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
 popup_scratch=(display-popup -E -w 80% -h 75% -d "#{pane_current_path}" "tmux new -A -s scratch")
 popup_help=(display-popup -E -w 80 -h 90% "$S/help.sh")
-new_agent=(run -b "$S/new.sh '#{pane_current_path}'")
+# q: shell-quotes the path; a directory named a'$(cmd)' must stay a name.
+new_agent=(run -b "$S/new.sh #{q:pane_current_path}")
 
 bind_root "$kj" run -b "$S/jump.sh"
 bind_root "$kf" "${popup_list[@]}"

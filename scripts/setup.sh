@@ -23,7 +23,7 @@ command -v python3 >/dev/null 2>&1 || { echo "junban: setup needs python3" >&2; 
 
 # shellcheck disable=SC2086  # one argument per event
 python3 - "$agent" "$file" "$S/hook.sh" "$mode" $events <<'PY'
-import json, os, shutil, sys
+import json, os, shlex, shutil, sys
 
 agent, path, hook, mode, events = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5:]
 try:
@@ -48,7 +48,7 @@ for ev in list(hooks):  # drop junban's earlier entries, keep everyone else's
 # Codex counts timeouts in seconds, Gemini in milliseconds.
 timeout = 5 if agent == "codex" else 5000
 for ev in events:
-    entry = {"type": "command", "command": f'bash "{hook}" {agent} {ev}', "timeout": timeout}
+    entry = {"type": "command", "command": f"bash {shlex.quote(hook)} {agent} {ev}", "timeout": timeout}
     if agent == "codex" and ev in ("SessionEnd", "Interrupt"):
         entry["timeout"] = 3  # Codex caps these two at 3 s
     if agent == "gemini":
