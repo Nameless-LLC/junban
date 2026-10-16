@@ -109,9 +109,14 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .say { font: 400 .95rem/1.2 var(--f-sign); color: var(--board-text); background: var(--board); border-radius: 10px; padding: 8px 12px; margin-bottom: 52px; position: relative; white-space: nowrap; transition: opacity .2s; }
 .say::after { content: ""; position: absolute; right: -6px; bottom: 10px; border: 6px solid transparent; border-right: 0; border-left-color: var(--board); }
 .say:empty { opacity: 0; }
+.pal { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; align-items: flex-end; gap: 8px; background: none; border: 0; padding: 0; cursor: pointer; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), opacity .25s; }
+.pal.away { transform: translateY(140%); opacity: 0; pointer-events: none; }
+.pal .jbm { width: clamp(60px, 4vw + 40px, 84px); height: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.3)); }
+.pal .say { margin-bottom: 26px; font-size: .85rem; }
+.pal:hover .jbm { transform: translateY(-3px); }
 footer .zz { display: inline-flex; align-items: center; gap: 8px; }
 footer .jbm { width: 30px; height: auto; }
-@media (prefers-reduced-motion: reduce) { .jbm *, .jbm .look { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .jbm *, .jbm .look, .pal { animation: none !important; transition: none !important; } }
 
 /* the call board */
 .board { background: var(--board); color: var(--board-text); border-radius: 14px; padding: 22px 24px 20px; box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 24px 60px -30px rgba(0,0,0,.6); font-family: var(--f-sign); }
@@ -261,7 +266,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       </div>
     </div>
 
-    <figure class="shot">
+    <figure class="shot" data-pal="run:video">
       <video class="wide" lang="en" src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
       <video class="wide" lang="ja" src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つ窓へ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
       <video class="tall" lang="en" data-src="media/junban-demo-mobile-en.mp4" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
@@ -270,7 +275,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       <figcaption lang="ja">本物の tmux 画面を場面ごとに記録した25秒。作り物の画面はありません。</figcaption>
     </figure>
 
-    <section>
+    <section data-pal="idle:onekey">
       <p class="eyebrow">The only key</p>
       <div class="onekey">
         <div class="keys" aria-label="Alt plus a"><span class="key">Alt</span>+<span class="key a">a</span></div>
@@ -289,7 +294,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       </div>
     </section>
 
-    <section>
+    <section data-pal="run:why">
       <p class="eyebrow">Why this one</p>
       <h2 lang="en">Built eight agents deep, every day.</h2>
       <h2 lang="ja">毎日8体を並べて作り込んだ。</h2>
@@ -342,7 +347,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       </div>
     </section>
 
-    <section id="install">
+    <section id="install" data-pal="done:install">
       <p class="eyebrow">Install</p>
       <h2 lang="en">Two lines. Then press Alt+a.</h2>
       <h2 lang="ja">2行入れて、Alt+a を押すだけ。</h2>
@@ -363,6 +368,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       </div>
     </section>
   </main>
+
+  <button type="button" class="pal" id="pal" hidden aria-label="Back to the call board"><span class="say" id="pal-say"></span><svg class="jbm" id="pal-face" viewBox="0 0 200 150" data-state="idle" aria-hidden="true" focusable="false"><rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/><rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/><g class="look"><g class="eyes"><g class="pair"><g class="open"><g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/></g><g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g></g></g></g></svg></button>
 
   <footer>
     <span class="zz"><svg class="jbm" id="foot-face" viewBox="0 0 200 150" data-state="sleep" aria-hidden="true" focusable="false"><rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/><rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/><g class="look"><g class="eyes"><g class="pair"><g class="open"><g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/></g><g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g></g></g></g></svg><span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
@@ -414,16 +421,58 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
   var faceNow = ['wait', 'turn'], faceTimer = null;
   function show(st, line) { FACE.setAttribute('data-state', st); SAY.textContent = line ? LINES[line][L()] : ''; }
   function face(st, line) { faceNow = [st, line]; clearTimeout(faceTimer); show(st, line); }
-  function flash(st, line, ms) { clearTimeout(faceTimer); show(st, line); faceTimer = setTimeout(function () { show(faceNow[0], faceNow[1]); }, ms); }
+  function flash(st, line, ms) {
+    clearTimeout(faceTimer); show(st, line); faceTimer = setTimeout(function () { show(faceNow[0], faceNow[1]); }, ms);
+    if (PF && !PAL.classList.contains('away')) { var was = PF.getAttribute('data-state'); PF.setAttribute('data-state', st); PS.textContent = LINES[line][L()]; setTimeout(function () { PF.setAttribute('data-state', was); PS.textContent = ''; }, ms); }
+  }
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PAL = document.getElementById('pal'), PF = document.getElementById('pal-face'), PS = document.getElementById('pal-say');
   if (!still) {
-    var look = FACE.querySelector('.look');
     document.addEventListener('pointermove', function (e) {
-      var r = FACE.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      var dx = e.clientX - cx, dy = e.clientY - cy, d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 300);
-      look.style.transform = 'translate(' + (dx / d * 12 * k).toFixed(1) + 'px,' + (dy / d * 9 * k).toFixed(1) + 'px)';
+      [FACE, PF].forEach(function (f) {
+        var r = f.getBoundingClientRect(); if (!r.width) return;
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 300);
+        f.querySelector('.look').style.transform = 'translate(' + (dx / d * 12 * k).toFixed(1) + 'px,' + (dy / d * 9 * k).toFixed(1) + 'px)';
+      });
     }, { passive: true });
   }
+
+  // a smaller one keeps you company once the board scrolls away
+  var PALS = { video: { en: 'Real tmux. No mock-ups.', ja: '本物の tmux だよ' }, onekey: { en: 'Just Alt+a.', ja: 'Alt+a だけ覚えてね' },
+    why: { en: 'Eight agents, every day.', ja: '毎日8体で使ってる' }, install: { en: 'Two lines. Go!', ja: '2行でいけるよ' },
+    sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '掲示板に戻る？' } };
+  var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
+  function palSay(key, ms) {
+    clearTimeout(palTimer); PS.textContent = key ? PALS[key][L()] : '';
+    if (key && ms) palTimer = setTimeout(function () { PS.textContent = ''; }, ms);
+  }
+  function wake() {
+    if (asleep) { asleep = false; PF.setAttribute('data-state', palState); palSay('', 0); }
+    clearTimeout(napTimer);
+    napTimer = setTimeout(function () { asleep = true; PF.setAttribute('data-state', 'sleep'); palSay('sleepy', 0); }, 20000);
+  }
+  ['pointermove', 'scroll', 'keydown', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, wake, { passive: true }); });
+  PAL.hidden = false; PAL.classList.add('away');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { PAL.classList.toggle('away', e.intersectionRatio > .35); });
+    }, { threshold: [0, .35, .7] }).observe(document.getElementById('board'));
+    var seen = {};
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var p = e.target.getAttribute('data-pal').split(':');
+        palState = p[0]; if (!asleep) PF.setAttribute('data-state', palState);
+        if (!seen[p[1]]) { seen[p[1]] = 1; palSay(p[1], 2800); }
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    document.querySelectorAll('[data-pal]').forEach(function (el) { io.observe(el); });
+  }
+  PAL.addEventListener('click', function () {
+    document.getElementById('board').scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
+  });
+  PAL.addEventListener('mouseenter', function () { if (!PS.textContent) palSay('hi', 1800); });
+  wake();
 
   // live call board: press "a" (or the button) to answer the agent being called
   var Q = [
