@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Security
+
+- Alt+n could run commands hidden in a directory name: a name containing a single quote broke out of the quoted path when you pressed Alt+n there. The path is now quoted by tmux (`#{q:pane_current_path}`), with a regression test.
+- The wait log (`waits.tsv`, `done.tsv`) holds window names, prompts and recaps and was readable by other users on the machine. Files are now 0600 in a 0700 directory; existing files are tightened on the next write.
+- `setup.sh` shell-quotes the hook path it writes.
+
+### Added
+
+- `scripts/doctor.sh` (or `/junban:doctor` in Claude Code) checks tmux, the plugin and each agent's hooks, and prints a report you can paste into a bug report. It leaves out window names and prompts.
+- Issue forms for bugs and ideas; questions go to Discussions.
+
+### Changed
+
 - Gemini CLI: the recap for a permission prompt names the command ("Shell: touch build/out/a.txt") instead of Gemini's generic "Tool Confirm Shell Command requires execution".
 
 ## 0.3.0 — 2026-10-16

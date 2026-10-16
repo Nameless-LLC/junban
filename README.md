@@ -85,7 +85,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 121 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 124 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
