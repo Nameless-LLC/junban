@@ -1,0 +1,37 @@
+name: Bug report
+description: Something in junban does not work as described
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead. A screenshot of the status line helps.
+      placeholder: |
+        I started Codex in a new window and asked it to run a migration.
+        Expected ✋ when it asked for approval; the badge stayed ●.
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: junban doctor
+      description: |
+        Run `~/.tmux/plugins/junban/scripts/doctor.sh` inside tmux (or `/junban:doctor` in Claude Code) and paste the whole output.
+        It holds versions, settings and badge states only, no window names or prompts.
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      multiple: true
+      options: [Claude Code, Codex CLI, Gemini CLI, Other (state.sh from my own hooks)]
+    validations:
+      required: true
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Terminal app, tmux theme or other plugins, how often it happens.

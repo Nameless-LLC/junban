@@ -350,6 +350,21 @@ has "setup: Codex timeouts in s"    "$cx" '"timeout": 5'
 bash "$S/setup.sh" gemini >/dev/null
 has "setup: Gemini timeouts in ms"  "$(cat "$HOME/.gemini/settings.json")" '"timeout": 5000'
 
+echo "doctor"
+tmux rename-window -t u:8 "acme-secret-client"
+doc=$(bash "$S/doctor.sh")
+has "doctor: plugin loaded"         "$doc" "ok    junban.tmux loaded"
+has "doctor: badges found"          "$doc" "ok    badges in the window list"
+has "doctor: a verdict"             "$doc" "result: "
+hasnt "doctor: no window names"     "$doc" "acme-secret-client"
+tmux set -g @junban-notify-cmd 'curl -d @- ntfy.sh/my-private-topic'
+hasnt "doctor: hides secret options" "$(bash "$S/doctor.sh")" "my-private-topic"
+tmux set -gu @junban-notify-cmd
+tmux set -gu @junban-dir
+has "doctor: says when not loaded"  "$(bash "$S/doctor.sh")" "FAIL  junban.tmux is not loaded"
+tmux set -g @junban-dir "$ROOT"
+has "help points at the doctor"     "$(bash "$S/help.sh" </dev/null | cat)" "doctor.sh"
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t
