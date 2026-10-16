@@ -81,7 +81,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 113 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 114 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -133,7 +133,7 @@ Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`
 |---|---|---|
 | Claude Code | the plugin (two lines above) | ✋ ✓ ●, one-line recap, names; badges heal themselves after Esc |
 | Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge |
-| Gemini CLI | `scripts/setup.sh gemini` | ✓ ●, recap, names; ✋ for permission follows the documented hook but is not yet tested on a live key |
+| Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recap names the command it wants to run, names |
 
 ```sh
 ~/.tmux/plugins/junban/scripts/setup.sh codex    # writes ~/.codex/hooks.json

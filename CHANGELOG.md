@@ -1,8 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Gemini CLI: the recap for a permission prompt names the command ("Shell: touch build/out/a.txt") instead of Gemini's generic "Tool Confirm Shell Command requires execution".
+
 ## 0.3.0 — 2026-10-16
 
-- **Codex CLI and Gemini CLI.** `scripts/setup.sh codex` or `scripts/setup.sh gemini` writes the hooks (keeping yours, with a `.bak`; `--print` to preview). Codex gets ✋ ✓ ●, a recap that names the command it wants to run, and Esc clears the badge; trust the hooks once with `/hooks`. Gemini gets ✓ ● and recap; its permission ✋ follows the documented hook but is not yet tested on a live key. `set -g @junban-agent-cmd codex` makes Alt+n start Codex.
+- **Codex CLI and Gemini CLI.** `scripts/setup.sh codex` or `scripts/setup.sh gemini` writes the hooks (keeping yours, with a `.bak`; `--print` to preview). Codex gets ✋ ✓ ●, a recap that names the command it wants to run, and Esc clears the badge; trust the hooks once with `/hooks`. Gemini gets ✋ ✓ ● and recap. `set -g @junban-agent-cmd codex` makes Alt+n start Codex.
 - **Weekly report.** Alt+/ shows a bar per day, this week against last (median reply and total), your best day, and a streak of days with a median reply under `@junban-goal` (default 5 minutes). The guide line compares with the previous seven days.
 - **Mascot, on by default.** The call board's eyes on the status line: `[▮ ▮]!` someone is waiting, `[◠ ◠]` one finished, `[▮▮ ]` agents running, `[▬ ▬]z` nothing to do. It also comments on your week in the report. `set -g @junban-mascot off` hides it.
 - Fixed: the stub model in the tests hung on macOS runners; CI now has a time limit.
