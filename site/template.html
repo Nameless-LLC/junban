@@ -216,8 +216,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
       <div>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、<br>誰の番？<em>あなたです。</em></h1>
-        <p class="lede" lang="en">You started six Claude Code sessions. One has waited twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
-        <p class="lede" lang="ja">Claude Code を6つ並べたら、1つが20分前から <code>psql</code> の許可を待っていました。<b>junban</b> は全エージェントの「順番」を tmux のタブに出し、次に押すキーを1つだけ教えます。</p>
+        <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
+        <p class="lede" lang="ja">AI エージェントを並べて走らせると、どこかで1つが20分前から <code>psql</code> の許可を待っています。<b>junban</b> は全エージェントの「順番」を tmux のタブに出し、次に押すキーを1つだけ教えます。</p>
         <div class="cmd">
           <code id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</code>
           <button class="copy" type="button" id="copy-tpm" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
@@ -288,8 +288,8 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
 
     <section data-pal="run:why">
       <p class="eyebrow">Why this one</p>
-      <h2 lang="en">Built eight agents deep, every day.</h2>
-      <h2 lang="ja">毎日8体を並べて作り込んだ。</h2>
+      <h2 lang="en">The more agents, the more it pays off.</h2>
+      <h2 lang="ja">エージェントが増えるほど、効いてくる。</h2>
       <div class="why-list">
         <div class="why-row">
           <h3 lang="en">Badges heal themselves</h3><h3 lang="ja">「作業中」のまま止まらない</h3>
@@ -431,7 +431,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
 
   // a smaller one keeps you company once the board scrolls away
   var PALS = { video: { en: 'Real tmux. No mock-ups.', ja: '本物の tmux だよ' }, onekey: { en: 'Just Alt+a.', ja: 'Alt+a だけ覚えてね' },
-    why: { en: 'Eight agents, every day.', ja: '毎日8体で使ってる' }, install: { en: 'Two lines. Go!', ja: '2行でいけるよ' },
+    why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'Two lines. Go!', ja: '2行でいけるよ' },
     sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '掲示板に戻る？' } };
   var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
   function palSay(key, ms) {

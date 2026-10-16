@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Social card source. Render at 1200×630 → docs/social/og.png (see tools/README or the commit that added this). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@900&display=swap">
+<style>
+  :root { --ink: #f3f1ec; --text: #1d1f24; --muted: #5d6068; --line: #d3cfc6; --wait: #c8414f; --board: #17191d; --lit: #ff6b5e; --board-text: #f1e9e2; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--ink); color: var(--text); }
+  .card { box-sizing: border-box; width: 1200px; height: 630px; padding: 64px 72px; display: grid; grid-template-columns: 1fr 400px; gap: 48px; align-items: center; }
+  .mark { font: 400 22px/1 "DotGothic16", monospace; color: var(--muted); letter-spacing: .04em; }
+  .mark b { font: 900 26px/1 "Zen Kaku Gothic New", sans-serif; color: var(--text); letter-spacing: -.01em; margin-right: 10px; }
+  h1 { font: 900 84px/1.02 "Zen Kaku Gothic New", sans-serif; letter-spacing: -.035em; margin: 34px 0 26px; }
+  h1 em { font-style: normal; color: var(--wait); }
+  p { font: 400 24px/1.45 "IBM Plex Sans", sans-serif; color: var(--muted); margin: 0; max-width: 30em; }
+  .tabs { margin-top: 38px; display: inline-flex; gap: 18px; background: var(--board); color: #a59b95; border-radius: 10px; padding: 12px 18px; font: 400 18px/1 "JetBrains Mono", monospace; }
+  .tabs .w { color: var(--lit); } .tabs .d { color: #7cc483; } .tabs .r { color: #e2b350; }
+  .buddy { position: relative; display: grid; justify-items: center; }
+  .say { font: 400 30px/1 "DotGothic16", monospace; color: var(--board-text); background: var(--board); border-radius: 14px; padding: 16px 22px; position: relative; margin-bottom: 22px; }
+  .say::after { content: ""; position: absolute; left: 50%; bottom: -10px; margin-left: -10px; border: 10px solid transparent; border-bottom: 0; border-top-color: var(--board); }
+  svg { width: 380px; height: auto; filter: drop-shadow(0 24px 40px rgba(0,0,0,.28)); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div>
+    <div class="mark"><b>junban</b>順番</div>
+    <h1>Whose turn<br>is it? <em>Yours.</em></h1>
+    <p>A tmux cockpit for parallel AI agents. See who is waiting on you, press Alt+a.</p>
+    <div class="tabs"><span><span class="r">●</span> billing</span><span><span class="w">✋</span> fix CI</span><span><span class="d">✓</span> pricing</span><span><span class="w">✋</span> db</span></div>
+  </div>
+  <div class="buddy">
+    <div class="say">Your turn!</div>
+    <svg viewBox="0 0 200 150" aria-hidden="true">
+      <defs>
+        <pattern id="led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern>
+        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+      </defs>
+      <rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/>
+      <rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/>
+      <g fill="#ff6b5e">
+        <g filter="url(#glow)" opacity=".6"><rect x="63" y="42" width="26" height="66" rx="13"/><rect x="111" y="42" width="26" height="66" rx="13"/></g>
+        <rect x="63" y="42" width="26" height="66" rx="13"/><rect x="111" y="42" width="26" height="66" rx="13"/>
+      </g>
+      <rect x="63" y="42" width="26" height="66" rx="13" fill="url(#led)"/><rect x="111" y="42" width="26" height="66" rx="13" fill="url(#led)"/>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

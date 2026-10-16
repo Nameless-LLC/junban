@@ -11,7 +11,7 @@ A tmux cockpit for running many AI coding agents at once.
 
 </div>
 
-You started six Claude Code sessions. One has been waiting twenty minutes for you to approve a `psql` command. You only find out when you click through every window.
+Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a `psql` command. You only find out when you click through every window.
 
 **junban** (順番, Japanese for *"whose turn"*) fixes that, and tells you what to press next.
 
@@ -63,7 +63,7 @@ Terminal swallows Alt? Every action also works after the prefix: `prefix a`, `f`
 
 ## What makes it different
 
-There are [good plugins](#prior-art) that put a status icon on your tabs. junban began as one of those and kept going after we used it eight agents deep every day.
+There are [good plugins](#prior-art) that put a status icon on your tabs. junban began as one of those and kept going once we ran agents side by side all day.
 
 **It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding. A tip rotates in the corner once a minute.
 
