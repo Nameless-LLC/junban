@@ -264,6 +264,25 @@ h2 { font: 600 clamp(1.45rem, 1.15rem + 1.2vw, 2rem)/1.15 var(--f-display); lett
 .faq details[open] summary::after { transform: rotate(45deg); color: var(--wait); }
 .faq details p { margin: 0 0 20px; color: var(--muted); max-width: 44em; }
 .faq code { color: var(--text); }
+/* compare */
+.cmp-wrap { margin-top: 34px; overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; -webkit-overflow-scrolling: touch; }
+.cmp { border-collapse: collapse; width: 100%; min-width: 860px; font-size: .86rem; line-height: 1.45; }
+.cmp th, .cmp td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp tr:last-child td, .cmp tr:last-child th { border-bottom: 0; }
+.cmp thead th { font: 500 .78rem/1.35 var(--f-mono); color: var(--muted); background: var(--panel); white-space: nowrap; }
+.cmp thead th a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line-2); }
+.cmp thead th a:hover { color: var(--text); }
+.cmp thead th small { display: block; color: var(--dim); font-size: .7rem; margin-top: 3px; white-space: normal; }
+.cmp tbody th { font-weight: 500; color: var(--text); min-width: 11em; position: sticky; left: 0; background: var(--ink); z-index: 1; }
+.cmp td { color: var(--muted); }
+.cmp .jb { background: rgba(255,93,82,.05); color: var(--text); }
+.cmp thead .jb { color: var(--wait); }
+.cmp .y { color: var(--done); font-weight: 600; margin-right: 4px; }
+.cmp .n { color: var(--dim); }
+.cmp-note { margin-top: 16px; color: var(--dim); font-size: .82rem; max-width: 52rem; }
+.cmp-note a { color: var(--muted); }
+.cmp-note p { margin: 0 0 8px; }
+@media (max-width: 640px) { .cmp tbody th { min-width: 8.5em; } .cmp th, .cmp td { padding: 11px 10px; } }
 
 /* closing */
 .end { padding-block: clamp(80px, 11vw, 136px) 0; }
@@ -467,6 +486,32 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       </div>
     </section>
 
+    <section id="compare" data-pal="run:compare">
+      <p class="eyebrow"><span lang="en">Compared</span><span lang="ja">比較</span></p>
+      <h2 lang="en">Others do parts of this. Here is how they line up.</h2>
+      <h2 lang="ja">似た道具は<wbr>ほかにもある。<wbr>並べてみると。</h2>
+      <div class="prose" lang="en"><p>Status badges on tabs are common now, and several of these tools go further than junban in their own direction. The table only lists what each project documents.</p></div>
+      <div class="prose" lang="ja"><p>タブに状態を出す道具は、いまでは珍しくありません。ここに並べたものの中には、junban とは別の方向で、もっと多くをこなすものもあります。表には、各プロジェクトが公式に説明している内容だけを載せました。</p></div>
+      <div class="cmp-wrap" role="region" aria-label="Comparison table" tabindex="0">
+        <table class="cmp">
+          <thead><tr><th scope="col"></th><th scope="col" class="jb">junban<small><span lang="en">tmux plugin · bash</span><span lang="ja">tmux プラグイン・bash</span></small></th><th scope="col"><a href="https://github.com/gs/tmux-agent-status">gs/tmux-agent-status</a><small><span lang="en">tmux plugin</span><span lang="ja">tmux プラグイン</span></small></th><th scope="col"><a href="https://github.com/samleeney/tmux-agent-status">samleeney/tmux-agent-status</a><small><span lang="en">tmux plugin + daemon</span><span lang="ja">tmux プラグイン＋常駐</span></small></th><th scope="col"><a href="https://github.com/Open330/muxa">muxa</a><small><span lang="en">Rust daemon + TUI, beta</span><span lang="ja">Rust の常駐＋TUI・β版</span></small></th><th scope="col"><a href="https://github.com/raine/workmux">workmux</a><small><span lang="en">worktree CLI for tmux</span><span lang="ja">tmux 用 worktree CLI</span></small></th><th scope="col"><a href="https://code.claude.com/docs/en/agent-view">Claude Code agent view</a><small><span lang="en">built in, preview</span><span lang="ja">標準機能・プレビュー</span></small></th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span lang="en">Watches agents you already run</span><span lang="ja">いま動かしている<wbr>エージェントを見る</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks + screen</span><span lang="ja">フック＋画面</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span lang="en">background sessions only</span><span lang="ja">バックグラウンドのセッションだけ</span></td></tr>
+            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待たせた所へ飛ぶ</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">任意のキー（既定は無し）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">newest first</span><span lang="ja">新しい順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
+            <tr><th scope="row"><span lang="en">Wait-time meter and day timeline</span><span lang="ja">待たせた時間の<wbr>計測と1日の<wbr>タイムライン</span></th><td class="jb"><span class="y">✓</span><span lang="en">local file only</span><span lang="ja">手元のファイルだけ</span></td><td class="n">—</td><td class="n">—</td><td><span class="y">✓</span><span lang="en"><code>stats</code>, <code>timeline</code></span><span lang="ja"><code>stats</code>・<code>timeline</code></span></td><td><span lang="en">time in current state</span><span lang="ja">今の状態の経過時間</span></td><td class="n">—</td></tr>
+            <tr><th scope="row"><span lang="en">Two agents sharing one git checkout</span><span lang="ja">同じ Git 作業場所の<wbr>相乗り</span></th><td class="jb"><span class="y">✓</span><span lang="en">⚠ warning, Alt+n opens a worktree</span><span lang="ja">⚠ で警告・Alt+n で worktree に起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">最初から作業ごとに worktree</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドは自動で隔離</span></td></tr>
+            <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">ステータス行が<wbr>次のキーを示す</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+            <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>窓に名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">local model; “ok” never renames</span><span lang="ja">手元のモデル・相槌では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude’s own session title</span><span lang="ja">Claude 自身のタイトル</span></td></tr>
+            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini＋コマンドで任意</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini</span><span lang="ja">Claude・Codex・Gemini</span></td><td><span lang="en">Claude, Codex, Gemini and 5 more</span><span lang="ja">Claude・Codex・Gemini ほか5種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cmp-note">
+        <p lang="en">— means we did not find it in that project's README or docs on 18 Oct 2026, not that it can never do it. Where they lead: muxa adds a mailbox, an MCP server and a Mac app; workmux merges and cleans up worktrees; samleeney/tmux-agent-status has a sidebar and park modes. Launchers such as claude-squad, agent-deck and Conductor start each agent for you in its own worktree; junban watches the ones you already started. Spotted a mistake? <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">Tell us</a>.</p>
+        <p lang="ja">「—」は、2026年10月18日時点で、そのプロジェクトの README や公式ドキュメントに記載が見つからなかったという意味です。その機能が無いとは限りません。ほかのツールが先を行く点もあります。muxa にはメールボックス・MCP サーバー・Mac アプリがあり、workmux は worktree のマージと片付けまで行い、samleeney/tmux-agent-status にはサイドバーと保留の切り替えがあります。claude-squad・agent-deck・Conductor のような起動型のツールは、エージェントを1体ずつ専用の worktree で起動します。junban は、あなたがすでに起動したエージェントを見守ります。誤りに気づいたら<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
+      </div>
+    </section>
+
     <section id="install" data-pal="done:install">
       <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
       <h2 lang="en">One line. Then press Alt+a.</h2>
@@ -514,8 +559,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="faq">
         <details>
           <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 用のステータス表示と何が違う？</span></summary>
-          <p lang="en">Those put an icon on each tab, and they're good; the README links them. junban also ranks who has waited longest so Alt+a goes there, turns the status line into the next step, and repairs stuck badges from the agent's own session records instead of trusting hooks alone.</p>
-          <p lang="ja">タブにアイコンを出すものはほかにもあり、README でも紹介しています。junban はさらに、待たせた順に並べて Alt+a で飛ばし、ステータスバーで次の一手を示し、フックの取りこぼしで固まったバッジをエージェント自身のセッション記録から直します。</p>
+          <p lang="en">Many put an icon on each tab, and a few also jump to the longest wait or measure waiting; see <a href="#compare">the comparison</a>. junban puts those in one plain tmux plugin with no daemon, and adds what we did not find elsewhere: a status line that names the next key, a warning when two agents share a git tree, parked agents sinking out of the way, and window names from a local model that ignore "ok".</p>
+          <p lang="ja">タブにアイコンを出すものは多く、待たせた順に飛ぶものや待ち時間を測るものも一部にあります（<a href="#compare">比較表</a>）。junban はそれらを、常駐プロセスのない素の tmux プラグイン1つにまとめました。さらに、ほかでは見つからなかった機能として、次のキーを示すステータス行、2体が同じ Git 作業場所を使うときの警告、放置された窓を下に沈める表示、相槌では変わらない手元モデルによる窓名があります。</p>
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
@@ -631,6 +676,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   var PALS = { video: { en: 'Real tmux. No mock-ups.', ja: '本物の tmux だよ' }, onekey: { en: 'Just Alt+a.', ja: 'Alt+a だけ覚えてね' },
     why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'One line. Go!', ja: '1行でいけるよ' },
     problem: { en: 'Which one is waiting?', ja: 'どれが待ってる？' }, faq: { en: 'Ask away.', ja: 'なんでも聞いてね' },
+    compare: { en: 'Pick what fits.', ja: '合うものを選んでね' },
     sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '掲示板に戻る？' } };
   var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
   function palSay(key, ms) {
