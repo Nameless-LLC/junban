@@ -18,7 +18,10 @@ if [ ! -t 1 ] || ! exec </dev/tty 2>/dev/null; then
   exit 0
 fi
 n=${#lines[@]}
-rows=$(tput lines 2>/dev/null || echo 24)
+# stty asks the terminal itself; tput can fall back to 24 when terminfo lacks
+# tmux's TERM (macOS has no tmux-256color).
+rows=$(stty size 2>/dev/null | cut -d' ' -f1)
+case "$rows" in '' | *[!0-9]* | 0) rows=$(tput lines 2>/dev/null || echo 24) ;; esac
 view=$(( rows > 2 ? rows - 1 : 1 ))   # the last row says how to leave
 top=0
 max=$(( n > view ? n - view : 0 ))

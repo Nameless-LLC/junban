@@ -249,7 +249,8 @@ st "$pt" clear
 eq  "…once"                         "$(grep -c clear "$slog")" "1"
 # Yesterday, two windows: A works 10:00-11:00 then waits 5 h (counts 1 h),
 # B works 10:30-11:30 under another name it was renamed from.
-n2=$(date +%s); mid=$(( n2 - (10#$(date +%H) * 3600 + 10#$(date +%M) * 60 + 10#$(date +%S)) - 86400 ))
+# Yesterday's midnight from one clock reading (separate date calls can straddle a second).
+n2=$(date +%s); mid=$(python3 -c 'import datetime as d; print(int((d.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - d.timedelta(days=1)).timestamp()))')
 {
   printf '%s\trunning\t9:@1\tu:alpha\n'  $((mid + 36000))
   printf '%s\tdone\t9:@1\tu:alpha\n'     $((mid + 39600))
