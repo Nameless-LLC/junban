@@ -62,3 +62,55 @@ fmt_dur() {
   else printf '%d%s%02d%s' $((s / 3600)) "$T_H" $((s % 3600 / 60)) "$T_M"
   fi
 }
+
+# client_env PID NAME — one variable from a tmux client's environment (Linux /proc only).
+client_env() {
+  local f="${JUNBAN_PROC:-/proc}/$1/environ"
+  [ -r "$f" ] || return 1
+  tr '\0' '\n' < "$f" | sed -n "s/^$2=//p" | head -n1
+}
+
+# client_fmt TTY FORMAT — FORMAT for that client, or for the client running us.
+client_fmt() {
+  if [ -n "$1" ]; then
+    tmux list-clients -F "#{client_tty}	$2" 2>/dev/null | awk -F'\t' -v t="$1" '$1 == t { print $2; exit }'
+  else
+    tmux display -p "$2" 2>/dev/null
+  fi
+}
+
+# go_to SESSION:WINDOW — show that window to the client that asked.
+# VS Code users often keep one window per project, each terminal attached to its
+# own session. Swapping what this terminal shows would put project B's agent under
+# project A's tab, so when another VS Code window already shows the target session,
+# raise that window instead (via VS Code's remote `code` CLI and this terminal's IPC
+# socket). Anything else — plain terminals, Web terminals, no window for the target —
+# switches in place as before. @junban-vscode-raise off restores the old behaviour.
+go_to() {
+  local target=$1 sess=${1%%:*} c here cpid ipc cli folder p
+  # JUNBAN_CLIENT (a client tty) lets tests act as a given client; display -c alone
+  # would still expand formats against the most recent session.
+  c=${JUNBAN_CLIENT:-}
+  here=$(client_fmt "$c" '#{session_name}')
+  if [ "$sess" != "$here" ] && [ "$(opt @junban-vscode-raise on)" = on ]; then
+    cpid=$(client_fmt "$c" '#{client_pid}')
+    if [ -n "$cpid" ] && [ "$(client_env "$cpid" TERM_PROGRAM)" = vscode ]; then
+      ipc=$(client_env "$cpid" VSCODE_IPC_HOOK_CLI)
+      cli=$(client_env "$cpid" PATH | tr ':' '\n' | grep '/remote-cli$' | head -n1)
+      folder=""
+      for p in $(tmux list-clients -t "=$sess" -F '#{client_pid}' 2>/dev/null); do
+        [ "$(client_env "$p" TERM_PROGRAM)" = vscode ] || continue
+        # PWD is the folder that window opened, symlinks kept. VS Code matches windows
+        # by that exact path: the resolved path would open a second window.
+        folder=$(client_env "$p" PWD) && [ -n "$folder" ] && break
+      done
+      if [ -n "$ipc" ] && [ -x "$cli/code" ] && [ -n "$folder" ]; then
+        tmux select-window -t "$target"
+        if [ -n "${JUNBAN_DRY_RUN:-}" ]; then echo "raise $folder"; return 0; fi
+        VSCODE_IPC_HOOK_CLI=$ipc "$cli/code" "$folder" >/dev/null 2>&1 && return 0
+      fi
+    fi
+  fi
+  if [ -n "${JUNBAN_DRY_RUN:-}" ]; then echo "switch $target"; return 0; fi
+  tmux switch-client ${c:+-c "$c"} -t "$target"
+}

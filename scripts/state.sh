@@ -34,8 +34,14 @@ case "$st" in
     for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap; do t set -wu -t "$pane" "$o"; done
     exit 0 ;;
   done)
-    # You are looking at it right now: nothing to catch up on.
-    [ "$(t display -p -t "$pane" '#{&&:#{window_active},#{session_attached}}')" = 1 ] && st=idle ;;
+    # You are looking at it right now: nothing to catch up on. Attached is not enough:
+    # with one session per project (one VS Code window each) every session has a client,
+    # most of them in windows behind the one you use. tmux knows which terminal has focus
+    # (focus-events); terminals that never report focus stay "focused", as before.
+    if [ "$(t display -p -t "$pane" '#{window_active}')" = 1 ]; then
+      sess=$(t display -p -t "$pane" '#{session_name}')
+      t list-clients -t "=$sess" -F '#{client_flags}' 2>/dev/null | grep -q focused && st=idle
+    fi ;;
   running)
     # PostToolUse fires constantly; only the first transition matters.
     [ "$cur" = running ] && { [ -z "$input" ] || [ "$input" = "{}" ]; } && exit 0 ;;

@@ -402,6 +402,50 @@ tmux run -t u:9 "$(tmux list-keys -T root M-n | sed 's/.*run-shell -b "//; s/"$/
 eq  "Alt+n: a quote in a path runs nothing" "$([ -e "$WORK/PWNED" ] && echo yes || echo no)" "no"
 tmux set -gu @junban-agent-cmd
 
+echo "VS Code windows"
+# Real clients under script(1) so /proc/<client>/environ is genuine. Linux only.
+if [ -r /proc/self/environ ] && command -v script >/dev/null 2>&1; then
+  mkdir -p "$WORK/rc/remote-cli" "$WORK/a" "$WORK/real/proj" "$WORK/links"
+  ln -s "$WORK/real/proj" "$WORK/links/proj"
+  # shellcheck disable=SC2016  # $VSCODE_IPC_HOOK_CLI expands when the fake code runs
+  printf '#!/bin/sh\necho "$VSCODE_IPC_HOOK_CLI $*" > "%s/raised"\n' "$WORK" > "$WORK/rc/remote-cli/code"
+  chmod +x "$WORK/rc/remote-cli/code"
+  tmux new -d -s proj -n agent -c "$WORK/real/proj"
+  tmux new -d -s bare -n other
+  tmux new -d -s vsa -n mine -c "$WORK/a"
+  # attach_as SESSION PWD [TERM_PROGRAM] [IPC]
+  attach_as() {
+    (cd "$2" && sleep 60 | env TERM=xterm TERM_PROGRAM="${3:-}" VSCODE_IPC_HOOK_CLI="${4:-}" \
+      PATH="$WORK/rc/remote-cli:$PATH" PWD="$2" script -qfec "tmux attach -t =$1" /dev/null) >/dev/null 2>&1 &
+  }
+  tty_of() { for _ in 1 2 3 4 5 6 7 8 9 10; do t=$(tmux list-clients -t "=$1" -F '#{client_tty}' | head -n1); [ -n "$t" ] && { echo "$t"; return; }; sleep 0.3; done; }
+  attach_as vsa "$WORK/a" vscode ipcA;        ta=$(tty_of vsa)
+  attach_as proj "$WORK/links/proj" vscode ipcB; tty_of proj >/dev/null
+  sess_of() { tmux list-clients -F '#{client_tty} #S' | awk -v t="$1" '$1 == t { print $2 }'; }
+  go() { JUNBAN_CLIENT=$1 bash -c ". '$S/lib.sh'; go_to $2"; }
+  go "$ta" proj:1
+  eq  "other window shows it → raise that window" "$(cat "$WORK/raised" 2>/dev/null)" "ipcA $WORK/links/proj"
+  eq  "raising leaves this terminal alone"  "$(sess_of "$ta")" "vsa"
+  rm -f "$WORK/raised"; go "$ta" bare:1
+  eq  "no window for it → switch in place"  "$(sess_of "$ta")" "bare"
+  hasnt "…without calling code"             "$(ls "$WORK")" "raised"
+  tmux switch-client -c "$ta" -t =vsa
+  tmux set -g @junban-vscode-raise off; go "$ta" proj:1; tmux set -gu @junban-vscode-raise
+  eq  "@junban-vscode-raise off → switch"   "$(sess_of "$ta")" "proj"
+  attach_as bare "$WORK/a";                    tw=$(tty_of bare)
+  tmux switch-client -c "$ta" -t =vsa; tmux switch-client -c "$tw" -t =vsa
+  go "$tw" proj:1
+  eq  "plain terminal → switch as before"   "$(sess_of "$tw")" "proj"
+  hasnt "…without calling code"             "$(ls "$WORK")" "raised"
+  # ✓ clears only for a terminal that has focus; a background window's client is no reader.
+  pv=$(tmux display -p -t vsa:1 '#{pane_id}')
+  TMUX_PANE=$pv bash "$S/state.sh" "done" </dev/null
+  eq  "done while its terminal has focus → idle" "$(get vsa:1 @junban)" "idle"
+  tmux kill-session -t =proj; tmux kill-session -t =bare; tmux kill-session -t =vsa
+else
+  echo "  (skipped: needs /proc and script(1))"
+fi
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

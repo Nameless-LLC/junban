@@ -14,4 +14,4 @@ if [ -z "$target" ]; then
   exit 0
 fi
 [ -n "${JUNBAN_DRY_RUN:-}" ] && { echo "$target"; exit 0; }
-tmux switch-client -t "$target"
+go_to "$target"
