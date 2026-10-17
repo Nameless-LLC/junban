@@ -35,10 +35,17 @@ except ValueError as e:
     sys.exit(f"junban: {path} is not plain JSON ({e}); add the hooks by hand, see README")
 
 hooks = conf.setdefault("hooks", {})
+
+
+def ours(cmd):
+    # This copy's hook, wherever it was cloned, or an older junban checkout's.
+    return hook in cmd or shlex.quote(hook) in cmd or ("junban" in cmd and "hook.sh" in cmd)
+
+
 for ev in list(hooks):  # drop junban's earlier entries, keep everyone else's
     kept = []
     for group in hooks[ev]:
-        group["hooks"] = [h for h in group.get("hooks", []) if "junban" not in h.get("command", "") or "hook.sh" not in h.get("command", "")]
+        group["hooks"] = [h for h in group.get("hooks", []) if not ours(h.get("command", ""))]
         if group["hooks"]:
             kept.append(group)
     hooks[ev] = kept

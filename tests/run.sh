@@ -490,6 +490,25 @@ else
   echo "  (skipped: needs /proc and script(1))"
 fi
 
+echo "popups"
+# page.sh in a real pane: scroll keys scroll, anything else closes.
+pg() {  # pg N KEYS... — open 1..N, send each key literally, print "top-line closed?"
+  tmux new -d -s pg -x 80 -y 12 "seq $1 | bash '$S/page.sh'; echo CLOSED; sleep 30"; sleep 0.5; shift
+  for k in "$@"; do tmux send-keys -t pg: -l "$k"; done; sleep 0.4
+  printf '%s %s' "$(tmux capture-pane -pt pg: | head -n 1)" "$(tmux capture-pane -pt pg: | grep -c CLOSED)"
+  tmux kill-session -t pg:
+}
+E=$'\033'
+eq  "long text opens at the top"      "$(pg 100)" "1 0"
+eq  "↓ scrolls"                       "$(pg 100 "${E}[B" "${E}[B")" "3 0"
+eq  "wheel scrolls three lines"       "$(pg 100 "${E}[<65;5;5M")" "4 0"
+eq  "Space pages"                     "$(pg 100 " ")" "11 0"
+eq  "q closes"                        "$(pg 100 q)" "CLOSED 1"
+eq  "Esc closes"                      "$(pg 100 "${E}")" "CLOSED 1"
+eq  "a click closes"                  "$(pg 100 "${E}[<0;5;5M")" "CLOSED 1"
+eq  "Alt+/ again closes"              "$(pg 100 "${E}/")" "CLOSED 1"
+eq  "Space closes short text"         "$(pg 3 " ")" "CLOSED 1"
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

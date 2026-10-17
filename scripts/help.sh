@@ -42,5 +42,4 @@ nav=$(opt @junban-nav-keys on)
     bash "$JUNBAN_SCRIPTS/stats.sh" 7
   # shellcheck disable=SC2059
   printf '\n  %s%s%s\n' "$dim" "$(printf "$HELP_DOCTOR" "$JUNBAN_SCRIPTS/doctor.sh")" "$r"
-  printf '  %s%s%s\n' "$dim" "$HELP_CLOSE" "$r"
-} | less -R
+} | bash "$JUNBAN_SCRIPTS/page.sh"

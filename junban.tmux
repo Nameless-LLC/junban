@@ -88,7 +88,7 @@ kt=$(opt @junban-key-timeline "")
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
 popup_scratch=(display-popup -E -w 80% -h 75% -d "#{pane_current_path}" "tmux new -A -s scratch")
 popup_help=(display-popup -E -w 80 -h 90% "$S/help.sh")
-popup_timeline=(display-popup -E -w 95% -h 60% "$S/timeline.sh | less -R")
+popup_timeline=(display-popup -E -w 95% -h 60% "$S/timeline.sh | $S/page.sh")
 # q: shell-quotes the path; a directory named a'$(cmd)' must stay a name.
 new_agent=(run -b "$S/new.sh #{q:pane_current_path}")
 
