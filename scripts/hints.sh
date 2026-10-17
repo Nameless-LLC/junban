@@ -89,7 +89,7 @@ mix() {
   local a=${1#\#} b=${bg#\#} p i out=""
   p=${2:-$(opt @junban-tint 20)}
   case "$a$b$p" in *[!0-9a-fA-F]* | '') echo "$bg"; return ;; esac
-  [ ${#a} -eq 6 ] && [ ${#b} -eq 6 ] && [ "$p" -gt 0 ] || { echo "$bg"; return; }
+  if [ ${#a} -ne 6 ] || [ ${#b} -ne 6 ] || [ "$p" -le 0 ]; then echo "$bg"; return; fi
   for i in 0 2 4; do
     out=$out$(printf '%02x' $(( 16#${b:i:2} + (16#${a:i:2} - 16#${b:i:2}) * p / 100 )))
   done

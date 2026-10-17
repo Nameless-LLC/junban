@@ -323,7 +323,7 @@ hasnt "narrow terminal drops the tip" "$(plain 100)" "💡"
 has   "narrow terminal cuts the recap with …" "$(plain 70)" "…"
 has   "banner survives a narrow terminal" "$(plain 50)" "Alt+a to jump"
 long=$(plain 70); long=${long//[✓·→…⚠]/x}; long=${long//[^ -~]/xx}
-[ ${#long} -le 70 ] && ok "cut line fits the width" || bad "cut line fits the width" "${#long} cols"
+if [ ${#long} -le 70 ]; then ok "cut line fits the width"; else bad "cut line fits the width" "${#long} cols"; fi
 has   "C locale still counts characters" "$(LC_ALL=C plain 70)" "…"
 # @junban-guide-lines 3: the banner gets row 1, the keys and tip row 2
 has   "row 1 carries the banner"      "$(plain 120 1)" "Alt+a to jump"
