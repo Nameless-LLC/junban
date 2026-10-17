@@ -503,7 +503,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       </div>
       <div class="cmp-note">
         <p lang="en">— means we did not find it in that project's README or docs on 18 Oct 2026, not that it can never do it. Where they lead: muxa adds a mailbox, an MCP server and a Mac app; workmux merges and cleans up worktrees; samleeney/tmux-agent-status has a sidebar and park modes. Launchers such as claude-squad, agent-deck and Conductor start each agent for you in its own worktree; junban watches the ones you already started. Spotted a mistake? <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">Tell us</a>.</p>
-        <p lang="ja">「—」は、2026年10月18日時点で、そのプロジェクトの README や公式ドキュメントに記載が見つからなかったという意味です。その機能が無いとは限りません。ほかのツールが先を行く点もあります。muxa にはメールボックス・MCP サーバー・Mac アプリがあり、workmux は worktree のマージと片付けまで行い、samleeney/tmux-agent-status にはサイドバーと保留の切り替えがあります。claude-squad・agent-deck・Conductor のような起動型のツールは、エージェントを1体ずつ専用の worktree で起動します。junban は、あなたがすでに起動したエージェントを見守ります。誤りに気づいたら<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
+        <p lang="ja">「—」は、2026年10月18日時点で、そのプロジェクトの README や公式ドキュメントに記載が見つからなかったという意味です。その機能が無いとは限りません。ほかのツールが先を行く点もあります。muxa にはメールボックス・MCP サーバー・Mac アプリがあり、workmux は worktree のマージと片付けまで行い、samleeney/tmux-agent-status にはサイドバーと保留の切り替えがあります。claude-squad・agent-deck・Conductor のような起動型のツールは、エージェントを1つずつ専用の worktree で起動します。junban は、あなたがすでに起動したエージェントを見守ります。誤りに気づいたら<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
       </div>
     </section>
 
@@ -555,7 +555,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 向けステータス表示と何が違う？</span></summary>
           <p lang="en">Many put an icon on each tab, and a few also jump to the longest wait or measure waiting; see <a href="#compare">the comparison</a>. junban puts those in one plain tmux plugin with no daemon, and adds what we did not find elsewhere: a status line that names the next key, a warning when two agents share a git tree, parked agents sinking out of the way, and window names from a local model that ignore "ok".</p>
-          <p lang="ja">タブにアイコンを出すものは多く、待たせた順に移動するものや待ち時間を測るものも一部にあります（<a href="#compare">比較表</a>）。junban はそれらを、常駐プロセスのない素の tmux プラグイン1つにまとめました。さらに、ほかでは見つからなかった機能として、次のキーを示すステータス行、2つのエージェントが同じ Git 作業ツリーを使うときの警告、放置されたウィンドウを下に沈める表示、短い返事では変わらない、手元のモデルによるウィンドウ名があります。</p>
+          <p lang="ja">タブにアイコンを出すものは多く、待たせた順に移動するものや待ち時間を測るものも一部にあります（<a href="#compare">比較表</a>）。junban はそれらを、常駐プロセスのない素の tmux プラグイン1つにまとめました。さらに、ほかでは見つからなかった機能として、次のキーを示すステータス行、2つのエージェントが同じ Git 作業ツリーを使うときの警告、放置されたウィンドウを一覧の下に移す表示、短い返事では変わらない、手元のモデルによるウィンドウ名があります。</p>
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
