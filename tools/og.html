@@ -3,22 +3,24 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Geist:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@900&display=swap">
 <style>
-  :root { --ink: #f3f1ec; --text: #1d1f24; --muted: #5d6068; --line: #d3cfc6; --wait: #c8414f; --board: #17191d; --lit: #ff6b5e; --board-text: #f1e9e2; }
-  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--ink); color: var(--text); }
+  :root { --ink: #0a0b0d; --text: #f4f3ef; --muted: #8d919a; --line: rgba(255,255,255,.13); --wait: #ff5d52; --board: #1d2027; --lit: #ff6b5e; --board-text: #f1e9e2; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; color: var(--text); background: radial-gradient(900px 480px at 80% 0%, rgba(255,93,82,.16), transparent 62%), var(--ink); }
+  body::before { content: ""; position: fixed; inset: 0; background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1.3px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(ellipse 70% 70% at 75% 0%, #000, transparent 75%); }
+  .card { position: relative; }
   .card { box-sizing: border-box; width: 1200px; height: 630px; padding: 64px 72px; display: grid; grid-template-columns: 1fr 400px; gap: 48px; align-items: center; }
   .mark { font: 400 22px/1 "DotGothic16", monospace; color: var(--muted); letter-spacing: .04em; }
-  .mark b { font: 900 26px/1 "Zen Kaku Gothic New", sans-serif; color: var(--text); letter-spacing: -.01em; margin-right: 10px; }
-  h1 { font: 900 84px/1.02 "Zen Kaku Gothic New", sans-serif; letter-spacing: -.035em; margin: 34px 0 26px; }
-  h1 em { font-style: normal; color: var(--wait); }
-  p { font: 400 24px/1.45 "IBM Plex Sans", sans-serif; color: var(--muted); margin: 0; max-width: 30em; }
-  .tabs { margin-top: 38px; display: inline-flex; gap: 18px; background: var(--board); color: #a59b95; border-radius: 10px; padding: 12px 18px; font: 400 18px/1 "JetBrains Mono", monospace; }
+  .mark b { font: 600 26px/1 "Geist", sans-serif; color: var(--text); letter-spacing: -.01em; margin-right: 10px; }
+  h1 { font: 600 86px/1 "Geist", sans-serif; letter-spacing: -.045em; background: linear-gradient(180deg, #fff 20%, #c4c6cc); -webkit-background-clip: text; color: transparent; margin: 34px 0 26px; }
+  h1 em { font-style: normal; -webkit-text-fill-color: var(--wait); text-shadow: 0 0 40px rgba(255,93,82,.45); }
+  p { font: 400 24px/1.45 "Geist", sans-serif; color: var(--muted); margin: 0; max-width: 30em; }
+  .tabs { margin-top: 38px; display: inline-flex; gap: 18px; background: #121419; border: 1px solid var(--line); color: #a59b95; border-radius: 10px; padding: 12px 18px; font: 400 18px/1 "JetBrains Mono", monospace; }
   .tabs .w { color: var(--lit); } .tabs .d { color: #7cc483; } .tabs .r { color: #e2b350; }
   .buddy { position: relative; display: grid; justify-items: center; }
-  .say { font: 400 30px/1 "DotGothic16", monospace; color: var(--board-text); background: var(--board); border-radius: 14px; padding: 16px 22px; position: relative; margin-bottom: 22px; }
+  .say { font: 400 30px/1 "DotGothic16", monospace; color: var(--board-text); background: var(--board); border: 1px solid var(--line); border-radius: 14px; padding: 16px 22px; position: relative; margin-bottom: 22px; }
   .say::after { content: ""; position: absolute; left: 50%; bottom: -10px; margin-left: -10px; border: 10px solid transparent; border-bottom: 0; border-top-color: var(--board); }
-  svg { width: 380px; height: auto; filter: drop-shadow(0 24px 40px rgba(0,0,0,.28)); }
+  svg { width: 380px; height: auto; filter: drop-shadow(0 24px 40px rgba(0,0,0,.7)) drop-shadow(0 0 1px rgba(255,255,255,.3)); }
 </style>
 </head>
 <body>
