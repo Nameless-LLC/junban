@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.4 — 2026-10-18
+
+### Changed
+
+- **Alt+/ and the timeline close the way you expect.** The popups no longer open in a pager: arrows, PgUp/PgDn, Space and the mouse wheel scroll, and any other key, Alt+/ again, or a click inside closes them. The last row says so.
+
+### Fixed
+
+- `setup.sh codex|gemini` recognises its own hooks by their exact path, so running it twice from a clone whose path has no "junban" in it no longer adds them twice.
+- A timeline test could be off by a second.
+
 ## 0.3.3 — 2026-10-18
 
 ### Added
