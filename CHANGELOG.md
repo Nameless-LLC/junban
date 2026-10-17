@@ -8,6 +8,7 @@
 - **Timeline.** `prefix T` draws today per window: yellow working, red waiting for you, green done and unseen, with active span, working time, waits and the most agents at once. Alt+/ shows it above the wait report. `@junban-key-timeline` sets a root key.
 - **Optional third status row** (`@junban-guide-lines 3`): the ✋/✓ banner gets row 1 to itself and the keys, meter and tip move below instead of disappearing.
 - The banner row takes a faint wash of its colour (`@junban-tint`, default 20%; `@junban-tint-waiting`, default 35%, for ✋; 0 turns it off).
+- **A manual** at [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/): every badge, key, report and option in one page, in English and Japanese.
 
 ### Fixed
 
