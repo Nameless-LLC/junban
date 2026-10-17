@@ -196,7 +196,7 @@ tmux set -w -t u:1 @junban_shared ""; for w in 1 2 3 4; do tmux set -w -t "u:$w"
 tmux set -w -t u:1 -u @junban_shared
 has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
 tmux set -g @junban-lang ja
-has "meter in Japanese"             "$(bash "$S/hints.sh")" "今日の待たせ時間 1時間"
+has "meter in Japanese"             "$(bash "$S/hints.sh")" "今日の待ち時間 1時間"
 tmux set -gu @junban-lang
 tmux set -g @junban-meter off
 hasnt "meter can be turned off"     "$(bash "$S/hints.sh")" "kept waiting"
