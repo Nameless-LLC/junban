@@ -83,6 +83,15 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 5vw, 64px); align-items: center; padding-block: clamp(28px, 6vw, 72px) 40px; }
 .hero h1 { font: 900 clamp(2.6rem, 1.6rem + 4.6vw, 5.2rem)/1.02 var(--f-display); letter-spacing: -.035em; margin: 0 0 22px; text-wrap: balance; }
 .hero h1 em { font-style: normal; color: var(--wait); }
+/* Japanese: break at phrase boundaries, never mid-word; slightly smaller, looser display type */
+:lang(ja) { line-break: strict; }
+p:lang(ja), .prose:lang(ja) { word-break: auto-phrase; text-wrap: pretty; }
+h1:lang(ja), h2:lang(ja), h3:lang(ja), .eyebrow [lang="ja"] { word-break: keep-all; overflow-wrap: anywhere; font-feature-settings: "palt"; }
+.hero h1:lang(ja) { font-size: clamp(2.3rem, 1.5rem + 3.4vw, 4.1rem); line-height: 1.14; letter-spacing: -.01em; }
+h2:lang(ja) { font-size: clamp(1.6rem, 1.2rem + 1.7vw, 2.4rem); line-height: 1.3; letter-spacing: 0; }
+.lede:lang(ja), .prose:lang(ja), .why-row p:lang(ja) { line-height: 1.85; }
+.eyebrow [lang="ja"] { letter-spacing: .1em; }
+.nw { white-space: nowrap; }
 .lede { font-size: 1.12em; color: var(--muted); max-width: 34em; margin: 0 0 28px; }
 .lede b { color: var(--text); font-weight: 600; }
 .cmd { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 10px 10px 16px; max-width: 34rem; }
@@ -136,7 +145,7 @@ footer .jbm { width: 30px; height: auto; }
 .who .why { color: #b9aea7; font-size: .95rem; margin-top: 6px; }
 .queue { list-style: none; margin: 0; padding: 14px 0 0; border-top: 1px dashed #3b3634; display: grid; gap: 6px; font-size: .95rem; }
 .queue li { display: grid; grid-template-columns: 1.6em 1.6em minmax(0, 1fr) auto; gap: 8px; align-items: baseline; color: #a59b95; }
-.queue li span:nth-child(3) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue li span[lang] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .queue .t { font-variant-numeric: tabular-nums; color: #7c736e; }
 .st-wait { color: var(--board-lit); } .st-done { color: #7cc483; } .st-run { color: #e2b350; }
 .board-foot { margin-top: 14px; font-size: .8rem; color: #7c736e; }
@@ -175,6 +184,10 @@ h2 { font: 900 clamp(1.8rem, 1.3rem + 2.2vw, 2.9rem)/1.1 var(--f-display); lette
 /* install */
 .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
 .step p code { overflow-wrap: anywhere; }
+.step p code.line { display: block; margin-top: 6px; overflow-wrap: normal; }
+.hint code { overflow-wrap: normal; }
+@media (max-width: 480px) { .steps .step pre { font-size: .72rem; } }
+@media (max-width: 400px) { .top nav { gap: 8px; } .lang button { padding: 7px 9px; } }
 .step { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
 .step h3 { font: 700 1rem/1.3 var(--f-display); margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
 .step h3 span:first-child { font: 600 .8rem/1 var(--f-mono); color: var(--wait); }
@@ -231,15 +244,15 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
     <div class="hero">
       <div>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
-        <h1 lang="ja">いま、<br>誰の番？<em>あなたです。</em></h1>
+        <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
         <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
         <p class="lede" lang="ja">AI エージェントを並べて走らせると、どこかで1つが20分前から <code>psql</code> の許可を待っています。<b>junban</b> は全エージェントの「順番」を tmux のタブに出し、次に押すキーを1つだけ教えます。</p>
         <div class="cmd">
           <code id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</code>
           <button class="copy" type="button" id="copy-tpm" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
         </div>
-        <p class="hint" lang="en">Then in Claude Code: <code>/plugin marketplace add Nameless-LLC/junban</code> · MIT · tmux ≥ 3.2</p>
-        <p class="hint" lang="ja">続けて Claude Code で <code>/plugin marketplace add Nameless-LLC/junban</code> · MIT · tmux 3.2 以上</p>
+        <p class="hint" lang="en">Then in Claude Code: <code>/plugin marketplace add <span class="nw">Nameless-LLC/junban</span></code> <span class="nw">· MIT · tmux ≥ 3.2</span></p>
+        <p class="hint" lang="ja">続けて Claude Code で<wbr> <code>/plugin marketplace add <span class="nw">Nameless-LLC/junban</span></code> <span class="nw">· MIT · tmux 3.2 以上</span></p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="stars"></span></a>
           <a class="btn" href="#install"><span lang="en">Install in two lines</span><span lang="ja">2行で導入</span></a>
@@ -284,28 +297,29 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
     </figure>
 
     <section data-pal="idle:onekey">
-      <p class="eyebrow">The only key</p>
+      <p class="eyebrow"><span lang="en">The only key</span><span lang="ja">覚えるキーはひとつ</span></p>
       <div class="onekey">
         <div class="keys" aria-label="Alt plus a"><span class="key">Alt</span>+<span class="key a">a</span></div>
         <div>
           <h2 lang="en">You don't learn junban. It tells you.</h2>
-          <h2 lang="ja">覚えなくていい。画面が教える。</h2>
+          <h2 lang="ja">覚えなくていい。<wbr>画面が教える。</h2>
           <div class="prose" lang="en"><p>The second status line changes with the situation. When nobody needs you it lists the five keys worth knowing. When someone does, it turns into a banner pointing at Alt+a. A tip rotates in the corner once a minute.</p></div>
           <div class="prose" lang="ja"><p>ステータスバーの2行目は状況で変わります。誰も待っていなければ覚えておくと便利な5つのキーを、誰かが待っていれば Alt+a へ誘導する帯を出します。右端には1分ごとに小技が出ます。</p></div>
         </div>
       </div>
       <div class="strips">
         <p class="strip-label" lang="en">Calm</p><p class="strip-label" lang="ja">平常時</p>
-        <div class="strip"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span></div>
+        <div class="strip" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span></div>
+        <div class="strip" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> 全キー</span></div>
         <p class="strip-label" lang="en">Someone needs you</p><p class="strip-label" lang="ja">誰かが待っているとき</p>
         <div class="strip alert"><span class="banner" lang="en">✋ 2 waiting on you → Alt+a to jump</span><span class="banner" lang="ja">✋ 2窓があなたの返事待ち → Alt+a で飛ぶ</span></div>
       </div>
     </section>
 
     <section data-pal="run:why">
-      <p class="eyebrow">Why this one</p>
+      <p class="eyebrow"><span lang="en">Why this one</span><span lang="ja">選ぶ理由</span></p>
       <h2 lang="en">The more agents, the more it pays off.</h2>
-      <h2 lang="ja">エージェントが増えるほど、効いてくる。</h2>
+      <h2 lang="ja">エージェントが<wbr>増えるほど、<wbr>効いてくる。</h2>
       <div class="why-list">
         <div class="why-row">
           <h3 lang="en">Badges heal themselves</h3><h3 lang="ja">「作業中」のまま止まらない</h3>
@@ -330,7 +344,7 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
         <div class="why-row">
           <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待たせた時間を測る</h3>
           <p lang="en">The guide line shows how long agents sat waiting on you today and your median reply time. Alt+/ adds a bar per day, this week against last, your best day and a streak. It all stays in a local file.</p>
-          <p lang="ja">今日エージェントを待たせた合計と、返事までの中央値を案内行に出します。Alt+/ では日ごとの棒グラフ、先週との比較、自己ベスト、連続記録も見られます。データは手元のファイルにだけ残ります。</p>
+          <p lang="ja">今日エージェントを待たせた合計と、返事までの中央値を案内行に出します。<span class="nw">Alt+/ では</span>日ごとの棒グラフ、先週との比較、自己ベスト、連続記録も見られます。データは手元のファイルにだけ残ります。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Names that stay put</h3><h3 lang="ja">相槌で名前が変わらない</h3>
@@ -356,15 +370,15 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
     </section>
 
     <section id="install" data-pal="done:install">
-      <p class="eyebrow">Install</p>
+      <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
       <h2 lang="en">Two lines. Then press Alt+a.</h2>
-      <h2 lang="ja">2行入れて、Alt+a を押すだけ。</h2>
+      <h2 lang="ja">2行入れて、<wbr><span class="nw">Alt+a を押すだけ。</span></h2>
       <div class="steps">
         <div class="step">
           <h3><span>1</span> tmux</h3>
           <pre>set -g @plugin 'Nameless-LLC/junban'</pre>
-          <p lang="en">With TPM. No TPM? <code>curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code></p>
-          <p lang="ja">TPM の場合。TPM を使わないなら <code>curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code></p>
+          <p lang="en">With TPM. No TPM? <code class="line"><span class="nw">curl -fsSL</span> <span class="nw">https://raw.githubusercontent.com/</span><wbr><span class="nw">Nameless-LLC/junban/main/install.sh</span> <span class="nw">| bash</span></code></p>
+          <p lang="ja">TPM の場合。TPM を使わないなら<code class="line"><span class="nw">curl -fsSL</span> <span class="nw">https://raw.githubusercontent.com/</span><wbr><span class="nw">Nameless-LLC/junban/main/install.sh</span> <span class="nw">| bash</span></code></p>
         </div>
         <div class="step">
           <h3><span>2</span> <span lang="en">Your agent</span><span lang="ja">エージェント</span></h3>
@@ -484,9 +498,9 @@ footer { margin-top: clamp(64px, 10vw, 120px); padding-block: 26px 40px; border-
 
   // live call board: press "a" (or the button) to answer the agent being called
   var Q = [
-    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB マイグレーション' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'migrating', ja: '移行中' } },
+    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'migrating', ja: '移行中' } },
     { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI の不安定テスト' }, why: { en: 'Asks which fix you want', ja: '直し方の質問' }, back: { en: 'running e2e ×20', ja: 'e2e を20回実行中' } },
-    { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル +41 −88' }, back: { en: 'reviewed', ja: '確認済み' } },
+    { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル変更' }, back: { en: 'reviewed', ja: '確認済み' } },
     { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュール分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'running tests', ja: 'テスト中' } },
     { n: 5, st: 'run', t: 5, name: { en: 'k8s 1.31 upgrade', ja: 'k8s 1.31 更新' }, why: { en: 'Finished: all nodes on 1.31', ja: '完了: 全ノード 1.31' }, back: { en: 'draining', ja: 'ノード退避中' } }
   ];
