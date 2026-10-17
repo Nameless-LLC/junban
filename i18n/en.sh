@@ -41,6 +41,7 @@ TIPS=(
   "Close a window with prefix & — it asks first, so no agent dies by accident"
   "Alt+1..9 jumps straight to a window"
   "Alt+Tab goes back to the previous window"
+  "Alt+[ / Alt+] step to the window on the left / right, no numbers needed"
   "The Alt+g shell survives closing the popup"
   "Alt+z zooms the current pane"
   "Drag with the mouse to copy to your local clipboard"
