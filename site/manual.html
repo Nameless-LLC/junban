@@ -231,7 +231,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja">あなたを待っているウィンドウから順に、バッジ・ウィンドウの名前・最後に頼んだ内容が並びます。文字を打つと名前や依頼内容で絞り込め、プレビューにはそのウィンドウの今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は、tmux 標準の選択画面が同じ順番で出ます。</p>
         <h3 id="new" lang="en">Alt+n and worktrees</h3><h3 lang="ja">Alt+n と worktree</h3>
         <p lang="en"><kbd>Alt+n</kbd> opens a window in the current directory and starts your agent (<code>@junban-agent-cmd</code>, default <code>claude</code>). If another agent already works in that git tree and the agent is Claude Code, the new one starts in its own worktree (<code>claude --worktree</code>), so the two never edit the same files. <code>@junban-new-worktree off</code> keeps the plain behaviour.</p>
-        <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しいウィンドウを開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2体が同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
+        <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しいウィンドウを開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2つのエージェントが同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
       </section>
 
       <section id="guide">
