@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.3 — 2026-10-18
+
+### Added
+
+- **VS Code: Alt+a / Alt+f raise the project's window.** If you keep one VS Code window per project, each terminal in its own tmux session, jumping used to put project B's agent under project A's terminal tab. junban now brings forward the VS Code window that already shows that session (through VS Code's remote `code` CLI), and leaves your terminal alone. Plain terminals, Web terminals and sessions no window shows still switch in place. `set -g @junban-vscode-raise off` keeps the old behaviour.
+- **Timeline.** `prefix T` draws today per window: yellow working, red waiting for you, green done and unseen, with active span, working time, waits and the most agents at once. Alt+/ shows it above the wait report. `@junban-key-timeline` sets a root key.
+- **Optional third status row** (`@junban-guide-lines 3`): the ✋/✓ banner gets row 1 to itself and the keys, meter and tip move below instead of disappearing.
+- The banner row takes a faint wash of its colour (`@junban-tint`, default 20%; `@junban-tint-waiting`, default 35%, for ✋; 0 turns it off).
+
+### Fixed
+
+- ✓ never showed when every session had a client attached (one session per project, windows in the background): an attached, active window counted as "you are looking at it". Now a terminal on that session must have focus, and coming back to a terminal marks its ✓ as seen.
+- A long recap pushed the ✓ banner past the edge of the terminal. The guide line now fits the width: the tip goes first, then the recap is cut with "…".
+
 ## 0.3.2 — 2026-10-16
 
 ### Security
