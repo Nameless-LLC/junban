@@ -9,7 +9,8 @@
 #
 # Leaving "waiting" or "done" ends a stretch where the agent sat on you. Each one
 # is appended to $XDG_STATE_HOME/junban/waits.tsv (start, end, kind, window) for
-# the meter on the guide line and for stats.sh.
+# the meter on the guide line and for stats.sh. Every change of state is also
+# appended to states.tsv (time, state, window key, window) for timeline.sh.
 #
 # A hook must never break the agent, so every path exits 0.
 
@@ -28,9 +29,21 @@ fi
 t() { tmux "$@" 2>/dev/null; }
 cur=$(t display -p -t "$pane" '#{@junban}')
 
+# timeline STATE — one row per change. The key (server pid + window id) stays put
+# when the window is renamed; the name is what the timeline prints.
+timeline() {
+  local log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/states.tsv" w
+  w=$(t display -p -t "$pane" '#{pid}:#{window_id}	#{session_name}:#{window_name}' | tr -d '\n')
+  [ -n "$w" ] || return 0
+  (umask 077; mkdir -p "${log%/*}" 2>/dev/null &&
+    printf '%s\t%s\t%s\n' "$(date +%s)" "$1" "$w" >> "$log" 2>/dev/null &&
+    chmod go-rwx "${log%/*}" "$log" 2>/dev/null)
+}
+
 case "$st" in
   clear)
     # Closing the agent is not answering it, so no wait is logged.
+    [ -n "$cur" ] && timeline clear
     for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap; do t set -wu -t "$pane" "$o"; done
     exit 0 ;;
   done)
@@ -62,6 +75,7 @@ if [ "$st" != "$cur" ]; then
           chmod go-rwx "${log%/*}" "$log" 2>/dev/null)
       fi ;;
   esac
+  timeline "$st"
   t set -w -t "$pane" @junban "$st"
   t set -w -t "$pane" @junban_ts "$(date +%s)"
 fi

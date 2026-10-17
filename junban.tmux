@@ -83,9 +83,12 @@ bind_root() { [ -n "$1" ] && tmux bind -n "$1" "${@:2}"; }
 
 kj=$(opt @junban-key-jump M-a); kf=$(opt @junban-key-list M-f); kn=$(opt @junban-key-new M-n)
 kg=$(opt @junban-key-scratch M-g); kh=$(opt @junban-key-help M-/)
+# No Alt key by default: Alt+t already toggles thinking in Claude Code.
+kt=$(opt @junban-key-timeline "")
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
 popup_scratch=(display-popup -E -w 80% -h 75% -d "#{pane_current_path}" "tmux new -A -s scratch")
 popup_help=(display-popup -E -w 80 -h 90% "$S/help.sh")
+popup_timeline=(display-popup -E -w 95% -h 60% "$S/timeline.sh | less -R")
 # q: shell-quotes the path; a directory named a'$(cmd)' must stay a name.
 new_agent=(run -b "$S/new.sh #{q:pane_current_path}")
 
@@ -94,6 +97,7 @@ bind_root "$kf" "${popup_list[@]}"
 bind_root "$kn" "${new_agent[@]}"
 bind_root "$kg" "${popup_scratch[@]}"
 bind_root "$kh" "${popup_help[@]}"
+bind_root "$kt" "${popup_timeline[@]}"
 
 if [ "$(opt @junban-prefix-keys on)" = on ]; then
   tmux bind a run -b "$S/jump.sh"
@@ -101,6 +105,7 @@ if [ "$(opt @junban-prefix-keys on)" = on ]; then
   tmux bind C "${new_agent[@]}"
   tmux bind g "${popup_scratch[@]}"
   tmux bind / "${popup_help[@]}"
+  tmux bind T "${popup_timeline[@]}"
 fi
 
 if [ "$(opt @junban-nav-keys on)" = on ]; then

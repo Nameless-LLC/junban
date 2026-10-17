@@ -235,6 +235,50 @@ hasnt "mascot can be turned off"     "$(bash "$S/summary.sh")" "▮"
 hasnt "…in the report too"           "$(bash "$S/stats.sh" 7)" "[◠ ◠]"
 tmux set -gu @junban-mascot
 
+echo "timeline"
+slog="$HOME/.local/state/junban/states.tsv"; rm -f "$slog"
+tmux new-window -d -t u:7 -n tl; pt=$(tmux display -p -t u:7 '#{pane_id}')
+tkey=$(tmux display -p -t u:7 '#{pid}:#{window_id}')
+st "$pt" running '{}'; st "$pt" waiting '{}'; st "$pt" waiting '{}'
+eq  "each change logged once"       "$(cut -f2 "$slog" | tr '\n' ' ')" "running waiting "
+eq  "keyed by server and window"    "$(cut -f3,4 "$slog" | tail -n 1)" "$tkey	u:tl"
+eq  "log kept to yourself"          "$(stat -c %a "$slog" 2>/dev/null || stat -f %Lp "$slog")" "600"
+st "$pt" clear
+eq  "closing the agent ends its row" "$(tail -n 1 "$slog" | cut -f2)" "clear"
+st "$pt" clear
+eq  "…once"                         "$(grep -c clear "$slog")" "1"
+# Yesterday, two windows: A works 10:00-11:00 then waits 5 h (counts 1 h),
+# B works 10:30-11:30 under another name it was renamed from.
+n2=$(date +%s); mid=$(( n2 - (10#$(date +%H) * 3600 + 10#$(date +%M) * 60 + 10#$(date +%S)) - 86400 ))
+{
+  printf '%s\trunning\t9:@1\tu:alpha\n'  $((mid + 36000))
+  printf '%s\tdone\t9:@1\tu:alpha\n'     $((mid + 39600))
+  printf '%s\tidle\t9:@1\tu:alpha\n'     $((mid + 57600))
+  printf '%s\trunning\t9:@2\tu:old-name\n' $((mid + 37800))
+  printf '%s\tidle\t9:@2\tu:beta\n'      $((mid + 41400))
+} > "$slog"
+tl=$(COLUMNS=100 bash "$S/timeline.sh" 1)
+has "a row per window"              "$tl" "u:alpha"
+has "…named as it was last"         "$tl" "u:beta"
+hasnt "…not twice"                  "$tl" "old-name"
+has "running time is the union"     "$tl" "agents working 1h30m"
+has "waits capped like the meter"   "$tl" "waited on you 1h00m"
+has "busiest moment"                "$tl" "up to 2 at once"
+has "first to last activity"        "$tl" "Active 10:00–12:00"
+has "hour marks"                    "$tl" "10"
+has "nothing that day"              "$(COLUMNS=100 bash "$S/timeline.sh" 3)" "Nothing recorded"
+# Today: a window still open runs on to now; one that is gone stops at its last change.
+if [ $((n2 - mid - 86400)) -gt 700 ]; then
+  printf '%s\trunning\t%s\tu:tl\n' $((now - 600)) "$tkey" >> "$slog"
+  printf '%s\trunning\t9:@9\tu:gone\n' $((now - 600)) >> "$slog"
+  tl=$(COLUMNS=100 bash "$S/timeline.sh")
+  has "open window runs to now"     "$tl" "agents working 10m"
+  hasnt "closed window drops out"   "$tl" "u:gone"
+fi
+has "prefix T opens it"             "$(tmux list-keys -T prefix | grep -E ' T +display-popup')" "timeline.sh"
+has "doctor counts the log"         "$(bash "$S/doctor.sh")" "states.tsv 7 rows"
+tmux kill-window -t u:7
+
 echo "recap"
 tmux new-window -d -t u:7 -n r; pr=$(tmux display -p -t u:7 '#{pane_id}')
 rc() { TMUX_PANE=$pr python3 "$S/recap.py" "$1" <<<"$2"; }

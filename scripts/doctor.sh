@@ -135,6 +135,12 @@ if [ -s "$log" ]; then
 else
   echo "  waits.tsv  empty (fills once an agent has waited on you)"
 fi
+slog="${log%/*}/states.tsv"
+if [ -s "$slog" ]; then
+  printf '  states.tsv %s rows, last %s ago\n' "$(wc -l < "$slog" | tr -d ' ')" "$(age "$(tail -n 1 "$slog" | cut -f1)")"
+else
+  echo "  states.tsv empty (fills once an agent starts working; the timeline reads it)"
+fi
 
 echo
 printf 'result: %d problem(s), %d warning(s)\n' "$n_fail" "$n_warn"

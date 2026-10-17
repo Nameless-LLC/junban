@@ -28,11 +28,16 @@ nav=$(opt @junban-nav-keys on)
   row "$(k new M-n)" "$HELP_K_NEW"
   row "$(k scratch M-g)" "$HELP_K_SHELL"
   row "$(k help M-/)" "$HELP_K_HELP"
+  [ -n "$(k timeline "")" ] && row "$(k timeline "")" "$HELP_K_TIMELINE"
   if [ "$(opt @junban-prefix-keys on)" = on ]; then
     printf '\n  %s── %s%s\n' "$dim" "$HELP_PREFIX" "$r"
     printf '   prefix a · f · C · g · /\n'
+    printf '   prefix T  %s\n' "$HELP_K_TIMELINE"
   fi
-  # The wait report lives here too: Alt+/ is the one place people already look.
+  # The wait report and today's timeline live here too: Alt+/ is the one place
+  # people already look.
+  [ -s "${XDG_STATE_HOME:-$HOME/.local/state}/junban/states.tsv" ] && command -v python3 >/dev/null 2>&1 &&
+    COLUMNS=76 bash "$JUNBAN_SCRIPTS/timeline.sh"
   [ "$(opt @junban-meter on)" = on ] && [ -s "${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv" ] &&
     bash "$JUNBAN_SCRIPTS/stats.sh" 7
   # shellcheck disable=SC2059
