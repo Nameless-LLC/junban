@@ -250,10 +250,10 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の帯と、作業の結果の1行。</p>
         <div class="tl" lang="en"><span class="bn g">✓ 1 finished → Alt+a to review</span><span class="rc">pricing page copy: 3 files changed, tests pass</span></div>
         <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
-        <p lang="en">When two agents share a git tree, the line names the windows and how to split them. A tip rotates on the right once a minute. On a narrow terminal the tip goes first, then the recap is cut, so the banner always fits.</p>
-        <p lang="ja">2体が同じ git ツリーで動いているときは、そのウィンドウの名前と分け方を出します。右端には1分ごとに小技が出ます。端末の幅が狭いときは小技から先に消え、次に1行要約を省略するので、帯そのものは必ず表示されます。</p>
-        <p lang="en"><code>@junban-guide-lines 3</code> gives the banner a row of its own, with the keys and the tip on a third row. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
-        <p lang="ja"><code>@junban-guide-lines 3</code> にすると、帯が独立した1行になり、キーと小技は3行目に回ります。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
+        <p lang="en">When two agents share a git tree, the line names the windows and how to split them. On a narrow terminal the recap is cut first, so the banner always fits.</p>
+        <p lang="ja">2つのエージェントが同じ git の作業ツリーで動いているときは、そのウィンドウの名前と分け方を出します。端末の幅が狭いときは1行要約から省略するので、帯そのものは必ず表示されます。</p>
+        <p lang="en"><code>@junban-guide-lines 3</code> gives the banner a row of its own, with the keys on a third row. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
+        <p lang="ja"><code>@junban-guide-lines 3</code> にすると、帯が独立した1行になり、キーは3行目に回ります。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
       </section>
 
       <section id="recap">
@@ -267,7 +267,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       <section id="names">
         <h2><span lang="en">Window names</span><span lang="ja">ウィンドウの名前</span></h2>
         <p lang="en">Windows are named after what you asked. Short replies ("ok", "yes", "進めて", "ครับ"), slash commands, shell escapes and pasted blocks never rename anything. A window you rename yourself (prefix <kbd>,</kbd>) is left alone for good.</p>
-        <p lang="ja">ウィンドウには、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い相槌、スラッシュコマンド、シェル実行、貼り付けた長文では変わりません。自分で名前を付けたウィンドウ（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
+        <p lang="ja">ウィンドウには、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い返事、スラッシュコマンド、シェル実行、貼り付けた長文では変わりません。自分で名前を付けたウィンドウ（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
         <pre><span class="c"># default: the first meaningful line you typed</span>
 set -g @junban-rename prompt
 <span class="c"># or let a model summarise your last few prompts</span>
