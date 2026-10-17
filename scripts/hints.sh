@@ -83,11 +83,11 @@ if [ "$(opt @junban-tips on)" = on ]; then
   right="#[align=right]#[fg=$cdim]💡 $tip "
 fi
 
-# mix COLOR — COLOR laid faintly over the line's background (@junban-tint %,
-# default 20; 0 turns the tint off). Only #rrggbb colors can be mixed.
+# mix COLOR [PCT] — COLOR laid faintly over the line's background, PCT % of it
+# (default @junban-tint, 20; 0 turns the tint off). Only #rrggbb colors mix.
 mix() {
   local a=${1#\#} b=${bg#\#} p i out=""
-  p=$(opt @junban-tint 20)
+  p=${2:-$(opt @junban-tint 20)}
   case "$a$b$p" in *[!0-9a-fA-F]* | '') echo "$bg"; return ;; esac
   [ ${#a} -eq 6 ] && [ ${#b} -eq 6 ] && [ "$p" -gt 0 ] || { echo "$bg"; return; }
   for i in 0 2 4; do
@@ -96,11 +96,11 @@ mix() {
   echo "#$out"
 }
 
-# banner COLOR TEXT — the ✋/✓ banner, then as much of the recap as fits.
+# banner COLOR TEXT [PCT] — the ✋/✓ banner, then as much of the recap as fits.
 # The whole row takes a faint wash of COLOR, so the state shows at a glance.
 banner() {
   local tint head room
-  tint=$(mix "$1")
+  tint=$(mix "$1" "${3:-}")
   head="#[fill=$tint]#[fg=$bg,bg=$1,bold] $2 #[bg=$tint,nobold] "
   # A recap can be a whole sentence; never let it stop mid-word without a mark.
   next_line=$(fit "$next_line" 96)
@@ -146,7 +146,8 @@ tip=$right
 left=""
 # shellcheck disable=SC2059
 if [ "$w" -gt 0 ]; then
-  banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")"
+  # An agent stopped on you is the one thing worth a stronger wash.
+  banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")" "$(opt @junban-tint-waiting "$([ "$(opt @junban-tint 20)" = 0 ] && echo 0 || echo 35)")"
 elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 elif [ -n "$shared" ]; then

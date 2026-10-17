@@ -104,6 +104,7 @@ set -g @junban-position top        # top | bottom
 set -g @junban-guide on            # the second status line
 set -g @junban-guide-lines 2       # 3 = the banner gets a row of its own, keys + tip below
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
+set -g @junban-tint-waiting 35     # the same for ✋ (an agent stopped on you)
 set -g @junban-tips on             # rotating tip on the right
 set -g @junban-lang ja             # en | ja | th (default: from $LANG)
 
