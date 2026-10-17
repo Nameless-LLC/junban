@@ -15,6 +15,7 @@
 load_i18n
 
 cols=${1:-0}
+row=${2:-}
 case "$cols" in '' | *[!0-9]*) cols=0 ;; esac
 # Character counts need a UTF-8 locale; tmux jobs often run under C.
 case "$(locale charmap 2>/dev/null)" in
@@ -96,6 +97,36 @@ banner() {
   left="$head#[fg=$1]$next_line"
 }
 
+# The calm line: the five keys worth remembering, today's wait, parked agents.
+keys=""
+for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
+  keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
+done
+# How long agents sat on you today. Seeing the number is most of the fix.
+if [ "$(opt @junban-meter on)" = on ]; then
+  IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
+  if [ "${mc:-0}" -gt 0 ]; then
+    # shellcheck disable=SC2059
+    keys="$keys#[fg=$cm]⏱ $(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
+    # Quicker than your own recent days is the one comparison worth making.
+    # shellcheck disable=SC2059
+    case "$mtr" in
+      -*) keys="$keys · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
+      +*) keys="$keys · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
+    esac
+    keys="$keys  "
+  fi
+fi
+# Parked agents can sit for days, so this rides along instead of taking over.
+# shellcheck disable=SC2059
+[ "$z" -gt 0 ] && keys="$keys#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
+
+# With @junban-guide-lines 3 there are two guide rows ($2 = 1 or 2):
+#   row 1: the banner and its recap across the whole width, else the keys
+#   row 2: the keys under a banner, and the tip
+tip=$right
+[ "$row" = 1 ] && right=""
+left=""
 # shellcheck disable=SC2059
 if [ "$w" -gt 0 ]; then
   banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")"
@@ -103,27 +134,12 @@ elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 elif [ -n "$shared" ]; then
   left="#[fg=$bg,bg=$ck,bold] ⚠ $(printf "$T_SHARED" "$shared") #[default]#[fg=$cm] $T_SHARED_GO"
-else
-  left=""
-  for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
-    left="$left#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
-  done
-  # How long agents sat on you today. Seeing the number is most of the fix.
-  if [ "$(opt @junban-meter on)" = on ]; then
-    IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
-    if [ "${mc:-0}" -gt 0 ]; then
-      left="$left#[fg=$cm]⏱ $(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
-      # Quicker than your own recent days is the one comparison worth making.
-      case "$mtr" in
-        -*) left="$left · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
-        +*) left="$left · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
-      esac
-      left="$left  "
-    fi
-  fi
-  # Parked agents can sit for days, so this rides along instead of taking over.
-  [ "$z" -gt 0 ] && left="$left#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
 fi
+case "$row" in
+  1) [ -z "$left" ] && left=$keys ;;
+  2) right=$tip; if [ -n "$left" ]; then left=$keys; else left=""; fi ;;
+  *) [ -z "$left" ] && left=$keys ;;
+esac
 
 # Whatever the left says matters more than a tip: drop the tip if they collide.
 [ "$cols" -gt 0 ] && [ -n "$right" ] && [ $(($(dws "$left") + 2 + $(dws "$right"))) -gt "$cols" ] && right=""

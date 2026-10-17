@@ -54,12 +54,24 @@ fi
 [ "$(tmux show -gv status-interval)" -gt 5 ] 2>/dev/null && tmux set -g status-interval 5
 
 if [ "$(opt @junban-guide on)" = on ]; then
-  tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width})"
+  # @junban-guide-lines 3 gives the banner a row of its own; the keys and tip go below.
+  if [ "$(opt @junban-guide-lines 2)" = 3 ]; then
+    tmux set -g status 3 \; \
+         set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 1)" \; \
+         set -g status-format[2] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 2)"
+  else
+    tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width})"
+    # Back from 3 rows: drop our third row, never a user's own.
+    case "$(tmux show -gv 'status-format[2]' 2>/dev/null)" in *hints.sh*) tmux set -gu 'status-format[2]' ;; esac
+  fi
 fi
 
 # Opening a window marks its ✓ as seen (through state.sh, so the wait is logged).
 seen="if -F '#{==:#{@junban},done}' \"run -b 'TMUX_PANE=#{window_id} bash $S/state.sh idle'\""
 tmux set-hook -g 'session-window-changed[42]' "$seen" \; set-hook -g 'client-session-changed[42]' "$seen"
+# Coming back to a terminal counts too: Alt+a may raise another VS Code window
+# instead of changing what this one shows.
+tmux set-hook -g 'client-focus-in[42]' "$seen"
 
 # Quality of life that agent TUIs need inside tmux.
 tmux set -g focus-events on \; set -s extended-keys on \; set -s set-clipboard on \; \

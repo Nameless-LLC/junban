@@ -281,6 +281,17 @@ has   "banner survives a narrow terminal" "$(plain 50)" "Alt+a to jump"
 long=$(plain 70); long=${long//[✓·→…⚠]/x}; long=${long//[^ -~]/xx}
 [ ${#long} -le 70 ] && ok "cut line fits the width" || bad "cut line fits the width" "${#long} cols"
 has   "C locale still counts characters" "$(LC_ALL=C plain 70)" "…"
+# @junban-guide-lines 3: the banner gets row 1, the keys and tip row 2
+has   "row 1 carries the banner"      "$(plain 120 1)" "Alt+a to jump"
+hasnt "row 1 has no tip"              "$(plain 200 1)" "💡"
+has   "row 2 keeps the keys under a banner" "$(plain 200 2)" "Alt+f"
+has   "row 2 carries the tip"         "$(plain 400 2)" "💡"
+tmux set -g @junban-guide-lines 3; bash "$ROOT/junban.tmux"
+eq  "guide-lines 3 sets three status rows" "$(tmux show -gv status)" "3"
+has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
+tmux set -gu @junban-guide-lines; bash "$ROOT/junban.tmux"
+eq  "back to two rows"              "$(tmux show -gv status)" "2"
+hasnt "our third row removed"       "$(tmux show -gv 'status-format[2]')" "hints.sh"
 tmux set -w -t u:6 @junban idle
 # notifications: the ✓ one comes from recap.py, with the line
 notes="$WORK/notes"; : > "$notes"
