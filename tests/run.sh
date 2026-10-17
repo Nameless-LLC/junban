@@ -271,6 +271,16 @@ tmux set -w -t u:7 @junban "done" \; set -w -t u:7 @junban_ts 5 \; set -w -t u:7
 has "✓ banner carries the recap"    "$(bash "$S/hints.sh")" "r: tests pass"
 tmux set -w -t u:6 @junban waiting \; set -w -t u:6 @junban_ts 9 \; set -w -t u:6 @junban_recap "which branch?"
 has "✋ beats ✓ in the banner"       "$(bash "$S/hints.sh")" "m: which branch?"
+# fitted to the client width: the tip goes first, then the recap is cut with …
+tmux set -w -t u:6 @junban_recap "はい、英語圏の人には英語で表示されます。いま日本語なのは設定のためです"
+plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
+has   "wide terminal keeps the tip"   "$(plain 200)" "💡"
+hasnt "narrow terminal drops the tip" "$(plain 100)" "💡"
+has   "narrow terminal cuts the recap with …" "$(plain 70)" "…"
+has   "banner survives a narrow terminal" "$(plain 50)" "Alt+a to jump"
+long=$(plain 70); long=${long//[✓·→…⚠]/x}; long=${long//[^ -~]/xx}
+[ ${#long} -le 70 ] && ok "cut line fits the width" || bad "cut line fits the width" "${#long} cols"
+has   "C locale still counts characters" "$(LC_ALL=C plain 70)" "…"
 tmux set -w -t u:6 @junban idle
 # notifications: the ✓ one comes from recap.py, with the line
 notes="$WORK/notes"; : > "$notes"

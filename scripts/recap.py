@@ -46,7 +46,10 @@ def first_line(text):
             continue
         line = strip_md(line)
         if len(line) >= 4 and not re.fullmatch(r"[-=|: ]+", line):
-            return line
+            # Without a model the first sentence is the summary; the rest only
+            # gets cut off on the guide line.
+            m = re.match(r"(.{4,}?[。！？]|.{4,}?[.!?](?=\s))", line)
+            return m.group(1) if m else line
     return ""
 
 

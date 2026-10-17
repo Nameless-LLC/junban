@@ -54,7 +54,7 @@ fi
 [ "$(tmux show -gv status-interval)" -gt 5 ] 2>/dev/null && tmux set -g status-interval 5
 
 if [ "$(opt @junban-guide on)" = on ]; then
-  tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh)"
+  tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width})"
 fi
 
 # Opening a window marks its ✓ as seen (through state.sh, so the wait is logged).
