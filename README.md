@@ -76,7 +76,7 @@ The full manual, with every option: [junban.namelessjp.com/manual](https://junba
 
 ## What makes it different
 
-There are [good plugins](#prior-art) that put a status icon on your tabs. junban began as one of those and kept going once we ran agents side by side all day.
+Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one plain tmux plugin with no daemon, and adds what we found nowhere else: a status line that names your next key, a warning when two agents share a git checkout, parked agents sinking out of the way, and window names from a local model that ignore "ok".
 
 **It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding. A tip rotates in the corner once a minute.
 
@@ -96,7 +96,7 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 124 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 175 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 

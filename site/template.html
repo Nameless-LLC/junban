@@ -367,7 +367,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <li><span class="t">5</span><span class="st-run">●</span><span lang="en">k8s 1.31 upgrade · draining</span><span lang="ja">k8s 1.31 更新 · ノード退避中</span><span class="t">5m</span></li>
         </ol>
         <div class="board-foot" lang="en">Longest-waiting first. Press <kbd>Alt+a</kbd> and you're there.</div>
-        <div class="board-foot" lang="ja">待たせている順。<kbd>Alt+a</kbd> を押せばその窓へ。</div>
+        <div class="board-foot" lang="ja">待たせている順。<kbd>Alt+a</kbd> を押せばそこへ移動します。</div>
         <div class="try">
           <span class="nudge" lang="en">Try it: press a</span><span class="nudge" lang="ja">押してみる: a キー</span>
           <button type="button" id="board-next"><span lang="en">Answer &amp; next →</span><span lang="ja">返事して次へ →</span></button>
@@ -378,7 +378,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <figure class="shot rv" data-pal="run:video">
       <video class="wide" lang="en" src="{{VIDEO_EN}}" poster="{{HERO_EN}}" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
-      <video class="wide" lang="ja" src="{{VIDEO_JA}}" poster="{{HERO_JA}}" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つ窓へ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
+      <video class="wide" lang="ja" src="{{VIDEO_JA}}" poster="{{HERO_JA}}" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2体が返事待ちになり、Alt+a で最も長く待つウィンドウへ、許可して次へ、最後に Alt+f で全エージェントを検索"></video>
       <video class="tall" lang="en" data-src="{{VIDEO_MOBILE_EN}}" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
       <video class="tall" lang="ja" data-src="{{VIDEO_MOBILE_JA}}" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds, no mock-ups.</figcaption>
@@ -400,7 +400,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p class="ba-label"><span lang="en">With junban</span><span lang="ja">junban あり</span></p>
           <div class="tbar" aria-label="tmux tabs with junban badges"><span class="sess">work</span><span class="cur">1 <b class="r">●</b> billing</span><span>2 <b class="w">✋</b> fix CI</span><span>3 <b class="d">✓</b> pricing</span><span>4 <b class="w">✋</b> db migration</span><span>5 <b class="r">●</b> k8s</span><span>6 docs</span></div>
           <p class="ba-note" lang="en">The badges say who is waiting. Alt+a goes to whoever has waited longest.</p>
-          <p class="ba-note" lang="ja">誰が待っているかはバッジで分かります。Alt+a で、いちばん長く待っている窓へ。</p>
+          <p class="ba-note" lang="ja">誰が待っているかはバッジで分かります。Alt+a で、いちばん長く待っているウィンドウへ。</p>
         </div>
       </div>
     </section>
@@ -419,9 +419,9 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="strips">
         <p class="strip-label" lang="en">Calm</p><p class="strip-label" lang="ja">平常時</p>
         <div class="strip" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span></div>
-        <div class="strip" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> 全キー</span></div>
+        <div class="strip" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span></div>
         <p class="strip-label" lang="en">Someone needs you</p><p class="strip-label" lang="ja">誰かが待っているとき</p>
-        <div class="strip alert"><span class="banner" lang="en">✋ 2 waiting on you → Alt+a to jump</span><span class="banner" lang="ja">✋ 2窓があなたの返事待ち → Alt+a で飛ぶ</span></div>
+        <div class="strip alert"><span class="banner" lang="en">✋ 2 waiting on you → Alt+a to jump</span><span class="banner" lang="ja">✋ 返事待ちが2件 → Alt+a で移動</span></div>
       </div>
     </section>
 
@@ -433,12 +433,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Badges heal themselves</h3><h3 lang="ja">「作業中」のまま止まらない</h3>
           <p lang="en">Press Esc mid-turn and no stop event fires, so hook-only tools say "working" forever. junban checks Claude Code's own session records in <code>~/.claude/sessions</code> and walks the process tree to be sure it is looking at the right pane.</p>
-          <p lang="ja">途中で Esc を押すと終了イベントが飛ばず、フックだけのツールは「作業中」を出し続けます。junban は Claude Code 自身のセッション記録 <code>~/.claude/sessions</code> と照合し、プロセスの親子関係まで見て正しい窓かを確かめます。</p>
+          <p lang="ja">途中で Esc を押すと終了イベントが発生せず、フックだけのツールは「作業中」を出し続けます。junban は Claude Code 自身のセッション記録 <code>~/.claude/sessions</code> と照合し、プロセスの親子関係まで見て正しいウィンドウかを確かめます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Longest wait goes first</h3><h3 lang="ja">待たせた順に呼ぶ</h3>
           <p lang="en">Alt+a always takes you to the agent that has waited longest: questions and permissions before finished work.</p>
-          <p lang="ja">Alt+a は、いちばん長く待たせている窓へ飛びます。質問・許可が先、終わった作業が後です。</p>
+          <p lang="ja">Alt+a は、いちばん長く待たせているウィンドウへ移動します。質問・許可が先、終わった作業が後です。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">One line on what it needs</h3><h3 lang="ja">何を求めているかを1行で</h3>
@@ -448,7 +448,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Catches the costly habits</h3><h3 lang="ja">高くつく癖を見つける</h3>
           <p lang="en">Two agents in one git tree overwrite each other, so those windows get a ⚠ and Alt+n starts the next one in its own worktree. Agents parked for a day get a dim z and sink to the bottom.</p>
-          <p lang="ja">同じ Git の作業場所で2体が動くと互いの変更を上書きします。その窓に ⚠ を付け、Alt+n は別の作業場所（worktree）で次の1体を起動します。1日放置された窓には z が付き、一覧の下に沈みます。</p>
+          <p lang="ja">同じ Git の作業場所で2体が動くと互いの変更を上書きします。そのウィンドウに ⚠ を付け、Alt+n は別の作業場所（worktree）で次の1体を起動します。1日放置されたウィンドウには z が付き、一覧の下に沈みます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待たせた時間を測る</h3>
@@ -458,7 +458,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Names that stay put</h3><h3 lang="ja">相槌で名前が変わらない</h3>
           <p lang="en">Windows are named after the task, optionally by a local model in under a second. "ok", "yes", "進めて" or "ครับ" never rename anything, and a name you set yourself is never touched.</p>
-          <p lang="ja">窓には作業内容から名前が付きます。手元のモデルを使えば1秒以内です。「OK」「進めて」「ครับ」では変わらず、自分で付けた名前は上書きしません。</p>
+          <p lang="ja">ウィンドウには作業内容から名前が付きます。手元のモデルを使えば1秒以内です。「OK」「進めて」「ครับ」では変わらず、自分で付けた名前は上書きしません。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Claude Code, Codex, Gemini</h3><h3 lang="ja">Claude Code・Codex・Gemini</h3>
@@ -468,12 +468,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">English, 日本語, ไทย</h3><h3 lang="ja">英語・日本語・タイ語</h3>
           <p lang="en">Picked from your locale. Japanese and Thai names are cut by display width, so tabs stay aligned.</p>
-          <p lang="ja">ロケールから自動で選びます。日本語やタイ語の窓名は表示幅で切るので、タブが崩れません。</p>
+          <p lang="ja">ロケールから自動で選びます。日本語やタイ語のウィンドウ名は表示幅で切るので、タブが崩れません。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Just tmux and bash</h3><h3 lang="ja">tmux と bash だけ</h3>
-          <p lang="en">No daemon, nothing to keep alive. 124 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">デーモンなし、常駐なし。テスト124件を Linux と macOS の CI で回しています。</p>
+          <p lang="en">No daemon, nothing to keep alive. 175 tests, run in CI on Linux and macOS.</p>
+          <p lang="ja">デーモンなし、常駐なし。テスト175件を Linux と macOS の CI で回しています。</p>
         </div>
       </div>
     </section>
@@ -489,11 +489,11 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <thead><tr><th scope="col"></th><th scope="col" class="jb">junban<small><span lang="en">tmux plugin · bash</span><span lang="ja">tmux プラグイン・bash</span></small></th><th scope="col"><a href="https://github.com/gs/tmux-agent-status">gs/tmux-agent-status</a><small><span lang="en">tmux plugin</span><span lang="ja">tmux プラグイン</span></small></th><th scope="col"><a href="https://github.com/samleeney/tmux-agent-status">samleeney/tmux-agent-status</a><small><span lang="en">tmux plugin + daemon</span><span lang="ja">tmux プラグイン＋常駐</span></small></th><th scope="col"><a href="https://github.com/Open330/muxa">muxa</a><small><span lang="en">Rust daemon + TUI, beta</span><span lang="ja">Rust の常駐＋TUI・β版</span></small></th><th scope="col"><a href="https://github.com/raine/workmux">workmux</a><small><span lang="en">worktree CLI for tmux</span><span lang="ja">tmux 用 worktree CLI</span></small></th><th scope="col"><a href="https://code.claude.com/docs/en/agent-view">Claude Code agent view</a><small><span lang="en">built in, preview</span><span lang="ja">標準機能・プレビュー</span></small></th></tr></thead>
           <tbody>
             <tr><th scope="row"><span lang="en">Watches agents you already run</span><span lang="ja">いま動かしている<wbr>エージェントを見る</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks + screen</span><span lang="ja">フック＋画面</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span lang="en">background sessions only</span><span lang="ja">バックグラウンドのセッションだけ</span></td></tr>
-            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待たせた所へ飛ぶ</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">任意のキー（既定は無し）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">newest first</span><span lang="ja">新しい順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
+            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待たせた所へ移動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">任意のキー（既定は無し）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">newest first</span><span lang="ja">新しい順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
             <tr><th scope="row"><span lang="en">Wait-time meter and day timeline</span><span lang="ja">待たせた時間の<wbr>計測と1日の<wbr>タイムライン</span></th><td class="jb"><span class="y">✓</span><span lang="en">local file only</span><span lang="ja">手元のファイルだけ</span></td><td class="n">—</td><td class="n">—</td><td><span class="y">✓</span><span lang="en"><code>stats</code>, <code>timeline</code></span><span lang="ja"><code>stats</code>・<code>timeline</code></span></td><td><span lang="en">time in current state</span><span lang="ja">今の状態の経過時間</span></td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Two agents sharing one git checkout</span><span lang="ja">同じ Git 作業場所の<wbr>相乗り</span></th><td class="jb"><span class="y">✓</span><span lang="en">⚠ warning, Alt+n opens a worktree</span><span lang="ja">⚠ で警告・Alt+n で worktree に起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">最初から作業ごとに worktree</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドは自動で隔離</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">ステータス行が<wbr>次のキーを示す</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
-            <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>窓に名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">local model; “ok” never renames</span><span lang="ja">手元のモデル・相槌では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude’s own session title</span><span lang="ja">Claude 自身のタイトル</span></td></tr>
+            <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">local model; “ok” never renames</span><span lang="ja">手元のモデル・相槌では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude’s own session title</span><span lang="ja">Claude 自身のタイトル</span></td></tr>
             <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini＋コマンドで任意</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini</span><span lang="ja">Claude・Codex・Gemini</span></td><td><span lang="en">Claude, Codex, Gemini and 5 more</span><span lang="ja">Claude・Codex・Gemini ほか5種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
@@ -552,12 +552,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 用のステータス表示と何が違う？</span></summary>
           <p lang="en">Many put an icon on each tab, and a few also jump to the longest wait or measure waiting; see <a href="#compare">the comparison</a>. junban puts those in one plain tmux plugin with no daemon, and adds what we did not find elsewhere: a status line that names the next key, a warning when two agents share a git tree, parked agents sinking out of the way, and window names from a local model that ignore "ok".</p>
-          <p lang="ja">タブにアイコンを出すものは多く、待たせた順に飛ぶものや待ち時間を測るものも一部にあります（<a href="#compare">比較表</a>）。junban はそれらを、常駐プロセスのない素の tmux プラグイン1つにまとめました。さらに、ほかでは見つからなかった機能として、次のキーを示すステータス行、2体が同じ Git 作業場所を使うときの警告、放置された窓を下に沈める表示、相槌では変わらない手元モデルによる窓名があります。</p>
+          <p lang="ja">タブにアイコンを出すものは多く、待たせた順に移動するものや待ち時間を測るものも一部にあります（<a href="#compare">比較表</a>）。junban はそれらを、常駐プロセスのない素の tmux プラグイン1つにまとめました。さらに、ほかでは見つからなかった機能として、次のキーを示すステータス行、2体が同じ Git 作業場所を使うときの警告、放置されたウィンドウを下に沈める表示、相槌では変わらない手元モデルによるウィンドウ名があります。</p>
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
           <p lang="en">No. State lives in tmux options, and the wait meter in a local file only you can read. Naming windows with a model is opt-in and goes only to the URL you set, such as a local Ollama.</p>
-          <p lang="ja">送りません。状態は tmux のオプションに、待ち時間の記録は自分だけが読める手元のファイルに残ります。モデルで窓に名前を付ける機能は任意で、送り先は自分で設定した URL（手元の Ollama など）だけです。</p>
+          <p lang="ja">送りません。状態は tmux のオプションに、待ち時間の記録は自分だけが読める手元のファイルに残ります。モデルでウィンドウに名前を付ける機能は任意で、送り先は自分で設定した URL（手元の Ollama など）だけです。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>

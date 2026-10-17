@@ -128,6 +128,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
   .toc-m a { text-decoration: none; color: #c7c9ce; }
 }
 @media (max-width: 480px) { .top nav .hide-s { display: none; } .mark small { display: none; } }
+@media (max-width: 600px) { th, td { padding: 9px 10px; } td code, td kbd { white-space: normal; overflow-wrap: anywhere; } }
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"junban manual","url":"https://junban.namelessjp.com/manual/","about":{"@type":"SoftwareApplication","name":"junban","url":"https://junban.namelessjp.com/"},"publisher":{"@type":"Organization","name":"Nameless LLC","url":"https://namelessjp.com"}}</script>
 </head>
@@ -184,7 +185,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
           <thead><tr><th lang="en">Badge</th><th lang="ja">バッジ</th><th lang="en">Meaning</th><th lang="ja">意味</th></tr></thead>
           <tbody>
             <tr><td class="w b">✋</td><td><span lang="en">Waiting on you: a question, or permission to run something. Clears when you answer.</span><span lang="ja">あなたの返事待ち（質問、または実行の許可）。返事をすると消えます。</span></td></tr>
-            <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or come back to that terminal.</span><span lang="ja">作業が終わり、まだ見ていない。その窓を開いた瞬間か、その端末に戻った時点で消えます。</span></td></tr>
+            <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or come back to that terminal.</span><span lang="ja">作業が終わり、まだ見ていない。そのウィンドウを開いた瞬間か、その端末に戻った時点で消えます。</span></td></tr>
             <tr><td class="r">●</td><td><span lang="en">Working.</span><span lang="ja">作業中。</span></td></tr>
             <tr><td class="r b">⚠</td><td><span lang="en">Another agent works in the same git working tree. Two agents there overwrite each other's edits. See <a href="#new">Alt+n</a>.</span><span lang="ja">別のエージェントと同じ git の作業ツリーで動いている。互いの編集を上書きします。<a href="#new">Alt+n</a> を参照。</span></td></tr>
             <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていない（<code>@junban-stale-hours</code>）。<kbd>Alt+f</kbd> の一覧で下に沈みます。</span></td></tr>
@@ -200,7 +201,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         </tbody></table></div>
         <h3 lang="en">Badges fix themselves</h3><h3 lang="ja">バッジは自動で直る</h3>
         <p lang="en">Press Esc mid-turn and Claude Code sends no "stopped" event, so a tool that only listens to hooks would say "working" forever. Every few seconds junban checks Claude Code's own session records in <code>~/.claude/sessions</code>, and walks the process tree to be sure which pane it is looking at, then corrects the badge.</p>
-        <p lang="ja">作業の途中で Esc を押すと、Claude Code は「止まった」というイベントを送りません。フックだけを見るツールでは「作業中」のまま固まります。junban は数秒ごとに Claude Code 自身のセッション記録 <code>~/.claude/sessions</code> を確認し、プロセスの親子関係からどの窓かを確かめたうえで、バッジを直します。</p>
+        <p lang="ja">作業の途中で Esc を押すと、Claude Code は「止まった」というイベントを送りません。フックだけを見るツールでは「作業中」のまま固まります。junban は数秒ごとに Claude Code 自身のセッション記録 <code>~/.claude/sessions</code> を確認し、プロセスの親子関係からどのウィンドウかを確かめたうえで、バッジを直します。</p>
       </section>
 
       <section id="keys">
@@ -210,27 +211,27 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <div class="tw"><table>
           <thead><tr><th lang="en">Key</th><th lang="ja">キー</th><th>prefix</th><th lang="en">What it does</th><th lang="ja">動作</th></tr></thead>
           <tbody>
-            <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">いちばん待たせている窓へ飛ぶ。✋ が ✓ より先、待った時間の長い順。</span></td></tr>
+            <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">いちばん待たせているウィンドウへ移動。✋ が ✓ より先、待った時間の長い順。</span></td></tr>
             <tr><td><kbd>Alt+f</kbd></td><td><kbd>f</kbd></td><td><span lang="en">Every agent in one list, neediest first, with a live preview.</span><span lang="ja">全エージェントの一覧。待たせている順で、中身のプレビュー付き。</span></td></tr>
             <tr><td><kbd>Alt+n</kbd></td><td><kbd>C</kbd></td><td><span lang="en">Start a new agent in this directory.</span><span lang="ja">このディレクトリで新しいエージェントを起動する。</span></td></tr>
-            <tr><td><kbd>Alt+g</kbd></td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time.</span><span lang="ja">小窓のシェル。閉じても中身は残り、次に開くと続きから使えます。</span></td></tr>
-            <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">全キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
+            <tr><td><kbd>Alt+g</kbd></td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time.</span><span lang="ja">ポップアップのシェル。閉じても中身は残り、次に開くと続きから使えます。</span></td></tr>
+            <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>T</kbd></td><td><span lang="en">Today's <a href="#timeline">timeline</a>. No Alt key by default (Alt+t toggles thinking in Claude Code); set <code>@junban-key-timeline</code> to add one.</span><span lang="ja">今日の<a href="#timeline">タイムライン</a>。Alt キーは標準では割り当てていません（Claude Code では Alt+t が思考の切り替えのため）。<code>@junban-key-timeline</code> で追加できます。</span></td></tr>
-            <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd></td><td class="m">—</td><td><span lang="en">Window by number.</span><span lang="ja">番号の窓へ移動。</span></td></tr>
-            <tr><td><kbd>Alt+[</kbd> <kbd>Alt+]</kbd></td><td class="m">—</td><td><span lang="en">Previous / next window.</span><span lang="ja">前 / 次の窓。</span></td></tr>
-            <tr><td><kbd>Alt+Tab</kbd></td><td class="m">—</td><td><span lang="en">The window you were just in.</span><span lang="ja">直前の窓に戻る。</span></td></tr>
+            <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd></td><td class="m">—</td><td><span lang="en">Window by number.</span><span lang="ja">番号のウィンドウへ移動。</span></td></tr>
+            <tr><td><kbd>Alt+[</kbd> <kbd>Alt+]</kbd></td><td class="m">—</td><td><span lang="en">Previous / next window.</span><span lang="ja">前 / 次のウィンドウ。</span></td></tr>
+            <tr><td><kbd>Alt+Tab</kbd></td><td class="m">—</td><td><span lang="en">The window you were just in.</span><span lang="ja">直前のウィンドウに戻る。</span></td></tr>
             <tr><td><kbd>Alt+z</kbd></td><td class="m">—</td><td><span lang="en">Zoom the pane, and back.</span><span lang="ja">ペインを最大化 / 元に戻す。</span></td></tr>
           </tbody>
         </table></div>
         <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は 設定 → プロファイル → キーボード →「Option キーをメタキーとして使用」をオンにします。</p></div>
         <p lang="en">The <kbd>Alt+/</kbd> and timeline popups scroll with the arrows, PgUp/PgDn, <kbd>Space</kbd> or the mouse wheel; any other key, or a click inside, closes them.</p>
-        <p lang="ja"><kbd>Alt+/</kbd> とタイムラインの小窓は、矢印キー・PgUp/PgDn・<kbd>Space</kbd>・マウスホイールでスクロールし、ほかのキーを押すか小窓の中をクリックすると閉じます。</p>
+        <p lang="ja"><kbd>Alt+/</kbd> とタイムラインのポップアップは、矢印キー・PgUp/PgDn・<kbd>Space</kbd>・マウスホイールでスクロールし、ほかのキーを押すかポップアップの中をクリックすると閉じます。</p>
         <h3 id="list" lang="en">The Alt+f list</h3><h3 lang="ja">Alt+f の一覧</h3>
         <p lang="en">Agents that need you come first, each with its badge, its name and what you last asked it. Type to filter by name or by what you asked; the preview shows the window live. <kbd>Enter</kbd> goes there, <kbd>Esc</kbd> closes. Without fzf you get tmux's own chooser with the same order.</p>
-        <p lang="ja">あなたを待っている窓から順に、バッジ・窓の名前・最後に頼んだ内容が並びます。文字を打つと名前や依頼内容で絞り込め、プレビューにはその窓の今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は、tmux 標準の選択画面が同じ順番で出ます。</p>
+        <p lang="ja">あなたを待っているウィンドウから順に、バッジ・ウィンドウの名前・最後に頼んだ内容が並びます。文字を打つと名前や依頼内容で絞り込め、プレビューにはそのウィンドウの今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は、tmux 標準の選択画面が同じ順番で出ます。</p>
         <h3 id="new" lang="en">Alt+n and worktrees</h3><h3 lang="ja">Alt+n と worktree</h3>
         <p lang="en"><kbd>Alt+n</kbd> opens a window in the current directory and starts your agent (<code>@junban-agent-cmd</code>, default <code>claude</code>). If another agent already works in that git tree and the agent is Claude Code, the new one starts in its own worktree (<code>claude --worktree</code>), so the two never edit the same files. <code>@junban-new-worktree off</code> keeps the plain behaviour.</p>
-        <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しい窓を開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2体が同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
+        <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しいウィンドウを開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2体が同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
       </section>
 
       <section id="guide">
@@ -240,17 +241,17 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="en"><span class="b">Calm.</span> The five keys worth knowing, the wait meter, and the mascot.</p>
         <p lang="ja"><span class="b">平常時。</span>覚えておくと便利な5つのキー、待ち時間メーター、マスコット。</p>
         <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">⏱ kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
-        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> 全キー</span><span class="rc">⏱ 今日の待たせ時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前の窓に戻る</span></div>
+        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span><span class="rc">⏱ 今日の待ち時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前のウィンドウに戻る</span></div>
         <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
-        <p lang="ja"><span class="b w">誰かが待っているとき。</span>キーを示す赤い帯と、次に飛ぶ窓が何を求めているかの1行。</p>
+        <p lang="ja"><span class="b w">誰かが待っているとき。</span>キーを示す赤い帯と、次に移動するウィンドウが何を求めているかの1行。</p>
         <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
-        <div class="tl" lang="ja"><span class="bn">✋ 2窓があなたの返事待ち → Alt+a で飛ぶ</span><span class="rc">DB 移行: 開発 DB で psql を実行したい</span></div>
+        <div class="tl" lang="ja"><span class="bn">✋ 返事待ちが2件 → Alt+a で移動</span><span class="rc">DB 移行: 開発 DB で psql を実行したい</span></div>
         <p lang="en"><span class="b d">Someone finished.</span> A green banner, with what came of the turn.</p>
         <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の帯と、作業の結果の1行。</p>
         <div class="tl" lang="en"><span class="bn g">✓ 1 finished → Alt+a to review</span><span class="rc">pricing page copy: 3 files changed, tests pass</span></div>
-        <div class="tl" lang="ja"><span class="bn g">✓ 1窓の作業が終わりました → Alt+a で見る</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
+        <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
         <p lang="en">When two agents share a git tree, the line names the windows and how to split them. A tip rotates on the right once a minute. On a narrow terminal the tip goes first, then the recap is cut, so the banner always fits.</p>
-        <p lang="ja">2体が同じ git ツリーで動いているときは、その窓の名前と分け方を出します。右端には1分ごとに小技が出ます。端末の幅が狭いときは小技から先に消え、次に1行要約を省略するので、帯そのものは必ず表示されます。</p>
+        <p lang="ja">2体が同じ git ツリーで動いているときは、そのウィンドウの名前と分け方を出します。右端には1分ごとに小技が出ます。端末の幅が狭いときは小技から先に消え、次に1行要約を省略するので、帯そのものは必ず表示されます。</p>
         <p lang="en"><code>@junban-guide-lines 3</code> gives the banner a row of its own, with the keys and the tip on a third row. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
         <p lang="ja"><code>@junban-guide-lines 3</code> にすると、帯が独立した1行になり、キーと小技は3行目に回ります。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
       </section>
@@ -258,15 +259,15 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       <section id="recap">
         <h2><span lang="en">One-line recaps</span><span lang="ja">1行要約</span></h2>
         <p lang="en">When an agent asks you something, wants permission or finishes, junban writes one line on it: the question, the command it wants to run, or what came of the turn ("tests pass, PR #12 opened"). It shows in the banner, in the <kbd>Alt+f</kbd> list and in phone notifications, so you can decide before you switch.</p>
-        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。帯、<kbd>Alt+f</kbd> の一覧、スマホ通知に出るので、窓を切り替える前に判断できます。</p>
+        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。帯、<kbd>Alt+f</kbd> の一覧、スマホ通知に出るので、ウィンドウを切り替える前に判断できます。</p>
         <p lang="en">With a namer model set (<a href="#names">below</a>) the model writes it; otherwise it is the first real line of the reply. <code>@junban-recap off</code> turns it off.</p>
         <p lang="ja">命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければ返答の最初の意味のある1行を使います。<code>@junban-recap off</code> で止められます。</p>
       </section>
 
       <section id="names">
-        <h2><span lang="en">Window names</span><span lang="ja">窓の名前</span></h2>
+        <h2><span lang="en">Window names</span><span lang="ja">ウィンドウの名前</span></h2>
         <p lang="en">Windows are named after what you asked. Short replies ("ok", "yes", "進めて", "ครับ"), slash commands, shell escapes and pasted blocks never rename anything. A window you rename yourself (prefix <kbd>,</kbd>) is left alone for good.</p>
-        <p lang="ja">窓には、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い相槌、スラッシュコマンド、シェル実行、貼り付けた長文では変わりません。自分で名前を付けた窓（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
+        <p lang="ja">ウィンドウには、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い相槌、スラッシュコマンド、シェル実行、貼り付けた長文では変わりません。自分で名前を付けたウィンドウ（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
         <pre><span class="c"># default: the first meaningful line you typed</span>
 set -g @junban-rename prompt
 <span class="c"># or let a model summarise your last few prompts</span>
@@ -286,7 +287,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
           <li lang="en">The guide line shows today's total and your median reply, against the seven days before.</li>
           <li lang="ja">案内行に、今日の合計と返答の中央値が、直近7日との比較付きで出ます。</li>
           <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last, your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
-          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較、自己ベストの日、今日いちばん待たせた窓、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
+          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較、自己ベストの日、今日いちばん待たせたウィンドウ、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
           <li lang="en"><code>scripts/stats.sh 30</code> goes back 30 days.</li>
           <li lang="ja"><code>scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
         </ul>
@@ -299,7 +300,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
   2 days in a row with a median reply within 5m</pre>
         <pre class="out" lang="ja">  エージェントがあなたを待った時間 — 直近7日
 
-  日付         待たせ時間   回数    中央値   ✋     ✓
+  日付         待ち時間   回数    中央値   ✋     ✓
   10/16        10時間12分    139      55秒    0   139   ████████████████
   10/18 今日    2時間53分     22   4分23秒    0    22   ████▌
   自己ベスト: 10/16 返答の中央値 55秒
@@ -309,7 +310,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
       <section id="timeline">
         <h2><span lang="en">The timeline</span><span lang="ja">タイムライン</span></h2>
         <p lang="en">prefix <kbd>T</kbd> (and the top of <kbd>Alt+/</kbd>) shows when your agents worked today: one row per window, <span class="r">█</span> working, <span class="w">▓</span> waiting for your answer, <span class="d">▒</span> done and not looked at. Below it: when you were active, how long agents worked, how long they waited on you, and how many ran at once. <code>scripts/timeline.sh 1</code> shows yesterday.</p>
-        <p lang="ja">prefix <kbd>T</kbd>（と <kbd>Alt+/</kbd> の上部）で、今日エージェントがいつ動いたかが見られます。窓ごとに1行で、<span class="r">█</span> 作業中、<span class="w">▓</span> あなたの返事待ち、<span class="d">▒</span> 完了・未確認です。下には、稼働していた時間帯、エージェントの作業時間、あなたを待った時間、最大何窓が同時に動いたかが出ます。<code>scripts/timeline.sh 1</code> で前日を表示します。</p>
+        <p lang="ja">prefix <kbd>T</kbd>（と <kbd>Alt+/</kbd> の上部）で、今日エージェントがいつ動いたかが見られます。ウィンドウごとに1行で、<span class="r">█</span> 作業中、<span class="w">▓</span> あなたの返事待ち、<span class="d">▒</span> 完了・未確認です。下には、稼働していた時間帯、エージェントの作業時間、あなたを待った時間、最大いくつのウィンドウが同時に動いたかが出ます。<code>scripts/timeline.sh 1</code> で前日を表示します。</p>
         <div class="note"><p lang="en">It is a view for you, about your own day. It stays on your machine.</p><p lang="ja">自分の1日をふり返るための、自分用の画面です。データは手元のマシンから出ません。</p></div>
       </section>
 
@@ -330,9 +331,9 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
         <div class="tw"><table>
           <thead><tr><th lang="en">Agent</th><th lang="ja">エージェント</th><th lang="en">Setup</th><th lang="ja">設定</th><th lang="en">You get</th><th lang="ja">できること</th></tr></thead>
           <tbody>
-            <tr><td>Claude Code</td><td><span lang="en">the plugin (the install line does it)</span><span lang="ja">プラグイン（導入の1行で入る）</span></td><td><span lang="en">✋ ✓ ●, recap, names; badges repair themselves after Esc</span><span lang="ja">✋ ✓ ●、1行要約、窓の名前。Esc 後のバッジの自動修復</span></td></tr>
-            <tr><td>Codex CLI</td><td><code>setup.sh codex</code></td><td><span lang="en">✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge</span><span lang="ja">✋ ✓ ●、実行したいコマンドを示す1行要約、窓の名前。Esc でバッジが消える</span></td></tr>
-            <tr><td>Gemini CLI</td><td><code>setup.sh gemini</code></td><td><span lang="en">✋ ✓ ●, recap names the command, names</span><span lang="ja">✋ ✓ ●、コマンドを示す1行要約、窓の名前</span></td></tr>
+            <tr><td>Claude Code</td><td><span lang="en">the plugin (the install line does it)</span><span lang="ja">プラグイン（導入の1行で入る）</span></td><td><span lang="en">✋ ✓ ●, recap, names; badges repair themselves after Esc</span><span lang="ja">✋ ✓ ●、1行要約、ウィンドウの名前。Esc 後のバッジの自動修復</span></td></tr>
+            <tr><td>Codex CLI</td><td><code>setup.sh codex</code></td><td><span lang="en">✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge</span><span lang="ja">✋ ✓ ●、実行したいコマンドを示す1行要約、ウィンドウの名前。Esc でバッジが消える</span></td></tr>
+            <tr><td>Gemini CLI</td><td><code>setup.sh gemini</code></td><td><span lang="en">✋ ✓ ●, recap names the command, names</span><span lang="ja">✋ ✓ ●、コマンドを示す1行要約、ウィンドウの名前</span></td></tr>
           </tbody>
         </table></div>
         <pre>~/.tmux/plugins/junban/scripts/setup.sh codex    <span class="c"># writes ~/.codex/hooks.json</span>
@@ -347,7 +348,7 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
       <section id="vscode">
         <h2><span lang="en">VS Code terminals</span><span lang="ja">VS Code のターミナル</span></h2>
         <p lang="en">If you keep one VS Code window per project, each terminal attached to its own tmux session, <kbd>Alt+a</kbd> raises the VS Code window that already shows the target, instead of swapping this terminal to another project. Plain terminals and web terminals switch in place. <code>@junban-vscode-raise off</code> always switches in place.</p>
-        <p lang="ja">プロジェクトごとに VS Code の窓を分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> は行き先をすでに表示している VS Code の窓を前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。普通の端末や Web のターミナルでは、その場で切り替えます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
+        <p lang="ja">プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> は行き先をすでに表示している VS Code のウィンドウを前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。普通の端末や Web のターミナルでは、その場で切り替えます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
       </section>
 
       <section id="options">
@@ -402,12 +403,12 @@ set -g @junban-notify-cmd '…'</pre>
       <section id="data">
         <h2><span lang="en">Your data</span><span lang="ja">データの扱い</span></h2>
         <p lang="en">State lives in tmux window options. Two logs are kept in <code>~/.local/state/junban/</code> (or <code>$XDG_STATE_HOME/junban</code>), readable only by you (files 0600, folder 0700):</p>
-        <p lang="ja">状態は tmux の窓のオプションに持っています。記録は <code>~/.local/state/junban/</code>（または <code>$XDG_STATE_HOME/junban</code>）の2つのファイルだけで、自分しか読めない権限（ファイル 0600、フォルダ 0700）です。</p>
+        <p lang="ja">状態は tmux のウィンドウのオプションに持っています。記録は <code>~/.local/state/junban/</code>（または <code>$XDG_STATE_HOME/junban</code>）の2つのファイルだけで、自分しか読めない権限（ファイル 0600、フォルダ 0700）です。</p>
         <ul>
           <li lang="en"><code>waits.tsv</code>: start, end, kind and window name of each wait. Feeds the meter and the report.</li>
-          <li lang="ja"><code>waits.tsv</code>: 待ちごとの開始・終了・種類・窓の名前。メーターとレポートに使います。</li>
+          <li lang="ja"><code>waits.tsv</code>: 待ちごとの開始・終了・種類・ウィンドウの名前。メーターとレポートに使います。</li>
           <li lang="en"><code>states.tsv</code>: each change of state with its window name. Feeds the timeline. No prompts.</li>
-          <li lang="ja"><code>states.tsv</code>: 状態の変化と窓の名前。タイムラインに使います。依頼の内容は入りません。</li>
+          <li lang="ja"><code>states.tsv</code>: 状態の変化とウィンドウの名前。タイムラインに使います。依頼の内容は入りません。</li>
         </ul>
         <p lang="en">Nothing leaves your machine unless you set a namer URL or a notify command, and then it goes only where you pointed it.</p>
         <p lang="ja">命名用の URL か通知コマンドを設定しない限り、何も外に出ません。設定した場合も、送り先は自分で指定した場所だけです。</p>
@@ -417,7 +418,7 @@ set -g @junban-notify-cmd '…'</pre>
         <h2><span lang="en">Troubleshooting</span><span lang="ja">うまく動かないとき</span></h2>
         <pre>~/.tmux/plugins/junban/scripts/doctor.sh</pre>
         <p lang="en">Or <code>/junban:doctor</code> in Claude Code. It checks tmux, the plugin and each agent's hooks, prints ok / warn / FAIL with what to do, and leaves out window names, prompts and secrets so you can paste it into a <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">bug report</a>.</p>
-        <p lang="ja">Claude Code なら <code>/junban:doctor</code> でも同じです。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。窓の名前・依頼の内容・秘密の値は含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
+        <p lang="ja">Claude Code なら <code>/junban:doctor</code> でも同じです。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。ウィンドウの名前・依頼の内容・秘密の値は含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
         <ul>
           <li lang="en"><span class="b">Alt keys do nothing.</span> Your terminal isn't sending Alt. Use the prefix keys, or see the macOS note under <a href="#keys">Keys</a>.</li>
           <li lang="ja"><span class="b">Alt キーが効かない。</span>端末が Alt を送っていません。prefix のキーを使うか、<a href="#keys">キー</a>の macOS の注記を見てください。</li>
