@@ -23,26 +23,32 @@ Then one key, **Alt+a**, takes you to whoever has waited longest.
 
 ## Install
 
-**1. tmux** with [TPM](https://github.com/tmux-plugins/tpm):
-
-```tmux
-set -g @plugin 'Nameless-LLC/junban'
-```
-
-Or without TPM:
+One line in a terminal:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
-**2. Claude Code**, inside any session:
+It installs junban into tmux, reloads it, and connects Claude Code if you have it. Then press **Alt+a**.
 
-```
-/plugin marketplace add Nameless-LLC/junban
-/plugin install junban@junban
+<details>
+<summary>With TPM instead</summary>
+
+Add to `~/.tmux.conf` and press prefix + I:
+
+```tmux
+set -g @plugin 'Nameless-LLC/junban'
 ```
 
-That's it. New Claude Code sessions report their state from the first prompt.
+Then connect Claude Code:
+
+```sh
+claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban
+```
+
+</details>
+
+Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Other agents](#other-agents).
 
 Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
 
@@ -136,7 +142,7 @@ Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`
 
 | Agent | Setup | What you get |
 |---|---|---|
-| Claude Code | the plugin (two lines above) | ✋ ✓ ●, one-line recap, names; badges heal themselves after Esc |
+| Claude Code | the plugin (installed by the line above) | ✋ ✓ ●, one-line recap, names; badges heal themselves after Esc |
 | Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge |
 | Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recap names the command it wants to run, names |
 

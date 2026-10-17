@@ -213,17 +213,21 @@ h2 { font: 600 clamp(1.85rem, 1.35rem + 2vw, 2.85rem)/1.08 var(--f-display); let
 .why-row code { font: .9em var(--f-mono); color: var(--text); }
 @media (max-width: 960px) { .why-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* install */
-.steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
+/* install: every command sits alone in a block with its own Copy button */
 .step { background: linear-gradient(180deg, var(--panel), var(--ink-2)); border: 1px solid var(--line-2); border-radius: 14px; min-width: 0; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 30px 60px -40px rgba(0,0,0,.9); }
-.step h3 { font: 500 .8rem/1 var(--f-mono); color: var(--muted); margin: 0; padding: 13px 16px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02); }
-.step h3::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #2c3038; box-shadow: 15px 0 #2c3038, 30px 0 #2c3038; margin-right: 34px; flex: none; }
-.step h3 span:first-child { color: var(--wait); }
-.step pre { margin: 0; padding: 18px 18px 0; font: 400 .86rem/1.75 var(--f-mono); overflow-x: auto; white-space: pre; color: var(--text); scrollbar-width: thin; }
-.step p { margin: 14px 18px 20px; font-size: .86rem; color: var(--muted); }
-.step p code { overflow-wrap: anywhere; color: #c9cbd0; }
-.step p code.line { display: block; margin-top: 6px; overflow-wrap: normal; }
-@media (max-width: 480px) { .steps .step pre { font-size: .72rem; } }
+.step .bar { font: 500 .8rem/1 var(--f-mono); color: var(--muted); padding: 8px 8px 8px 16px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02); min-height: 44px; }
+.step .bar::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #2c3038; box-shadow: 15px 0 #2c3038, 30px 0 #2c3038; margin-right: 34px; flex: none; }
+.step .bar .copy { margin-left: auto; padding: 7px 11px; }
+.step pre { margin: 0; padding: 16px 18px; font: 400 .86rem/1.7 var(--f-mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); }
+.step pre::before { content: "$ "; color: var(--wait); }
+.step p { margin: 0 18px 18px; font-size: .84rem; color: var(--muted); }
+.step p code { color: #c9cbd0; }
+.step.main { margin-top: 30px; border-color: rgba(255,93,82,.3); box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 30px 60px -40px rgba(0,0,0,.9), 0 0 60px -24px rgba(255,93,82,.35); }
+.step.main pre { font-size: .95rem; padding: 20px 20px; }
+.more { font: 500 .74rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: 40px 0 0; }
+.more:lang(ja) { letter-spacing: .06em; }
+.steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+@media (max-width: 480px) { .step pre, .step.main pre { font-size: .78rem; } }
 
 /* closing */
 .end { padding-block: clamp(80px, 11vw, 136px) 0; }
@@ -285,14 +289,14 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
         <p class="lede" lang="ja">AI エージェントを並べて走らせると、どこかで1つが20分前から <code>psql</code> の許可を待っています。<b>junban</b> は全エージェントの「順番」を tmux のタブに出し、次に押すキーを1つだけ教えます。</p>
         <div class="cmd">
-          <code id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</code>
-          <button class="copy" type="button" id="copy-tpm" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
+          <code id="cmd-hero">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code>
+          <button class="copy" type="button" id="copy-hero" data-copy="cmd-hero"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
         </div>
-        <p class="hint" lang="en">Then in Claude Code: <code>/plugin marketplace add <span class="nw">Nameless-LLC/junban</span></code> <span class="nw">· MIT · tmux ≥ 3.2</span></p>
-        <p class="hint" lang="ja">続けて Claude Code で<wbr> <code>/plugin marketplace add <span class="nw">Nameless-LLC/junban</span></code> <span class="nw">· MIT · tmux 3.2 以上</span></p>
+        <p class="hint" lang="en">Installs into tmux and connects Claude Code <span class="nw">· MIT · tmux ≥ 3.2</span></p>
+        <p class="hint" lang="ja">tmux に入れて、Claude Code にもつなぎます <span class="nw">· MIT · tmux 3.2 以上</span></p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="stars"></span></a>
-          <a class="btn" href="#install"><span lang="en">Install in two lines</span><span lang="ja">2行で導入</span></a>
+          <a class="btn" href="#install"><span lang="en">Install in one line</span><span lang="ja">1行で導入</span></a>
         </div>
       </div>
 
@@ -408,21 +412,40 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <section id="install" data-pal="done:install">
       <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
-      <h2 lang="en">Two lines. Then press Alt+a.</h2>
-      <h2 lang="ja">2行入れて、<wbr><span class="nw">Alt+a を押すだけ。</span></h2>
+      <h2 lang="en">One line. Then press Alt+a.</h2>
+      <h2 lang="ja">1行入れて、<wbr><span class="nw">Alt+a を押すだけ。</span></h2>
+      <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux, reloads it, and connects Claude Code if you have it.</p></div>
+      <div class="prose" lang="ja"><p>ターミナルに貼り付けるだけです。tmux に junban を入れて読み込み直し、Claude Code があればそちらにもつなぎます。</p></div>
+      <div class="step main">
+        <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+        <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
+      </div>
+      <p class="more" lang="en">Or, depending on what you use</p>
+      <p class="more" lang="ja">使っているものに合わせて選ぶ場合</p>
       <div class="steps">
         <div class="step">
-          <h3><span>1</span> tmux</h3>
-          <pre>set -g @plugin 'Nameless-LLC/junban'</pre>
-          <p lang="en">With TPM. No TPM? <code class="line"><span class="nw">curl -fsSL</span> <span class="nw">https://raw.githubusercontent.com/</span><wbr><span class="nw">Nameless-LLC/junban/main/install.sh</span> <span class="nw">| bash</span></code></p>
-          <p lang="ja">TPM の場合。TPM を使わないなら<code class="line"><span class="nw">curl -fsSL</span> <span class="nw">https://raw.githubusercontent.com/</span><wbr><span class="nw">Nameless-LLC/junban/main/install.sh</span> <span class="nw">| bash</span></code></p>
+          <div class="bar"><span class="t">TPM</span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+          <pre id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</pre>
+          <p lang="en">Add to <code>~/.tmux.conf</code>, then press prefix + I.</p>
+          <p lang="ja"><code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
         </div>
         <div class="step">
-          <h3><span>2</span> <span lang="en">Your agent</span><span lang="ja">エージェント</span></h3>
-          <pre>/plugin marketplace add Nameless-LLC/junban
-/plugin install junban@junban</pre>
-          <p lang="en">That is Claude Code. Codex CLI or Gemini CLI: <code>scripts/setup.sh codex</code> or <code>gemini</code>. Anything else can call <code>scripts/state.sh waiting</code>.</p>
-          <p lang="ja">上は Claude Code の場合です。Codex CLI と Gemini CLI は <code>scripts/setup.sh codex</code>（または <code>gemini</code>）の1行。ほかのツールも <code>scripts/state.sh waiting</code> を呼べばつながります。</p>
+          <div class="bar"><span class="t">Claude Code</span><button class="copy" type="button" data-copy="cmd-claude"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+          <pre id="cmd-claude">claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
+          <p lang="en">Only if you installed with TPM. The line above does this for you.</p>
+          <p lang="ja">TPM で入れた場合だけ必要です。上の1行なら自動で済みます。</p>
+        </div>
+        <div class="step">
+          <div class="bar"><span class="t">Codex CLI</span><button class="copy" type="button" data-copy="cmd-codex"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+          <pre id="cmd-codex">~/.tmux/plugins/junban/scripts/setup.sh codex</pre>
+          <p lang="en">Then open <code>/hooks</code> in Codex once and trust them.</p>
+          <p lang="ja">そのあと Codex で一度 <code>/hooks</code> を開き、承認します。</p>
+        </div>
+        <div class="step">
+          <div class="bar"><span class="t">Gemini CLI</span><button class="copy" type="button" data-copy="cmd-gemini"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+          <pre id="cmd-gemini">~/.tmux/plugins/junban/scripts/setup.sh gemini</pre>
+          <p lang="en">Restart Gemini CLI and it is connected.</p>
+          <p lang="ja">Gemini CLI を起動し直せばつながります。</p>
         </div>
       </div>
     </section>
@@ -431,8 +454,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="end-card">
         <h2 lang="en">Your agents are waiting.</h2>
         <h2 lang="ja">エージェントが、<wbr>あなたを待っています。</h2>
-        <p lang="en">Two lines to install. MIT licensed. If it saves you a minute, a star helps others find it.</p>
-        <p lang="ja">導入は2行、MIT ライセンスです。役に立ったら、スターで広めてもらえるとうれしいです。</p>
+        <p lang="en">One line to install. MIT licensed. If it saves you a minute, a star helps others find it.</p>
+        <p lang="ja">導入は1行、MIT ライセンスです。役に立ったら、スターで広めてもらえるとうれしいです。</p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="estars"></span></a>
           <a class="btn" href="https://github.com/Nameless-LLC/junban#readme"><span lang="en">Read the README</span><span lang="ja">README を読む</span></a>
@@ -511,7 +534,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
   // a smaller one keeps you company once the board scrolls away
   var PALS = { video: { en: 'Real tmux. No mock-ups.', ja: '本物の tmux だよ' }, onekey: { en: 'Just Alt+a.', ja: 'Alt+a だけ覚えてね' },
-    why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'Two lines. Go!', ja: '2行でいけるよ' },
+    why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'One line. Go!', ja: '1行でいけるよ' },
     sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '掲示板に戻る？' } };
   var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
   function palSay(key, ms) {

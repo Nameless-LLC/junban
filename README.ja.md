@@ -23,26 +23,32 @@ AI エージェントを並べて仕事を頼むと、どこかで1つが、`psq
 
 ## 導入
 
-**1. tmux**（[TPM](https://github.com/tmux-plugins/tpm) を使う場合）
-
-```tmux
-set -g @plugin 'Nameless-LLC/junban'
-```
-
-TPM を使わない場合:
+ターミナルで1行実行するだけです。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
-**2. Claude Code**（どのセッションの中でも）
+tmux に junban を入れて読み込み直し、Claude Code があればそちらにもつなぎます。あとは **Alt+a** を押すだけです。
 
-```
-/plugin marketplace add Nameless-LLC/junban
-/plugin install junban@junban
+<details>
+<summary>TPM で入れる場合</summary>
+
+`~/.tmux.conf` に追記して、prefix + I を押します。
+
+```tmux
+set -g @plugin 'Nameless-LLC/junban'
 ```
 
-これで終わりです。新しく始めた Claude Code のセッションは、最初の依頼から状態を報告します。
+続けて Claude Code につなぎます。
+
+```sh
+claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban
+```
+
+</details>
+
+Codex CLI と Gemini CLI は `~/.tmux/plugins/junban/scripts/setup.sh codex`（または `gemini`）です。詳しくは[Claude Code 以外のエージェント](#claude-code-以外のエージェント)を見てください。
 
 必要なのは tmux 3.2 以上と bash です。fzf と python3 は任意ですが、入れておくのがおすすめです。
 
@@ -107,7 +113,7 @@ set -g @junban-namer-model qwen3:8b
 
 | エージェント | 導入 | できること |
 |---|---|---|
-| Claude Code | プラグイン（上の2行） | ✋ ✓ ●、1行要約、窓の名前。Esc で止めてもバッジが自動で直る |
+| Claude Code | プラグイン（上の1行で入ります） | ✋ ✓ ●、1行要約、窓の名前。Esc で止めてもバッジが自動で直る |
 | Codex CLI | `scripts/setup.sh codex` のあと、Codex で `/hooks` を開いて一度だけ信頼する | ✋ ✓ ●、実行したいコマンドを1行要約に出す、窓の名前。Esc でバッジが消える |
 | Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●、実行したいコマンドを1行要約に出す、窓の名前 |
 
