@@ -1,6 +1,8 @@
 <title>junban</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#0a0b0d">
+<link rel="canonical" href="https://junban.namelessjp.com/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"junban","description":"A tmux cockpit that shows which of your parallel AI coding agents is waiting on you, and the one key to press.","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux","url":"https://junban.namelessjp.com/","sameAs":"https://github.com/Nameless-LLC/junban","license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Nameless LLC","url":"https://namelessjp.com"}}</script>
 <link rel="icon" type="image/svg+xml" href="{{FAVICON}}">
 <meta name="description" content="junban tells you which of your parallel AI coding agents is waiting on you, right on your tmux tabs, and which key to press next.">
 <meta property="og:title" content="junban: whose turn is it?">
@@ -23,7 +25,7 @@
   --line-2: rgba(255,255,255,.13);
   --text: #edece8;
   --muted: #8d919a;
-  --dim: #5c6069;
+  --dim: #6f737d;
   --wait: #ff5d52;       /* your turn: the one loud colour */
   --wait-glow: rgba(255,93,82,.38);
   --done: #7cc483;
@@ -230,6 +232,31 @@ h2 { font: 600 clamp(1.45rem, 1.15rem + 1.2vw, 2rem)/1.15 var(--f-display); lett
 .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
 @media (max-width: 480px) { .step pre, .step.main pre { font-size: .78rem; } }
 
+/* before / after */
+.ba { display: grid; gap: 16px; margin-top: 34px; }
+.ba-row { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 10px 24px; align-items: center; }
+.ba-label { font: 500 .72rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: 0; }
+.after .ba-label { color: var(--wait); }
+.tbar { font: 400 .82rem/1 var(--f-mono); background: #1e2127; border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; gap: 2px; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #7f848e; min-width: 0; }
+.tbar span { padding: 4px 8px; border-radius: 4px; }
+.tbar .sess { background: #61afef; color: #1e2127; margin-right: 6px; }
+.tbar .cur { background: #2c313c; color: #e6e6e6; }
+.tbar b { font-weight: 600; } .tbar .w { color: #e06c75; } .tbar .d { color: #98c379; } .tbar .r { color: #e5c07b; font-weight: 400; }
+.before .tbar { opacity: .7; }
+.after .tbar { border-color: rgba(255,93,82,.28); box-shadow: 0 0 40px -16px rgba(255,93,82,.4); }
+.ba-note { grid-column: 2; margin: 0; font-size: .86rem; color: var(--muted); }
+
+/* FAQ */
+.faq { margin-top: 30px; border-top: 1px solid var(--line); max-width: 52rem; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 18px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font: 500 .96rem/1.45 var(--f-display); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 400 1.1rem/1 var(--f-mono); color: var(--dim); transition: transform .2s, color .2s; flex: none; }
+.faq summary:hover::after { color: var(--text); }
+.faq details[open] summary::after { transform: rotate(45deg); color: var(--wait); }
+.faq details p { margin: 0 0 20px; color: var(--muted); max-width: 44em; }
+.faq code { color: var(--text); }
+
 /* closing */
 .end { padding-block: clamp(80px, 11vw, 136px) 0; }
 .end-card { position: relative; overflow: hidden; isolation: isolate; text-align: center; border: 1px solid var(--line-2); border-radius: 22px; padding: clamp(48px, 8vw, 88px) 20px; background: linear-gradient(180deg, #111318, var(--ink)); }
@@ -264,7 +291,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   .steps { grid-template-columns: minmax(0, 1fr); }
   .top nav .gh-text { display: none; }
 }
-@media (max-width: 640px) { .why-list { grid-template-columns: minmax(0, 1fr); } .why-row { padding: 22px 20px 24px; } .key { min-width: 68px; height: 68px; } }
+@media (max-width: 640px) { .ba-row { grid-template-columns: minmax(0, 1fr); gap: 8px; } .ba-note { grid-column: 1; } .tbar { font-size: .72rem; padding: 8px; } .tbar span { padding: 4px 6px; } .why-list { grid-template-columns: minmax(0, 1fr); } .why-row { padding: 22px 20px 24px; } .key { min-width: 68px; height: 68px; } }
 @media (prefers-reduced-motion: reduce) { .num.flip, .try .nudge, .board-head .live::before, .mark i, .key.a { animation: none; } .js .rv { opacity: 1; transform: none; transition: none; } }
 </style>
 
@@ -337,6 +364,26 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds, no mock-ups.</figcaption>
       <figcaption lang="ja">本物の tmux 画面を場面ごとに記録した25秒。作り物の画面はありません。</figcaption>
     </figure>
+
+    <section data-pal="wait:problem">
+      <p class="eyebrow"><span lang="en">The problem</span><span lang="ja">困っていたこと</span></p>
+      <h2 lang="en">Every tab looks the same. One of them is stuck on you.</h2>
+      <h2 lang="ja">どのタブも同じ顔。<wbr>でも1つは、<wbr>あなたを待っている。</h2>
+      <div class="ba">
+        <div class="ba-row before">
+          <p class="ba-label"><span lang="en">Plain tmux</span><span lang="ja">いままで</span></p>
+          <div class="tbar" aria-label="tmux tabs without junban"><span class="sess">work</span><span class="cur">1 billing</span><span>2 fix-ci</span><span>3 pricing</span><span>4 db</span><span>5 k8s</span><span>6 docs</span></div>
+          <p class="ba-note" lang="en">You find out by opening each one.</p>
+          <p class="ba-note" lang="ja">確かめるには、1つずつ開くしかありません。</p>
+        </div>
+        <div class="ba-row after">
+          <p class="ba-label"><span lang="en">With junban</span><span lang="ja">junban あり</span></p>
+          <div class="tbar" aria-label="tmux tabs with junban badges"><span class="sess">work</span><span class="cur">1 <b class="r">●</b> billing</span><span>2 <b class="w">✋</b> fix CI</span><span>3 <b class="d">✓</b> pricing</span><span>4 <b class="w">✋</b> db migration</span><span>5 <b class="r">●</b> k8s</span><span>6 docs</span></div>
+          <p class="ba-note" lang="en">The badges say who is waiting. Alt+a goes to whoever has waited longest.</p>
+          <p class="ba-note" lang="ja">誰が待っているかはバッジで分かります。Alt+a で、いちばん長く待っている窓へ。</p>
+        </div>
+      </div>
+    </section>
 
     <section data-pal="idle:onekey">
       <p class="eyebrow"><span lang="en">The only key</span><span lang="ja">覚えるキーはひとつ</span></p>
@@ -451,6 +498,44 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       </div>
     </section>
 
+    <section data-pal="idle:faq">
+      <p class="eyebrow"><span lang="en">Questions</span><span lang="ja">よくある質問</span></p>
+      <h2 lang="en">Before you ask.</h2>
+      <h2 lang="ja">聞かれる前に。</h2>
+      <div class="faq">
+        <details>
+          <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 用のステータス表示と何が違う？</span></summary>
+          <p lang="en">Those put an icon on each tab, and they're good; the README links them. junban also ranks who has waited longest so Alt+a goes there, turns the status line into the next step, and repairs stuck badges from the agent's own session records instead of trusting hooks alone.</p>
+          <p lang="ja">タブにアイコンを出すものはほかにもあり、README でも紹介しています。junban はさらに、待たせた順に並べて Alt+a で飛ばし、ステータスバーで次の一手を示し、フックの取りこぼしで固まったバッジをエージェント自身のセッション記録から直します。</p>
+        </details>
+        <details>
+          <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
+          <p lang="en">No. State lives in tmux options, and the wait meter in a local file only you can read. Naming windows with a model is opt-in and goes only to the URL you set, such as a local Ollama.</p>
+          <p lang="ja">送りません。状態は tmux のオプションに、待ち時間の記録は自分だけが読める手元のファイルに残ります。モデルで窓に名前を付ける機能は任意で、送り先は自分で設定した URL（手元の Ollama など）だけです。</p>
+        </details>
+        <details>
+          <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
+          <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to keep yours; junban then only splices in its badges and counter.</p>
+          <p lang="ja">標準では junban のステータスバーになります。<code>set -g @junban-theme off</code> を足すと今の見た目のままで、バッジと件数だけが加わります。</p>
+        </details>
+        <details>
+          <summary><span lang="en">Why tmux, and not an app or a VS Code extension?</span><span lang="ja">なぜ tmux？アプリや VS Code 拡張ではないの？</span></summary>
+          <p lang="en">That's where the agents already run, over SSH too. There is no daemon and no app: if tmux is up, junban works.</p>
+          <p lang="ja">エージェントはもともと tmux の中で動いていて、SSH 先でも同じです。常駐プロセスもアプリもないので、tmux が動いていれば junban も動きます。</p>
+        </details>
+        <details>
+          <summary><span lang="en">What about other agents?</span><span lang="ja">ほかのエージェントでも使える？</span></summary>
+          <p lang="en">Claude Code, Codex CLI and Gemini CLI are built in. Anything that can run a command when it needs you or finishes can call <code>scripts/state.sh waiting</code> or <code>done</code>.</p>
+          <p lang="ja">Claude Code・Codex CLI・Gemini CLI は標準で対応しています。入力待ちや完了のときにコマンドを実行できるツールなら、<code>scripts/state.sh waiting</code>（または <code>done</code>）でつながります。</p>
+        </details>
+        <details>
+          <summary><span lang="en">Why the name?</span><span lang="ja">名前の由来は？</span></summary>
+          <p lang="en">順番 (junban) is Japanese for "whose turn". Like the call board at a clinic: one number lit, everyone else waits in order.</p>
+          <p lang="ja">「順番」です。病院や銀行の呼び出し掲示板のように、点灯している番号が1つあり、ほかは順に待っています。</p>
+        </details>
+      </div>
+    </section>
+
     <section class="end">
       <div class="end-card">
         <h2 lang="en">Your agents are waiting.</h2>
@@ -470,7 +555,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   <footer>
     <span class="zz">{{FACE foot sleep}}<span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
     <span lang="ja">MIT · <a href="https://namelessjp.com">Nameless</a> で毎日使っています。</span></span>
-    <span class="flinks"><a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml"><span lang="en">Report a bug</span><span lang="ja">不具合を報告</span></a><a href="https://github.com/Nameless-LLC/junban/discussions"><span lang="en">Ideas &amp; questions</span><span lang="ja">要望・質問</span></a><a href="https://github.com/Nameless-LLC/junban#prior-art"><span lang="en">Prior art we learned from</span><span lang="ja">参考にした先行事例</span></a></span>
+    <span class="flinks"><a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml"><span lang="en">Report a bug</span><span lang="ja">不具合を報告</span></a><a href="https://github.com/Nameless-LLC/junban/discussions"><span lang="en">Ideas &amp; questions</span><span lang="ja">要望・質問</span></a><a href="https://github.com/Nameless-LLC/junban/blob/main/CHANGELOG.md"><span lang="en">Changelog</span><span lang="ja">更新履歴</span></a><a href="https://github.com/Nameless-LLC/junban#prior-art"><span lang="en">Prior art we learned from</span><span lang="ja">参考にした先行事例</span></a></span>
   </footer>
 </div>
 
@@ -536,6 +621,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   // a smaller one keeps you company once the board scrolls away
   var PALS = { video: { en: 'Real tmux. No mock-ups.', ja: '本物の tmux だよ' }, onekey: { en: 'Just Alt+a.', ja: 'Alt+a だけ覚えてね' },
     why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'One line. Go!', ja: '1行でいけるよ' },
+    problem: { en: 'Which one is waiting?', ja: 'どれが待ってる？' }, faq: { en: 'Ask away.', ja: 'なんでも聞いてね' },
     sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '掲示板に戻る？' } };
   var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
   function palSay(key, ms) {
