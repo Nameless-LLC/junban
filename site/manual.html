@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>junban manual</title>
+<meta name="description" content="Everything junban does: badges, keys, the guide line, recaps, the wait report, the timeline, other agents and every option.">
+<meta property="og:title" content="junban manual">
+<meta property="og:description" content="Badges, keys, the guide line, recaps, the wait report, the timeline, other agents and every option.">
+<meta property="og:image" content="https://junban.namelessjp.com/social/og.png">
+<meta property="og:url" content="https://junban.namelessjp.com/manual/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0b0d">
+<link rel="canonical" href="https://junban.namelessjp.com/manual/">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700&display=swap">
+<style>
+/* The manual: same night palette as the landing page, set for reading. */
+:root {
+  --ink: #0a0b0d; --panel: #121419; --panel-2: #171a20;
+  --line: rgba(255,255,255,.075); --line-2: rgba(255,255,255,.13);
+  --text: #edece8; --muted: #9a9ea6; --dim: #6f737d;
+  --wait: #ff5d52; --done: #7cc483; --run: #e2b350;
+  --f-display: "Geist", "Zen Kaku Gothic New", "IBM Plex Sans JP", system-ui, sans-serif;
+  --f-body: "Geist", "IBM Plex Sans JP", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-sign: "DotGothic16", "Geist Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: 76px; }
+html, body { overflow-x: clip; }
+body { margin: 0; background: radial-gradient(900px 420px at 85% -10%, rgba(255,93,82,.08), transparent 60%), var(--ink); color: var(--text);
+  font: 400 .94rem/1.75 var(--f-body); -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+::selection { background: rgba(255,93,82,.35); color: #fff; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--wait); outline-offset: 3px; border-radius: 6px; }
+html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.top::before { content: ""; position: absolute; inset: 0 -100vmax; z-index: -1; background: rgba(10,11,13,.8); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.mark { display: flex; align-items: center; gap: 10px; font: 600 1rem/1 var(--f-display); letter-spacing: -.02em; text-decoration: none; white-space: nowrap; }
+.mark i { width: 8px; height: 8px; border-radius: 50%; background: var(--wait); box-shadow: 0 0 10px rgba(255,93,82,.5); }
+.mark small { font: 500 .72rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.top nav { display: flex; align-items: center; gap: 16px; font-size: .85rem; color: var(--muted); }
+.top nav a { text-decoration: none; white-space: nowrap; } .top nav a:hover { color: var(--text); }
+.lang { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; }
+.lang button { font: 500 .75rem/1 var(--f-body); color: var(--muted); background: none; border: 0; padding: 6px 10px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.lang button[aria-pressed="true"] { background: var(--text); color: var(--ink); }
+
+.layout { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 56px; padding-block: 40px 96px; }
+.toc { position: sticky; top: 84px; align-self: start; font-size: .84rem; max-height: calc(100vh - 100px); overflow-y: auto; scrollbar-width: none; }
+.toc p { font: 500 .7rem/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin: 0 0 14px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: t; }
+.toc li { counter-increment: t; }
+.toc a { display: flex; gap: 10px; padding: 5px 10px; border-radius: 7px; text-decoration: none; color: var(--muted); border-left: 1px solid var(--line); border-radius: 0 7px 7px 0; }
+.toc a::before { content: counter(t, decimal-leading-zero); font: 500 .7rem/1.9 var(--f-mono); color: var(--dim); }
+.toc a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.toc a.on { color: var(--text); border-left-color: var(--wait); background: rgba(255,93,82,.06); }
+.toc a.on::before { color: var(--wait); }
+.toc-m { display: none; }
+
+article { min-width: 0; max-width: 46rem; }
+.intro { padding-bottom: 28px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.eyebrow { font: 500 .72rem/1 var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--wait); margin: 0 0 14px; }
+h1 { font: 600 clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem)/1.12 var(--f-display); letter-spacing: -.03em; margin: 0 0 12px; text-wrap: balance;
+  background: linear-gradient(180deg, #fff 30%, #c4c6cc); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.intro p { color: var(--muted); margin: 0; }
+section { padding-top: 44px; counter-increment: s; }
+article { counter-reset: s; }
+h2 { font: 600 1.28rem/1.3 var(--f-display); letter-spacing: -.02em; margin: 0 0 12px; display: flex; gap: 12px; align-items: baseline; }
+h2::before { content: counter(s, decimal-leading-zero); font: 500 .74rem/1 var(--f-mono); color: var(--wait); letter-spacing: .08em; }
+h3 { font: 600 .98rem/1.4 var(--f-display); margin: 26px 0 6px; }
+p { margin: 0 0 12px; }
+article > section p, article li { color: #c7c9ce; }
+ul { margin: 0 0 12px; padding-left: 1.2em; } li { margin: 4px 0; } li::marker { color: var(--dim); }
+code, kbd { font: .86em var(--f-mono); }
+p code, li code, td code { background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; color: var(--text); white-space: nowrap; }
+kbd { display: inline-block; background: linear-gradient(#1d2027, #14161b); border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 5px; padding: 0 6px; line-height: 1.6; color: var(--text); white-space: nowrap; }
+pre { margin: 12px 0 16px; background: var(--panel); border: 1px solid var(--line-2); border-radius: 12px; padding: 14px 16px; font: 400 .8rem/1.7 var(--f-mono); overflow-x: auto; color: var(--text); }
+pre .c { color: var(--dim); }
+.cp { position: relative; }
+.cp pre { padding-right: 76px; }
+.cp button { position: absolute; top: 8px; right: 8px; font: 500 .72rem/1 var(--f-body); color: var(--text); background: #23262d; box-shadow: -10px 0 12px var(--panel); border: 1px solid var(--line-2); border-radius: 7px; padding: 7px 10px; cursor: pointer; }
+.cp button:hover { background: #2d3139; }
+@media (max-width: 600px) { .cp pre { white-space: pre-wrap; overflow-wrap: anywhere; } }
+th { white-space: nowrap; }
+.note { border: 1px solid var(--line-2); border-left: 2px solid var(--wait); background: rgba(255,93,82,.04); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 14px 0; font-size: .88rem; }
+.note p { margin: 0; }
+.tw { overflow-x: auto; margin: 12px 0 16px; border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 .7rem/1.4 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); background: rgba(255,255,255,.02); }
+td:first-child { white-space: nowrap; }
+td { color: #c7c9ce; }
+.b { font-weight: 600; } .w { color: var(--wait); } .d { color: var(--done); } .r { color: var(--run); } .m { color: var(--dim); }
+
+/* status line samples */
+.tl { font: 400 .78rem/1 var(--f-mono); background: #1e2127; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 10px 0 14px; display: flex; gap: 14px; align-items: center; white-space: nowrap; overflow-x: auto; color: #7f848e; scrollbar-width: none; }
+.tl b { color: #e5c07b; font-weight: 500; }
+.tl .bn { background: #e06c75; color: #1e2127; font-weight: 600; padding: 4px 8px; border-radius: 3px; }
+.tl .bn.g { background: #98c379; }
+.tl .rc { color: #c7c9ce; }
+.tl .tip { margin-left: auto; color: #5c6370; }
+.tl .face { font-family: var(--f-mono); }
+
+footer { border-top: 1px solid var(--line); padding-block: 24px 40px; display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: space-between; font-size: .82rem; color: var(--dim); }
+footer a { color: var(--muted); }
+
+:lang(ja) { line-break: strict; }
+p:lang(ja), li:lang(ja), .intro p:lang(ja) { word-break: auto-phrase; }
+h1:lang(ja), h2:lang(ja), h3:lang(ja) { word-break: keep-all; overflow-wrap: anywhere; font-feature-settings: "palt"; }
+h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight: 700; letter-spacing: 0; }
+.nw { white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 24px; }
+  .toc { display: none; }
+  .toc-m { display: block; border: 1px solid var(--line-2); border-radius: 12px; margin: 0 0 8px; background: var(--panel); }
+  .toc-m summary { cursor: pointer; padding: 12px 16px; font: 500 .8rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .toc-m ol { margin: 0; padding: 0 16px 14px 2.2em; font-size: .88rem; }
+  .toc-m a { text-decoration: none; color: #c7c9ce; }
+}
+@media (max-width: 480px) { .top nav .hide-s { display: none; } .mark small { display: none; } }
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"junban manual","url":"https://junban.namelessjp.com/manual/","about":{"@type":"SoftwareApplication","name":"junban","url":"https://junban.namelessjp.com/"},"publisher":{"@type":"Organization","name":"Nameless LLC","url":"https://namelessjp.com"}}</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="../"><i aria-hidden="true"></i>junban <small>manual</small></a>
+    <nav>
+      <a href="../" class="hide-s"><span lang="en">Home</span><span lang="ja">トップ</span></a>
+      <a href="https://github.com/Nameless-LLC/junban">GitHub ↗</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set="en" aria-pressed="true">EN</button>
+        <button type="button" data-set="ja" aria-pressed="false">日本語</button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Contents">
+      <p lang="en">Contents</p><p lang="ja">目次</p>
+      <ol id="toc"></ol>
+    </aside>
+
+    <article>
+      <div class="intro">
+        <p class="eyebrow"><span lang="en">Manual · 0.3</span><span lang="ja">マニュアル · 0.3</span></p>
+        <h1 lang="en">Everything junban does, and how to tune it.</h1>
+        <h1 lang="ja">junban の全機能と、<wbr>その調整方法。</h1>
+        <p lang="en">You only need <kbd>Alt+a</kbd>. The rest is here for when you want it. Everything below matches the current release.</p>
+        <p lang="ja">覚えるのは <kbd>Alt+a</kbd> だけで十分です。ほかの機能は、必要になったときにここで調べてください。内容は最新版に合わせています。</p>
+      </div>
+
+      <details class="toc-m"><summary><span lang="en">Contents</span><span lang="ja">目次</span></summary><ol id="toc-m"></ol></details>
+
+      <section id="start">
+        <h2><span lang="en">Get started</span><span lang="ja">はじめに</span></h2>
+        <p lang="en">Run this in a terminal. It installs junban into tmux, reloads tmux, and connects Claude Code if you have it.</p>
+        <p lang="ja">ターミナルでこれを実行します。tmux に junban を入れて読み込み直し、Claude Code があればそちらにもつなぎます。</p>
+        <pre>curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
+        <p lang="en">With <a href="https://github.com/tmux-plugins/tpm">TPM</a>, add <code>set -g @plugin 'Nameless-LLC/junban'</code> to <code>~/.tmux.conf</code>, press prefix + <kbd>I</kbd>, then connect Claude Code:</p>
+        <p lang="ja"><a href="https://github.com/tmux-plugins/tpm">TPM</a> を使う場合は、<code>~/.tmux.conf</code> に <code>set -g @plugin 'Nameless-LLC/junban'</code> を足して prefix + <kbd>I</kbd> を押し、Claude Code をつなぎます。</p>
+        <pre>claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
+        <p lang="en">Needs tmux 3.2 or newer and bash. python3 and fzf are optional but recommended: python3 runs the badge repair, recaps and reports; fzf makes the <kbd>Alt+f</kbd> list searchable. Works on Linux and macOS.</p>
+        <p lang="ja">必要なのは tmux 3.2 以上と bash です。python3 と fzf は任意ですが、入れておくのがおすすめです。python3 はバッジの自動修復・1行要約・集計に、fzf は <kbd>Alt+f</kbd> の一覧の検索に使います。Linux と macOS で動きます。</p>
+        <p lang="en">New Claude Code sessions report their state from the first prompt. Press <kbd>Alt+/</kbd> any time for the keys.</p>
+        <p lang="ja">新しく始めた Claude Code のセッションは、最初の依頼から状態を報告します。キーを忘れたら、いつでも <kbd>Alt+/</kbd> を押してください。</p>
+      </section>
+
+      <section id="badges">
+        <h2><span lang="en">Badges</span><span lang="ja">状態バッジ</span></h2>
+        <p lang="en">Each tmux tab shows what its agent is doing.</p>
+        <p lang="ja">tmux の各タブに、そのエージェントの状態が出ます。</p>
+        <div class="tw"><table>
+          <thead><tr><th lang="en">Badge</th><th lang="ja">バッジ</th><th lang="en">Meaning</th><th lang="ja">意味</th></tr></thead>
+          <tbody>
+            <tr><td class="w b">✋</td><td><span lang="en">Waiting on you: a question, or permission to run something. Clears when you answer.</span><span lang="ja">あなたの返事待ち（質問、または実行の許可）。返事をすると消えます。</span></td></tr>
+            <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or come back to that terminal.</span><span lang="ja">作業が終わり、まだ見ていない。その窓を開いた瞬間か、その端末に戻った時点で消えます。</span></td></tr>
+            <tr><td class="r">●</td><td><span lang="en">Working.</span><span lang="ja">作業中。</span></td></tr>
+            <tr><td class="r b">⚠</td><td><span lang="en">Another agent works in the same git working tree. Two agents there overwrite each other's edits. See <a href="#new">Alt+n</a>.</span><span lang="ja">別のエージェントと同じ git の作業ツリーで動いている。互いの編集を上書きします。<a href="#new">Alt+n</a> を参照。</span></td></tr>
+            <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていない（<code>@junban-stale-hours</code>）。<kbd>Alt+f</kbd> の一覧で下に沈みます。</span></td></tr>
+          </tbody>
+        </table></div>
+        <p lang="en">The right end of the status bar counts all sessions: ✋ waiting, ✓ done, ● running. Next to it sits the mascot, the call board's eyes:</p>
+        <p lang="ja">ステータスバーの右端には、全セッションの件数（✋ 返事待ち・✓ 完了・● 作業中）が出ます。その隣にいるのがマスコット、呼び出し掲示板の「目」です。</p>
+        <div class="tw"><table><tbody>
+          <tr><td><code>[▮ ▮]!</code></td><td><span lang="en">someone is waiting on you</span><span lang="ja">誰かがあなたを待っている</span></td></tr>
+          <tr><td><code>[◠ ◠]</code></td><td><span lang="en">one finished</span><span lang="ja">作業が終わった</span></td></tr>
+          <tr><td><code>[▮▮ ]</code></td><td><span lang="en">agents are working</span><span lang="ja">エージェントが作業中</span></td></tr>
+          <tr><td><code>[▬ ▬]z</code></td><td><span lang="en">nothing to do</span><span lang="ja">何もすることがない</span></td></tr>
+        </tbody></table></div>
+        <h3 lang="en">Badges fix themselves</h3><h3 lang="ja">バッジは自動で直る</h3>
+        <p lang="en">Press Esc mid-turn and Claude Code sends no "stopped" event, so a tool that only listens to hooks would say "working" forever. Every few seconds junban checks Claude Code's own session records in <code>~/.claude/sessions</code>, and walks the process tree to be sure which pane it is looking at, then corrects the badge.</p>
+        <p lang="ja">作業の途中で Esc を押すと、Claude Code は「止まった」というイベントを送りません。フックだけを見るツールでは「作業中」のまま固まります。junban は数秒ごとに Claude Code 自身のセッション記録 <code>~/.claude/sessions</code> を確認し、プロセスの親子関係からどの窓かを確かめたうえで、バッジを直します。</p>
+      </section>
+
+      <section id="keys">
+        <h2><span lang="en">Keys</span><span lang="ja">キー</span></h2>
+        <p lang="en">If your terminal doesn't send Alt, every key has a prefix fallback.</p>
+        <p lang="ja">Alt が効かない端末でも、prefix の後に押すキーで同じことができます。</p>
+        <div class="tw"><table>
+          <thead><tr><th lang="en">Key</th><th lang="ja">キー</th><th>prefix</th><th lang="en">What it does</th><th lang="ja">動作</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">いちばん待たせている窓へ飛ぶ。✋ が ✓ より先、待った時間の長い順。</span></td></tr>
+            <tr><td><kbd>Alt+f</kbd></td><td><kbd>f</kbd></td><td><span lang="en">Every agent in one list, neediest first, with a live preview.</span><span lang="ja">全エージェントの一覧。待たせている順で、中身のプレビュー付き。</span></td></tr>
+            <tr><td><kbd>Alt+n</kbd></td><td><kbd>C</kbd></td><td><span lang="en">Start a new agent in this directory.</span><span lang="ja">このディレクトリで新しいエージェントを起動する。</span></td></tr>
+            <tr><td><kbd>Alt+g</kbd></td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time.</span><span lang="ja">小窓のシェル。閉じても中身は残り、次に開くと続きから使えます。</span></td></tr>
+            <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">全キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
+            <tr><td class="m">—</td><td><kbd>T</kbd></td><td><span lang="en">Today's <a href="#timeline">timeline</a>. No Alt key by default (Alt+t toggles thinking in Claude Code); set <code>@junban-key-timeline</code> to add one.</span><span lang="ja">今日の<a href="#timeline">タイムライン</a>。Alt キーは標準では割り当てていません（Claude Code では Alt+t が思考の切り替えのため）。<code>@junban-key-timeline</code> で追加できます。</span></td></tr>
+            <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd></td><td class="m">—</td><td><span lang="en">Window by number.</span><span lang="ja">番号の窓へ移動。</span></td></tr>
+            <tr><td><kbd>Alt+[</kbd> <kbd>Alt+]</kbd></td><td class="m">—</td><td><span lang="en">Previous / next window.</span><span lang="ja">前 / 次の窓。</span></td></tr>
+            <tr><td><kbd>Alt+Tab</kbd></td><td class="m">—</td><td><span lang="en">The window you were just in.</span><span lang="ja">直前の窓に戻る。</span></td></tr>
+            <tr><td><kbd>Alt+z</kbd></td><td class="m">—</td><td><span lang="en">Zoom the pane, and back.</span><span lang="ja">ペインを最大化 / 元に戻す。</span></td></tr>
+          </tbody>
+        </table></div>
+        <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は 設定 → プロファイル → キーボード →「Option キーをメタキーとして使用」をオンにします。</p></div>
+        <h3 id="list" lang="en">The Alt+f list</h3><h3 lang="ja">Alt+f の一覧</h3>
+        <p lang="en">Agents that need you come first, each with its badge, its name and what you last asked it. Type to filter by name or by what you asked; the preview shows the window live. <kbd>Enter</kbd> goes there, <kbd>Esc</kbd> closes. Without fzf you get tmux's own chooser with the same order.</p>
+        <p lang="ja">あなたを待っている窓から順に、バッジ・窓の名前・最後に頼んだ内容が並びます。文字を打つと名前や依頼内容で絞り込め、プレビューにはその窓の今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は、tmux 標準の選択画面が同じ順番で出ます。</p>
+        <h3 id="new" lang="en">Alt+n and worktrees</h3><h3 lang="ja">Alt+n と worktree</h3>
+        <p lang="en"><kbd>Alt+n</kbd> opens a window in the current directory and starts your agent (<code>@junban-agent-cmd</code>, default <code>claude</code>). If another agent already works in that git tree and the agent is Claude Code, the new one starts in its own worktree (<code>claude --worktree</code>), so the two never edit the same files. <code>@junban-new-worktree off</code> keeps the plain behaviour.</p>
+        <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しい窓を開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2体が同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
+      </section>
+
+      <section id="guide">
+        <h2><span lang="en">The guide line</span><span lang="ja">案内行（2行目）</span></h2>
+        <p lang="en">junban adds a second status line that changes with the situation, so there is nothing to memorise.</p>
+        <p lang="ja">junban はステータスバーに2行目を足します。状況に合わせて中身が変わるので、何も覚えなくて済みます。</p>
+        <p lang="en"><span class="b">Calm.</span> The five keys worth knowing, the wait meter, and the mascot.</p>
+        <p lang="ja"><span class="b">平常時。</span>覚えておくと便利な5つのキー、待ち時間メーター、マスコット。</p>
+        <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">⏱ kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
+        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> 全キー</span><span class="rc">⏱ 今日の待たせ時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前の窓に戻る</span></div>
+        <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
+        <p lang="ja"><span class="b w">誰かが待っているとき。</span>キーを示す赤い帯と、次に飛ぶ窓が何を求めているかの1行。</p>
+        <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
+        <div class="tl" lang="ja"><span class="bn">✋ 2窓があなたの返事待ち → Alt+a で飛ぶ</span><span class="rc">DB 移行: 開発 DB で psql を実行したい</span></div>
+        <p lang="en"><span class="b d">Someone finished.</span> A green banner, with what came of the turn.</p>
+        <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の帯と、作業の結果の1行。</p>
+        <div class="tl" lang="en"><span class="bn g">✓ 1 finished → Alt+a to review</span><span class="rc">pricing page copy: 3 files changed, tests pass</span></div>
+        <div class="tl" lang="ja"><span class="bn g">✓ 1窓の作業が終わりました → Alt+a で見る</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
+        <p lang="en">When two agents share a git tree, the line names the windows and how to split them. A tip rotates on the right once a minute. On a narrow terminal the tip goes first, then the recap is cut, so the banner always fits.</p>
+        <p lang="ja">2体が同じ git ツリーで動いているときは、その窓の名前と分け方を出します。右端には1分ごとに小技が出ます。端末の幅が狭いときは小技から先に消え、次に1行要約を省略するので、帯そのものは必ず表示されます。</p>
+        <p lang="en"><code>@junban-guide-lines 3</code> gives the banner a row of its own, with the keys and the tip on a third row. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
+        <p lang="ja"><code>@junban-guide-lines 3</code> にすると、帯が独立した1行になり、キーと小技は3行目に回ります。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
+      </section>
+
+      <section id="recap">
+        <h2><span lang="en">One-line recaps</span><span lang="ja">1行要約</span></h2>
+        <p lang="en">When an agent asks you something, wants permission or finishes, junban writes one line on it: the question, the command it wants to run, or what came of the turn ("tests pass, PR #12 opened"). It shows in the banner, in the <kbd>Alt+f</kbd> list and in phone notifications, so you can decide before you switch.</p>
+        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。帯、<kbd>Alt+f</kbd> の一覧、スマホ通知に出るので、窓を切り替える前に判断できます。</p>
+        <p lang="en">With a namer model set (<a href="#names">below</a>) the model writes it; otherwise it is the first real line of the reply. <code>@junban-recap off</code> turns it off.</p>
+        <p lang="ja">命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければ返答の最初の意味のある1行を使います。<code>@junban-recap off</code> で止められます。</p>
+      </section>
+
+      <section id="names">
+        <h2><span lang="en">Window names</span><span lang="ja">窓の名前</span></h2>
+        <p lang="en">Windows are named after what you asked. Short replies ("ok", "yes", "進めて", "ครับ"), slash commands, shell escapes and pasted blocks never rename anything. A window you rename yourself (prefix <kbd>,</kbd>) is left alone for good.</p>
+        <p lang="ja">窓には、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い相槌、スラッシュコマンド、シェル実行、貼り付けた長文では変わりません。自分で名前を付けた窓（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
+        <pre><span class="c"># default: the first meaningful line you typed</span>
+set -g @junban-rename prompt
+<span class="c"># or let a model summarise your last few prompts</span>
+set -g @junban-rename llm
+set -g @junban-namer-url http://localhost:11434      <span class="c"># Ollama, or an OpenAI-compatible …/v1</span>
+set -g @junban-namer-model qwen3:8b
+set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var holding the key (…/v1 only)</span></pre>
+        <p lang="en">A small local model names a window in under a second. If the model is unreachable, the prompt is used.</p>
+        <p lang="ja">手元の小さなモデルなら1秒以内に名前が付きます。モデルにつながらないときは、頼んだ内容をそのまま使います。</p>
+      </section>
+
+      <section id="report">
+        <h2><span lang="en">The wait report</span><span lang="ja">待ち時間のレポート</span></h2>
+        <p lang="en">A wait runs from the moment an agent asks you something (✋) or finishes (✓) until you answer or look. If it finishes while you are watching, that is no wait at all. One wait counts for at most <code>@junban-meter-cap</code> minutes (60), so a night away doesn't swamp the numbers.</p>
+        <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）瞬間から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（60分）で打ち切るので、一晩放置しても数字が崩れません。</p>
+        <ul>
+          <li lang="en">The guide line shows today's total and your median reply, against the seven days before.</li>
+          <li lang="ja">案内行に、今日の合計と返答の中央値が、直近7日との比較付きで出ます。</li>
+          <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last, your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
+          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較、自己ベストの日、今日いちばん待たせた窓、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
+          <li lang="en"><code>scripts/stats.sh 30</code> goes back 30 days.</li>
+          <li lang="ja"><code>scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
+        </ul>
+        <pre class="out" lang="en">  How long your agents waited on you — last 7 days
+
+  day          waited   count   median   ✋    ✓
+  10/16      10h12m      139      55s     0  139   ████████████████
+  10/18 today  2h53m      22    4m23s     0   22   ████▌
+  Best day: 10/16, median reply 55s
+  2 days in a row with a median reply within 5m</pre>
+        <pre class="out" lang="ja">  エージェントがあなたを待った時間 — 直近7日
+
+  日付         待たせ時間   回数    中央値   ✋     ✓
+  10/16        10時間12分    139      55秒    0   139   ████████████████
+  10/18 今日    2時間53分     22   4分23秒    0    22   ████▌
+  自己ベスト: 10/16 返答の中央値 55秒
+  2日連続で返答の中央値が5分以内</pre>
+      </section>
+
+      <section id="timeline">
+        <h2><span lang="en">The timeline</span><span lang="ja">タイムライン</span></h2>
+        <p lang="en">prefix <kbd>T</kbd> (and the top of <kbd>Alt+/</kbd>) shows when your agents worked today: one row per window, <span class="r">█</span> working, <span class="w">▓</span> waiting for your answer, <span class="d">▒</span> done and not looked at. Below it: when you were active, how long agents worked, how long they waited on you, and how many ran at once. <code>scripts/timeline.sh 1</code> shows yesterday.</p>
+        <p lang="ja">prefix <kbd>T</kbd>（と <kbd>Alt+/</kbd> の上部）で、今日エージェントがいつ動いたかが見られます。窓ごとに1行で、<span class="r">█</span> 作業中、<span class="w">▓</span> あなたの返事待ち、<span class="d">▒</span> 完了・未確認です。下には、稼働していた時間帯、エージェントの作業時間、あなたを待った時間、最大何窓が同時に動いたかが出ます。<code>scripts/timeline.sh 1</code> で前日を表示します。</p>
+        <div class="note"><p lang="en">It is a view for you, about your own day. It stays on your machine.</p><p lang="ja">自分の1日をふり返るための、自分用の画面です。データは手元のマシンから出ません。</p></div>
+      </section>
+
+      <section id="notify">
+        <h2><span lang="en">Notifications</span><span lang="ja">通知</span></h2>
+        <p lang="en">When an agent starts waiting or finishes, junban can run a command with the message (including the recap) on stdin.</p>
+        <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、コマンドを実行できます。メッセージ（1行要約を含む）は標準入力で渡されます。</p>
+        <pre><span class="c"># desktop (Linux)</span>
+set -g @junban-notify-cmd 'xargs -0 notify-send junban'
+<span class="c"># phone, via ntfy</span>
+set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
+        <p lang="en">A public ntfy.sh topic can be read by anyone who knows its name. Pick a long random one, or run your own server.</p>
+        <p lang="ja">ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。長くてランダムな名前にするか、自前のサーバーを使ってください。</p>
+      </section>
+
+      <section id="agents">
+        <h2><span lang="en">Codex, Gemini and other agents</span><span lang="ja">Codex・Gemini・ほかのエージェント</span></h2>
+        <div class="tw"><table>
+          <thead><tr><th lang="en">Agent</th><th lang="ja">エージェント</th><th lang="en">Setup</th><th lang="ja">設定</th><th lang="en">You get</th><th lang="ja">できること</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td><span lang="en">the plugin (the install line does it)</span><span lang="ja">プラグイン（導入の1行で入る）</span></td><td><span lang="en">✋ ✓ ●, recap, names; badges repair themselves after Esc</span><span lang="ja">✋ ✓ ●、1行要約、窓の名前。Esc 後のバッジの自動修復</span></td></tr>
+            <tr><td>Codex CLI</td><td><code>setup.sh codex</code></td><td><span lang="en">✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge</span><span lang="ja">✋ ✓ ●、実行したいコマンドを示す1行要約、窓の名前。Esc でバッジが消える</span></td></tr>
+            <tr><td>Gemini CLI</td><td><code>setup.sh gemini</code></td><td><span lang="en">✋ ✓ ●, recap names the command, names</span><span lang="ja">✋ ✓ ●、コマンドを示す1行要約、窓の名前</span></td></tr>
+          </tbody>
+        </table></div>
+        <pre>~/.tmux/plugins/junban/scripts/setup.sh codex    <span class="c"># writes ~/.codex/hooks.json</span>
+~/.tmux/plugins/junban/scripts/setup.sh gemini   <span class="c"># writes ~/.gemini/settings.json</span></pre>
+        <p lang="en">Both keep your own hooks, replace only junban's entries (safe to run again) and leave a <code>.bak</code>. Add <code>--print</code> to see what would be written. Codex asks you to trust new hooks once: open <code>/hooks</code> in Codex. To make <kbd>Alt+n</kbd> start Codex, <code>set -g @junban-agent-cmd codex</code>.</p>
+        <p lang="ja">どちらも既存のフックは残し、junban の分だけを書き換え（何度実行しても安全）、<code>.bak</code> を残します。<code>--print</code> を付けると、書き込む内容を表示するだけで終わります。Codex は新しいフックを一度だけ承認する必要があるので、Codex で <code>/hooks</code> を開いてください。<kbd>Alt+n</kbd> で Codex を起動したい場合は <code>set -g @junban-agent-cmd codex</code> にします。</p>
+        <p lang="en">Anything else that can run a command when it needs you or finishes can drive junban:</p>
+        <p lang="ja">入力待ちや完了のときにコマンドを実行できるツールなら、何でもつなげます。</p>
+        <pre>~/.tmux/plugins/junban/scripts/state.sh running   <span class="c"># or waiting | done | idle | clear</span></pre>
+      </section>
+
+      <section id="vscode">
+        <h2><span lang="en">VS Code terminals</span><span lang="ja">VS Code のターミナル</span></h2>
+        <p lang="en">If you keep one VS Code window per project, each terminal attached to its own tmux session, <kbd>Alt+a</kbd> raises the VS Code window that already shows the target, instead of swapping this terminal to another project. Plain terminals and web terminals switch in place. <code>@junban-vscode-raise off</code> always switches in place.</p>
+        <p lang="ja">プロジェクトごとに VS Code の窓を分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> は行き先をすでに表示している VS Code の窓を前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。普通の端末や Web のターミナルでは、その場で切り替えます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
+      </section>
+
+      <section id="options">
+        <h2><span lang="en">All options</span><span lang="ja">設定一覧</span></h2>
+        <p lang="en">All optional. Put them in <code>~/.tmux.conf</code> <span class="b">before</span> the plugin line, then reload tmux.</p>
+        <p lang="ja">すべて任意です。<code>~/.tmux.conf</code> の、プラグインを読み込む行より<span class="b">前</span>に書き、tmux を読み込み直します。</p>
+<pre><span class="c"># Look</span>
+set -g @junban-theme on            <span class="c"># off = keep your theme, only add badges and the counter</span>
+set -g @junban-position top        <span class="c"># top | bottom</span>
+set -g @junban-guide on            <span class="c"># the guide line</span>
+set -g @junban-guide-lines 2       <span class="c"># 3 = the banner gets a row of its own</span>
+set -g @junban-tint 20             <span class="c"># % of the banner colour washed over its row (0 = off)</span>
+set -g @junban-tint-waiting 35     <span class="c"># the same for ✋</span>
+set -g @junban-tips on             <span class="c"># rotating tip on the right</span>
+set -g @junban-mascot on           <span class="c"># off = hide the face</span>
+set -g @junban-name-width 12       <span class="c"># characters of a window name on a tab</span>
+set -g @junban-lang ja             <span class="c"># en | ja | th (default: from $LANG)</span>
+
+<span class="c"># Keys ("" to unbind)</span>
+set -g @junban-key-jump M-a
+set -g @junban-key-list M-f
+set -g @junban-key-new M-n
+set -g @junban-key-scratch M-g
+set -g @junban-key-help M-/
+set -g @junban-key-timeline ""     <span class="c"># e.g. M-y</span>
+set -g @junban-nav-keys on         <span class="c"># Alt+1..9, Alt+[ ], Alt+Tab, Alt+z</span>
+set -g @junban-prefix-keys on      <span class="c"># prefix a f C g / T</span>
+
+<span class="c"># Agents</span>
+set -g @junban-agent-cmd claude    <span class="c"># what Alt+n starts</span>
+set -g @junban-new-worktree auto   <span class="c"># off = never start in a separate worktree</span>
+set -g @junban-vscode-raise on     <span class="c"># off = Alt+a always switches this terminal</span>
+set -g @junban-recap on            <span class="c"># one line on what each agent needs</span>
+
+<span class="c"># Habits and numbers</span>
+set -g @junban-shared-check on     <span class="c"># ⚠ when two agents share a git tree</span>
+set -g @junban-scan-interval 30    <span class="c"># seconds between those git checks</span>
+set -g @junban-stale-hours 24      <span class="c"># z after this long untouched (0 = off)</span>
+set -g @junban-meter on            <span class="c"># ⏱ on the guide line</span>
+set -g @junban-meter-cap 60        <span class="c"># minutes one wait can count for</span>
+set -g @junban-goal 5              <span class="c"># streak: days with a median reply within this</span>
+
+<span class="c"># Window names: see "Window names"</span>
+set -g @junban-rename prompt       <span class="c"># off | prompt | llm</span>
+
+<span class="c"># Notifications: see "Notifications"</span>
+set -g @junban-notify-cmd '…'</pre>
+        <p lang="en">Colours: <code>@junban-color-waiting</code>, <code>-done</code>, <code>-running</code>, <code>-bg</code>, <code>-bg2</code>, <code>-fg</code>, <code>-accent</code>, <code>-muted</code>, <code>-dim</code>, <code>-key</code>, <code>-current-bg</code>. With your own theme, put <code>#{E:@junban-badge}</code> anywhere in a format.</p>
+        <p lang="ja">色: <code>@junban-color-waiting</code>・<code>-done</code>・<code>-running</code>・<code>-bg</code>・<code>-bg2</code>・<code>-fg</code>・<code>-accent</code>・<code>-muted</code>・<code>-dim</code>・<code>-key</code>・<code>-current-bg</code>。自分のテーマを使う場合は、<code>#{E:@junban-badge}</code> を好きなフォーマットに入れるとバッジが出ます。</p>
+      </section>
+
+      <section id="data">
+        <h2><span lang="en">Your data</span><span lang="ja">データの扱い</span></h2>
+        <p lang="en">State lives in tmux window options. Two logs are kept in <code>~/.local/state/junban/</code> (or <code>$XDG_STATE_HOME/junban</code>), readable only by you (files 0600, folder 0700):</p>
+        <p lang="ja">状態は tmux の窓のオプションに持っています。記録は <code>~/.local/state/junban/</code>（または <code>$XDG_STATE_HOME/junban</code>）の2つのファイルだけで、自分しか読めない権限（ファイル 0600、フォルダ 0700）です。</p>
+        <ul>
+          <li lang="en"><code>waits.tsv</code>: start, end, kind and window name of each wait. Feeds the meter and the report.</li>
+          <li lang="ja"><code>waits.tsv</code>: 待ちごとの開始・終了・種類・窓の名前。メーターとレポートに使います。</li>
+          <li lang="en"><code>states.tsv</code>: each change of state with its window name. Feeds the timeline. No prompts.</li>
+          <li lang="ja"><code>states.tsv</code>: 状態の変化と窓の名前。タイムラインに使います。依頼の内容は入りません。</li>
+        </ul>
+        <p lang="en">Nothing leaves your machine unless you set a namer URL or a notify command, and then it goes only where you pointed it.</p>
+        <p lang="ja">命名用の URL か通知コマンドを設定しない限り、何も外に出ません。設定した場合も、送り先は自分で指定した場所だけです。</p>
+      </section>
+
+      <section id="trouble">
+        <h2><span lang="en">Troubleshooting</span><span lang="ja">うまく動かないとき</span></h2>
+        <pre>~/.tmux/plugins/junban/scripts/doctor.sh</pre>
+        <p lang="en">Or <code>/junban:doctor</code> in Claude Code. It checks tmux, the plugin and each agent's hooks, prints ok / warn / FAIL with what to do, and leaves out window names, prompts and secrets so you can paste it into a <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">bug report</a>.</p>
+        <p lang="ja">Claude Code なら <code>/junban:doctor</code> でも同じです。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。窓の名前・依頼の内容・秘密の値は含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
+        <ul>
+          <li lang="en"><span class="b">Alt keys do nothing.</span> Your terminal isn't sending Alt. Use the prefix keys, or see the macOS note under <a href="#keys">Keys</a>.</li>
+          <li lang="ja"><span class="b">Alt キーが効かない。</span>端末が Alt を送っていません。prefix のキーを使うか、<a href="#keys">キー</a>の macOS の注記を見てください。</li>
+          <li lang="en"><span class="b">No badges.</span> Start a new agent session after installing; sessions that were already running pick up the hooks on their next prompt.</li>
+          <li lang="ja"><span class="b">バッジが出ない。</span>導入後に新しいセッションを始めてください。すでに動いていたセッションは、次に依頼したときから反映されます。</li>
+          <li lang="en"><span class="b">Codex shows nothing.</span> Trust the hooks once with <code>/hooks</code> in Codex.</li>
+          <li lang="ja"><span class="b">Codex で何も出ない。</span>Codex で <code>/hooks</code> を開き、フックを承認してください。</li>
+        </ul>
+        <p lang="en">Questions and setups: <a href="https://github.com/Nameless-LLC/junban/discussions">Discussions</a>. Security issues: report privately, see <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+        <p lang="ja">質問や使い方の相談は <a href="https://github.com/Nameless-LLC/junban/discussions">Discussions</a> へ。セキュリティの問題は公開せずに報告してください（<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">SECURITY.md</a>）。</p>
+      </section>
+
+      <section id="remove">
+        <h2><span lang="en">Uninstall</span><span lang="ja">アンインストール</span></h2>
+        <ol>
+          <li lang="en">Remove the junban line from <code>~/.tmux.conf</code> (<code>run-shell …/junban.tmux</code>, or the <code>@plugin</code> line).</li>
+          <li lang="ja"><code>~/.tmux.conf</code> から junban の行（<code>run-shell …/junban.tmux</code>、または <code>@plugin</code> の行）を消します。</li>
+          <li lang="en">Delete <code>~/.tmux/plugins/junban</code> and, if you like, <code>~/.local/state/junban</code>.</li>
+          <li lang="ja"><code>~/.tmux/plugins/junban</code> を削除します。必要なら <code>~/.local/state/junban</code> も消します。</li>
+          <li lang="en">In a terminal: <code>claude plugin uninstall junban@junban</code>. For Codex or Gemini, restore the <code>.bak</code> that setup left.</li>
+          <li lang="ja">ターミナルで <code>claude plugin uninstall junban@junban</code> を実行します。Codex・Gemini は、設定時に残した <code>.bak</code> を戻します。</li>
+          <li lang="en">Restart tmux (<code>tmux kill-server</code>) to clear the keys and status lines.</li>
+          <li lang="ja">tmux を再起動（<code>tmux kill-server</code>）すると、キーとステータスバーが元に戻ります。</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+
+  <footer>
+    <span>MIT · <a href="https://namelessjp.com">Nameless LLC</a></span>
+    <span><a href="../"><span lang="en">junban home</span><span lang="ja">junban トップ</span></a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/CHANGELOG.md"><span lang="en">Changelog</span><span lang="ja">更新履歴</span></a></span>
+  </footer>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(l) {
+    root.lang = l;
+    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === l)); });
+    try { localStorage.setItem('junban-lang', l); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('junban-lang'); } catch (e) {}
+  setLang(saved || ((navigator.language || '').slice(0, 2) === 'ja' ? 'ja' : 'en'));
+  document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.set); }); });
+
+  // a Copy button on every command block (not on sample output)
+  document.querySelectorAll('article pre:not(.out)').forEach(function (pre) {
+    var box = document.createElement('div'); box.className = 'cp';
+    pre.parentNode.insertBefore(box, pre); box.appendChild(pre);
+    var b = document.createElement('button'); b.type = 'button';
+    var label = function () { return root.lang === 'ja' ? 'コピー' : 'Copy'; };
+    b.textContent = label(); box.appendChild(b);
+    document.querySelectorAll('.lang button').forEach(function (l) { l.addEventListener('click', function () { b.textContent = label(); }); });
+    b.addEventListener('click', function () {
+      var text = pre.textContent.replace(/[ \t]+$/gm, '');
+      var ok = function () { b.textContent = root.lang === 'ja' ? 'コピーしました' : 'Copied'; setTimeout(function () { b.textContent = label(); }, 1500); };
+      var sel = function () { var r = document.createRange(); r.selectNodeContents(pre); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, sel); else sel();
+    });
+  });
+
+  // contents from the section headings, in both languages
+  var secs = document.querySelectorAll('article section[id]');
+  ['toc', 'toc-m'].forEach(function (id) {
+    var ol = document.getElementById(id);
+    secs.forEach(function (s) {
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#' + s.id; a.innerHTML = s.querySelector('h2').innerHTML;
+      li.appendChild(a); ol.appendChild(li);
+    });
+  });
+  document.querySelectorAll('#toc-m a').forEach(function (a) { a.addEventListener('click', function () { a.closest('details').open = false; }); });
+
+  // highlight the section you are reading
+  if ('IntersectionObserver' in window) {
+    var links = {};
+    document.querySelectorAll('#toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+    var spy = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].classList.toggle('on', k === e.target.id); });
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    secs.forEach(function (s) { spy.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

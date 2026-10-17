@@ -66,10 +66,13 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 | **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview |
 | **Alt+n** | New agent window in the current directory (in its own worktree if another agent already works there) |
 | **Alt+g** | Scratch shell in a popup that survives closing |
-| **Alt+/** | Cheat sheet, generated from your actual bindings |
+| **Alt+/** | Cheat sheet, generated from your actual bindings, with today's timeline and the wait report |
+| prefix T | Today's timeline: a row per window, when each agent worked, waited on you, or finished |
 | Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | Go to window · prev/next · last · zoom |
 
 Terminal swallows Alt? Every action also works after the prefix: `prefix a`, `f`, `C`, `g`, `/`.
+
+The full manual, with every option: [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/).
 
 ## What makes it different
 
@@ -86,6 +89,8 @@ There are [good plugins](#prior-art) that put a status icon on your tabs. junban
 **It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or what came of the turn ("tests pass, PR #12 opened"). With a namer model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
 
 **It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+
+**A timeline of your day.** prefix T (and the top of Alt+/) draws a row per window: yellow █ working, red ▓ waiting for you, green ▒ done and not looked at, then when you were active, how long agents worked and waited on you, and how many ran at once. `scripts/timeline.sh 1` shows yesterday. It is a view for you, and it stays on your machine; set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
 
 **A small mascot.** The call board's eyes sit on the status line, reacting to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
 
@@ -114,6 +119,7 @@ set -g @junban-key-list M-f
 set -g @junban-key-new M-n
 set -g @junban-key-scratch M-g
 set -g @junban-key-help M-/
+set -g @junban-key-timeline ""     # e.g. M-y (prefix T always works)
 set -g @junban-nav-keys on         # Alt+1..9, Alt+[ ], Alt+Tab, Alt+z
 set -g @junban-prefix-keys on      # prefix a/f/C/g/ fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts

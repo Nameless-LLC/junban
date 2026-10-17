@@ -4,6 +4,7 @@
     site/template.html  (page body, as the Artifact preview expects)
       → site/index.html  same, with the hero SVGs inlined (preview)
       → docs/index.html  full document for GitHub Pages
+    site/manual.html    → docs/manual/index.html (a complete page already)
 """
 import base64
 import os
@@ -59,4 +60,6 @@ page = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n
 head_end = body.index("<style>")
 page += body[:head_end] + "</head>\n<body>\n" + body[head_end:] + "\n</body>\n</html>\n"
 open(os.path.join(ROOT, "docs/index.html"), "w", encoding="utf-8").write(page)
-print("site/index.html, docs/index.html")
+os.makedirs(os.path.join(ROOT, "docs/manual"), exist_ok=True)
+open(os.path.join(ROOT, "docs/manual/index.html"), "w", encoding="utf-8").write(open(os.path.join(ROOT, "site/manual.html"), encoding="utf-8").read())
+print("site/index.html, docs/index.html, docs/manual/index.html")
