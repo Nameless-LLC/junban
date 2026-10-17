@@ -56,9 +56,11 @@ fi
 if [ "$(opt @junban-guide on)" = on ]; then
   # @junban-guide-lines 3 gives the banner a row of its own; the keys and tip go below.
   if [ "$(opt @junban-guide-lines 2)" = 3 ]; then
+    # A shade darker, so the keys row sits apart from both the banner and the pane.
+    bg2=$(opt @junban-color-bg2 "#17191d")
     tmux set -g status 3 \; \
          set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 1)" \; \
-         set -g status-format[2] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 2)"
+         set -g status-format[2] "#[bg=$bg2]#[fill=$bg2]#[align=left]#($S/hints.sh #{client_width} 2)"
   else
     tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width})"
     # Back from 3 rows: drop our third row, never a user's own.

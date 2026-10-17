@@ -83,10 +83,25 @@ if [ "$(opt @junban-tips on)" = on ]; then
   right="#[align=right]#[fg=$cdim]💡 $tip "
 fi
 
+# mix COLOR — COLOR laid faintly over the line's background (@junban-tint %,
+# default 20; 0 turns the tint off). Only #rrggbb colors can be mixed.
+mix() {
+  local a=${1#\#} b=${bg#\#} p i out=""
+  p=$(opt @junban-tint 20)
+  case "$a$b$p" in *[!0-9a-fA-F]* | '') echo "$bg"; return ;; esac
+  [ ${#a} -eq 6 ] && [ ${#b} -eq 6 ] && [ "$p" -gt 0 ] || { echo "$bg"; return; }
+  for i in 0 2 4; do
+    out=$out$(printf '%02x' $(( 16#${b:i:2} + (16#${a:i:2} - 16#${b:i:2}) * p / 100 )))
+  done
+  echo "#$out"
+}
+
 # banner COLOR TEXT — the ✋/✓ banner, then as much of the recap as fits.
-# The tip only stays when the whole recap fits beside it.
+# The whole row takes a faint wash of COLOR, so the state shows at a glance.
 banner() {
-  local head="#[fg=$bg,bg=$1,bold] $2 #[default] " room
+  local tint head room
+  tint=$(mix "$1")
+  head="#[fill=$tint]#[fg=$bg,bg=$1,bold] $2 #[bg=$tint,nobold] "
   # A recap can be a whole sentence; never let it stop mid-word without a mark.
   next_line=$(fit "$next_line" 96)
   if [ "$cols" -gt 0 ]; then
@@ -95,6 +110,8 @@ banner() {
     else right=""; next_line=$(fit "$next_line" "$room"); fi
   fi
   left="$head#[fg=$1]$next_line"
+  # The tip, if it stays, sits on the same wash.
+  [ -n "$right" ] && right="#[bg=$tint]$right"
 }
 
 # The calm line: the five keys worth remembering, today's wait, parked agents.
@@ -133,7 +150,9 @@ if [ "$w" -gt 0 ]; then
 elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 elif [ -n "$shared" ]; then
-  left="#[fg=$bg,bg=$ck,bold] ⚠ $(printf "$T_SHARED" "$shared") #[default]#[fg=$cm] $T_SHARED_GO"
+  tint=$(mix "$ck")
+  left="#[fill=$tint]#[fg=$bg,bg=$ck,bold] ⚠ $(printf "$T_SHARED" "$shared") #[bg=$tint,nobold]#[fg=$cm] $T_SHARED_GO"
+  [ -n "$right" ] && right="#[bg=$tint]$right"
 fi
 case "$row" in
   1) [ -z "$left" ] && left=$keys ;;

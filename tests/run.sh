@@ -286,6 +286,10 @@ has   "row 1 carries the banner"      "$(plain 120 1)" "Alt+a to jump"
 hasnt "row 1 has no tip"              "$(plain 200 1)" "💡"
 has   "row 2 keeps the keys under a banner" "$(plain 200 2)" "Alt+f"
 has   "row 2 carries the tip"         "$(plain 400 2)" "💡"
+has   "banner row takes a wash of its color" "$(bash "$S/hints.sh" 120 1)" "#[fill=#443036]"
+tmux set -g @junban-tint 0
+has   "tint 0 leaves the row plain"   "$(bash "$S/hints.sh" 120 1)" "#[fill=#1e2127]"
+tmux set -gu @junban-tint
 tmux set -g @junban-guide-lines 3; bash "$ROOT/junban.tmux"
 eq  "guide-lines 3 sets three status rows" "$(tmux show -gv status)" "3"
 has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
