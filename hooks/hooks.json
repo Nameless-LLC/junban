@@ -7,7 +7,8 @@
     "UserPromptSubmit": [
       { "hooks": [
         { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" running", "timeout": 5 },
-        { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/name.py\" || true", "timeout": 20, "async": true }
+        { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/name.py\" || true", "timeout": 20, "async": true },
+        { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/review.py\" start || true", "timeout": 10, "async": true }
       ] }
     ],
     "PreToolUse": [
@@ -26,7 +27,8 @@
     ],
     "Stop": [
       { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 },
-                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" done || true", "timeout": 20, "async": true } ] }
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" done || true", "timeout": 20, "async": true },
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/review.py\" done || true", "timeout": 20, "async": true } ] }
     ],
     "SessionEnd": [
       { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" clear", "timeout": 5 } ] }

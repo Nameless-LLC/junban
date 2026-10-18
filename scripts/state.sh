@@ -26,6 +26,7 @@ if [ "$st" = running ] && [ ! -t 0 ]; then
   else IFS= read -r -t 1 -d '' input 2>/dev/null; fi
 fi
 
+. "$(dirname "$0")/lib.sh"
 t() { tmux "$@" 2>/dev/null; }
 cur=$(t display -p -t "$pane" '#{@junban}')
 
@@ -66,7 +67,7 @@ case "$st" in
   clear)
     # Closing the agent is not answering it, so no wait is logged.
     [ -n "$cur" ] && timeline clear
-    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap; do t set -wu -t "$pane" "$o"; done
+    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap @junban_review @junban_pr @junban_base; do t set -wu -t "$pane" "$o"; done
     t set -pu -t "$pane" @junban_cwd
     exit 0 ;;
   done)
@@ -89,6 +90,12 @@ if [ "$st" != "$cur" ]; then
   case "$cur" in
     waiting|done)
       since=$(t display -p -t "$pane" '#{@junban_ts}')
+      # A ✓ held by @junban-done-batch only starts waiting on you once it shows;
+      # opening it before then is no wait at all.
+      if [ "$cur" = "done" ] && [ -n "$since" ]; then
+        e=$(slot_end "$since"); [ "$e" -gt 0 ] && since=$e
+        [ "$since" -gt "$(date +%s)" ] && since=""
+      fi
       if [ -n "$since" ]; then
         log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
         name=$(t display -p -t "$pane" '#{session_name}:#{window_name}' | tr '\t' ' ')
@@ -104,14 +111,16 @@ if [ "$st" != "$cur" ]; then
 fi
 
 if [ "$st" = running ] && [ -n "$prompt" ]; then
-  t set -w -t "$pane" @junban_prompt "$prompt" && t set -wu -t "$pane" @junban_recap
+  t set -w -t "$pane" @junban_prompt "$prompt" && t set -wu -t "$pane" @junban_recap \; set -wu -t "$pane" @junban_review \; set -wu -t "$pane" @junban_pr
 fi
 
 # Optional desktop/phone notification, e.g.
 #   set -g @junban-notify-cmd 'notify-send junban'      (Linux)
 #   set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/my-topic'
 # With recaps on, recap.py sends the ✓ one itself once it knows what came of the turn.
+# With @junban-done-batch, digest.sh sends the ✓ together when the slot ends.
 if [ "$st" = "done" ] && [ "$(t show -gqv @junban-recap)" != off ] && command -v python3 >/dev/null 2>&1; then ncmd=""
+elif [ "$st" = "done" ] && [ "$(slot_start)" -gt 0 ]; then ncmd=""
 else ncmd=$(t show -gqv @junban-notify-cmd); fi
 if [ "$st" != "$cur" ] && { [ "$st" = waiting ] || [ "$st" = "done" ]; }; then
   if [ -n "$ncmd" ]; then
@@ -120,6 +129,8 @@ if [ "$st" != "$cur" ] && { [ "$st" = waiting ] || [ "$st" = "done" ]; }; then
     printf '%s %s\n' "$icon" "$name" | sh -c "$ncmd" >/dev/null 2>&1 &
   fi
 fi
+
+(bash "$JUNBAN_SCRIPTS/digest.sh" >/dev/null 2>&1 &)
 
 # Redraw now instead of waiting for status-interval.
 for c in $(t list-clients -F '#{client_name}'); do t refresh-client -S -t "$c"; done

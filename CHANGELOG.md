@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 — 2026-10-18
+
+### Added
+
+- **What a finished turn changed.** The ✓ banner and the Alt+f list say what changed since you sent the prompt: `3 files +41 −88 · 2 commits · PR #12`. A turn that touched nothing says so, so you know it is a quick read. In Alt+f the preview starts with the diff stat, and Ctrl+o opens the PR the agent gave. Claude Code, Codex and Gemini.
+- **Finished work in batches** (`@junban-done-batch 30`, off by default). ✓ wait for the next :00 or :30 and come as one notification; until then the guide line only counts them ("2 finished, shown at 15:30"). ✋ still comes at once, Alt+a still reaches a held ✓, and the wait meter starts a held ✓'s wait when it shows.
+
 ## 0.3.12 — 2026-10-18
 
 ### Changed

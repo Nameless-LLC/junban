@@ -228,7 +228,9 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja"><kbd>Alt+/</kbd> とタイムラインのポップアップは、矢印キー・PgUp/PgDn・<kbd>Space</kbd>・マウスホイールでスクロールし、ほかのキーを押すかポップアップの中をクリックすると閉じます。</p>
         <h3 id="list" lang="en">The Alt+f list</h3><h3 lang="ja">Alt+f の一覧</h3>
         <p lang="en">Agents that need you come first, each with its badge, its name and what you last asked it. Type to filter by name or by what you asked; the preview shows the window live. <kbd>Enter</kbd> goes there, <kbd>Esc</kbd> closes. Without fzf you get tmux's own chooser with the same order.</p>
+        <p lang="en">A finished agent's row also says what the turn changed (<code>3 files +41 −88 · 2 commits · PR #12</code>), and its preview starts with the diff stat, so you can pick what to review first. <kbd>Ctrl+o</kbd> opens the PR.</p>
         <p lang="ja">あなたを待っているウィンドウから順に、バッジ・ウィンドウの名前・最後に頼んだ内容が並びます。文字を打つと名前や依頼内容で絞り込め、プレビューにはそのウィンドウの今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は、tmux 標準の選択画面が同じ順番で出ます。</p>
+        <p lang="ja">作業を終えたエージェントの行には、その作業で変わったもの（<code>3ファイル +41 −88 · 2コミット · PR #12</code>）も出ます。プレビューの先頭には変更したファイルの一覧が出るので、どれから確認するかを決められます。<kbd>Ctrl+o</kbd> で PR を開きます。</p>
         <h3 id="new" lang="en">Alt+n and worktrees</h3><h3 lang="ja">Alt+n と worktree</h3>
         <p lang="en"><kbd>Alt+n</kbd> opens a window in the current directory and starts your agent (<code>@junban-agent-cmd</code>, default <code>claude</code>). If another agent already works in that git tree and the agent is Claude Code, the new one starts in its own worktree (<code>claude --worktree</code>), so the two never edit the same files. <code>@junban-new-worktree off</code> keeps the plain behaviour.</p>
         <p lang="ja"><kbd>Alt+n</kbd> は今のディレクトリで新しいウィンドウを開き、エージェントを起動します（<code>@junban-agent-cmd</code>、標準は <code>claude</code>）。同じ git ツリーで別のエージェントがすでに動いていて、起動するのが Claude Code なら、新しい方は別の worktree（<code>claude --worktree</code>）で起動するので、2つのエージェントが同じファイルを編集することはありません。<code>@junban-new-worktree off</code> にすると、この切り替えをしません。</p>
@@ -322,6 +324,8 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 <span class="c"># phone, via ntfy</span>
 set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
+        <p lang="en">With many agents, finished work arrives all the time. <code>@junban-done-batch 30</code> holds ✓ until the next :00 or :30 and sends them as one notification; until then the guide line only counts them. ✋ still comes at once, and <kbd>Alt+a</kbd> still takes you to a held ✓ if you want it.</p>
+        <p lang="ja">エージェントが多いと、完了の知らせが絶え間なく届きます。<code>@junban-done-batch 30</code> にすると、完了（✓）は毎時0分と30分にまとめて1通で届き、それまではステータスバーに件数だけが出ます。返事待ち（✋）はすぐに届きます。<kbd>Alt+a</kbd> を押せば、まとめる前の ✓ にも移動できます。</p>
         <p lang="en">A public ntfy.sh topic can be read by anyone who knows its name. Pick a long random one, or run your own server.</p>
         <p lang="ja">ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。長くてランダムな名前にするか、自前のサーバーを使ってください。</p>
       </section>
@@ -381,6 +385,7 @@ set -g @junban-agent-cmd claude    <span class="c"># what Alt+n starts</span>
 set -g @junban-new-worktree auto   <span class="c"># off = never start in a separate worktree</span>
 set -g @junban-vscode-raise on     <span class="c"># off = Alt+a always switches this terminal</span>
 set -g @junban-recap on            <span class="c"># one line on what each agent needs</span>
+set -g @junban-done-batch off      <span class="c"># N = ✓ arrive together every N minutes</span>
 
 <span class="c"># Habits and numbers</span>
 set -g @junban-scan-interval 30    <span class="c"># seconds between those git checks</span>

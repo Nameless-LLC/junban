@@ -562,6 +562,65 @@ eq  "a click closes"                  "$(pg 100 "${E}[<0;5;5M")" "CLOSED 1"
 eq  "Alt+/ again closes"              "$(pg 100 "${E}/")" "CLOSED 1"
 eq  "Space closes short text"         "$(pg 3 " ")" "CLOSED 1"
 
+echo "finished work in batches"
+tmux new-window -d -t u:17 -n held; ph=$(tmux display -p -t u:17 '#{pane_id}')
+eq  "batching off by default"       "$(bash -c ". '$S/lib.sh'; slot_start")" "0"
+tmux set -g @junban-done-batch 30
+slot=$(bash -c ". '$S/lib.sh'; slot_start")
+z=$(date +%z); off=$(( (10#${z:1:2} * 3600 + 10#${z:3:2} * 60) * (${z:0:1}1) ))
+eq  "slots follow the wall clock"   "$(( (slot + off) % 1800 ))" "0"
+for w in $(tmux list-windows -t u -F '#{window_index}'); do tmux set -w -t "u:$w" -u @junban; done
+tmux set -w -t u:17 @junban "done" \; set -w -t u:17 @junban_ts "$(date +%s)"
+has "a fresh ✓ is held"             "$(bash "$S/hints.sh" 160 1)" "1 finished, shown at"
+hasnt "…without the banner"         "$(bash "$S/hints.sh" 160 1)" "finished →"
+tmux set -w -t u:17 @junban_ts $((slot - 60))
+has "an earlier slot's ✓ shows"     "$(bash "$S/hints.sh" 160 1)" "1 finished → "
+eq  "Alt+a still goes to held ✓"    "$(JUNBAN_DRY_RUN=1 bash "$S/jump.sh")" "u:17"
+log="$HOME/.local/state/junban/waits.tsv"; : > "$log"
+tmux set -w -t u:17 @junban_ts "$(date +%s)"; st "$ph" idle
+eq  "opening a held ✓ is no wait"   "$(wc -l < "$log" | tr -d ' ')" "0"
+st "$ph" "done" '{}'; tmux set -w -t u:17 @junban "done" \; set -w -t u:17 @junban_ts $((slot - 60)); st "$ph" idle
+eq  "the wait starts when it shows" "$(cut -f1 "$log")" "$slot"
+# one notification per slot, listing what finished in it
+notes="$WORK/notes"; : > "$notes"
+tmux set -g @junban-notify-cmd "cat >> $notes"
+tmux set -w -t u:17 @junban "done" \; set -w -t u:17 @junban_ts $((slot - 60)) \; set -w -t u:17 @junban_recap "tests pass"
+sleep 0.3; rm -rf "$HOME/.local/state/junban"/digest.*; tmux set -g @junban-digest-at $((slot - 1800))
+bash "$S/digest.sh"; bash "$S/digest.sh"
+eq  "slot end sends one digest"     "$(cat "$notes")" "✓ 1 finished
+- held: tests pass"
+tmux set -w -t u:17 @junban running; st "$ph" "done" '{}'; sleep 0.3
+TMUX_PANE=$ph python3 "$S/recap.py" "done" <<<'{"last_assistant_message":"Deployed"}'
+eq  "no ✓ one by one while batching" "$(grep -c . "$notes")" "2"
+tmux set -gu @junban-notify-cmd; tmux set -gu @junban-done-batch; tmux set -gu @junban-digest-at
+tmux kill-window -t u:17
+
+echo "what a turn changed"
+rv="$WORK/rv"; git init -q "$rv"; printf 'a\nb\nc\n' > "$rv/f.txt"
+git -C "$rv" add f.txt; git -C "$rv" -c user.name=t -c user.email=t@t commit -q -m init
+tmux new-window -d -t u:17 -n rev -c "$rv"; pv=$(tmux display -p -t u:17 '#{pane_id}')
+rvw() { TMUX_PANE=$pv python3 "$S/review.py" "$1" <<<"$2"; }
+rvw start "{\"cwd\":\"$rv\"}"; tmux set -w -t u:17 @junban "done"
+rvw "done" "{\"cwd\":\"$rv\",\"last_assistant_message\":\"Answered.\"}"
+eq  "nothing touched"               "$(get u:17 @junban_review)" "no file changes"
+printf 'a\nB\nc\nd\n' > "$rv/f.txt"; git -C "$rv" -c user.name=t -c user.email=t@t commit -qam edit
+printf 'x\n' > "$rv/new.txt"; printf 'e\n' >> "$rv/f.txt"
+rvw "done" "{\"cwd\":\"$rv\",\"last_assistant_message\":\"Done, see https://github.com/o/r/pull/7 for the PR.\"}"
+eq  "files, lines, commits, PR"     "$(get u:17 @junban_review)" "2 files +3 −1 · 1 commit · PR ＃7"
+eq  "PR link kept"                  "$(get u:17 @junban_pr)" "https://github.com/o/r/pull/7"
+has "✓ banner says what changed"    "$(bash "$S/hints.sh" 160 1)" "2 files +3 −1"
+has "Alt+f preview shows the diff"  "$(FZF_PREVIEW_LINES=30 python3 "$S/review.py" preview u:17)" "f.txt"
+opened="$WORK/opened"
+# shellcheck disable=SC2016  # $1 belongs to the stub browser
+printf '#!/bin/sh\necho "$1" > %s\n' "$opened" > "$WORK/browser"; chmod +x "$WORK/browser"
+BROWSER="$WORK/browser" bash "$S/switch.sh" --open u:17; sleep 0.3
+eq  "Ctrl+o opens the PR"           "$(cat "$opened" 2>/dev/null)" "https://github.com/o/r/pull/7"
+tmux set -w -t u:17 @junban running; rvw "done" "{\"cwd\":\"$rv\"}"
+eq  "late result after a new prompt dropped" "$(get u:17 @junban_review)" "2 files +3 −1 · 1 commit · PR ＃7"
+st "$pv" idle; st "$pv" running '{"prompt":"next task"}'
+eq  "a new prompt clears it"        "$(get u:17 @junban_review)" ""
+tmux kill-window -t u:17
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

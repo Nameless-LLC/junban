@@ -7,6 +7,7 @@ if command -v python3 >/dev/null 2>&1; then
   python3 "$JUNBAN_SCRIPTS/heal.py" >/dev/null 2>&1
   python3 "$JUNBAN_SCRIPTS/scan.py" >/dev/null 2>&1
 fi
+bash "$JUNBAN_SCRIPTS/digest.sh" >/dev/null 2>&1
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
 cr=$(opt @junban-color-running "#e5c07b")

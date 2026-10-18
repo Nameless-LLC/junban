@@ -114,3 +114,28 @@ go_to() {
   if [ -n "${JUNBAN_DRY_RUN:-}" ]; then echo "switch $target"; return 0; fi
   tmux switch-client ${c:+-c "$c"} -t "$target"
 }
+
+# slot_start [EPOCH] — with @junban-done-batch N (minutes), the start of the N-minute
+# slot of local time that EPOCH (default now) falls in; 0 when batching is off.
+# ✓ that finish inside the current slot are held until the next one starts, so
+# finished work arrives a few times an hour instead of whenever an agent stops.
+slot_start() {
+  local n now z off
+  n=$(opt @junban-done-batch off)
+  case "$n" in '' | *[!0-9]* | 0) echo 0; return ;; esac
+  now=${1:-$(date +%s)}
+  # Slots line up with the wall clock (:00, :30), not with the Unix epoch.
+  z=$(date +%z)
+  off=$(( (10#${z:1:2} * 3600 + 10#${z:3:2} * 60) * (${z:0:1}1) ))
+  echo $(( now - (now + off) % (n * 60) ))
+}
+
+# slot_end EPOCH — when a ✓ that finished at EPOCH is shown (0 when batching is off).
+slot_end() {
+  local s
+  s=$(slot_start "$1")
+  [ "$s" -gt 0 ] && echo $(( s + $(opt @junban-done-batch 0) * 60 )) || echo 0
+}
+
+# hhmm EPOCH — local "15:30".
+hhmm() { date -d "@$1" +%H:%M 2>/dev/null || date -r "$1" +%H:%M; }

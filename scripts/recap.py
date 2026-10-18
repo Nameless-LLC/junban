@@ -184,6 +184,10 @@ def main():
     # gets "✓ CI fix: tests pass" rather than just a window name. Not if you
     # already opened it.
     ncmd = tmux("show", "-gqv", "@junban-notify-cmd")
+    # With @junban-done-batch, digest.sh sends finished turns together.
+    batch = tmux("show", "-gqv", "@junban-done-batch")
+    if batch.isdigit() and int(batch) > 0:
+        ncmd = ""
     if ncmd and tmux("display", "-p", "-t", pane, "#{@junban}") == "done":
         name = tmux("display", "-p", "-t", pane, "#{window_name}")
         msg = f"✓ {name}: {line}" if line else f"✓ {name}"
@@ -193,8 +197,9 @@ def main():
         tmux("refresh-client", "-S", "-t", c)
 
 
-try:
-    main()
-except Exception:
-    pass
-sys.exit(0)
+if __name__ == "__main__":  # review.py imports last_reply from here
+    try:
+        main()
+    except Exception:
+        pass
+    sys.exit(0)

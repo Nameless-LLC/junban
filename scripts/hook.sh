@@ -7,10 +7,10 @@
 #
 #   Codex CLI            Gemini CLI          junban
 #   SessionStart         SessionStart        idle
-#   UserPromptSubmit     BeforeAgent         running  (+ window name)
+#   UserPromptSubmit     BeforeAgent         running  (+ window name, turn start for review.py)
 #   PostToolUse          AfterTool           running
 #   PermissionRequest    Notification        waiting  (+ recap: what it wants to run)
-#   Stop                 AfterAgent          done     (+ recap: what came of it)
+#   Stop                 AfterAgent          done     (+ recap: what came of it, review: what changed)
 #   Interrupt            —                   idle     (Esc mid-turn)
 #   SessionEnd           SessionEnd          clear
 #
@@ -33,12 +33,12 @@ later() { command -v python3 >/dev/null 2>&1 || return 0
 
 case "$agent:$event" in
   codex:SessionStart | gemini:SessionStart) state idle ;;
-  codex:UserPromptSubmit | gemini:BeforeAgent) state running; later name.py ;;
+  codex:UserPromptSubmit | gemini:BeforeAgent) state running; later name.py; later review.py start ;;
   codex:PostToolUse | gemini:AfterTool) state running ;;
   codex:PermissionRequest) state waiting; later recap.py notify ;;
   gemini:Notification)
     case "$input" in *'"ToolPermission"'*) state waiting; later recap.py notify ;; esac ;;
-  codex:Stop | gemini:AfterAgent) state "done"; later recap.py "done" ;;
+  codex:Stop | gemini:AfterAgent) state "done"; later recap.py "done"; later review.py "done" ;;
   codex:Interrupt) state idle ;;
   codex:SessionEnd | gemini:SessionEnd) state clear ;;
 esac
