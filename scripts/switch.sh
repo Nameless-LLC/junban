@@ -19,7 +19,7 @@ list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{windo
       else if ($1 == "running") { rank = 3; icon = "\033[33m●\033[0m " }
       age = ""
       if ($2 != "") { d = now - $2; age = (d < 60 ? d "s" : d < 3600 ? int(d / 60) "m" : d < 172800 ? int(d / 3600) "h" : int(d / 86400) "d") }
-      mark = ($6 != "" ? "\033[33m⚠\033[0m " : "")
+      mark = ($6 != "" ? "\033[33m!\033[0m " : "")
       # Parked for a day or more: sink to the bottom, dimmed, so they read as "tidy me".
       if ($7 != "") { rank = 5; icon = "\033[2mz\033[0m " }
       # waiting/done: oldest first. Parked: oldest last. Others keep window order.

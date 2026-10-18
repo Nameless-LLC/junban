@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.6 — 2026-10-18
+
+### Changed
+
+- **Three status rows by default.** Today's wait (and parked agents) gets the second row, the keys and tip the third. On one row, the keys and the wait ran to about 146 columns in Japanese, so on a 110-column terminal the wait was cut off entirely. A ✋/✓ banner takes the second row, with today's wait at its right end when there is room. `set -g @junban-guide-lines 2` keeps the single row.
+
+### Fixed
+
+- **Badges cut in half in VS Code.** `⚠` and `⏱` are one column to tmux, but xterm.js draws them as two-column emoji and clips the right half. The shared-tree badge is now a red `!` (like the `z` for parked agents), and the wait meter has no icon.
+
 ## 0.3.5 — 2026-10-18
 
 ### Changed

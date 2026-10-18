@@ -14,7 +14,7 @@ nav=$(opt @junban-nav-keys on)
   printf '   %s✋%s  %s\n' "$cw" "$r" "$HELP_B_WAITING"
   printf '   %s✓%s   %s\n' "$cd_" "$r" "$HELP_B_DONE"
   printf '   %s●%s   %s\n' "$cr" "$r" "$HELP_B_RUNNING"
-  printf '   %s⚠%s   %s\n' "$cr" "$r" "$HELP_B_SHARED"
+  printf '   %s!%s   %s\n' "$cr" "$r" "$HELP_B_SHARED"
   printf '   %sz%s   %s\n\n' "$dim" "$r" "$HELP_B_STALE"
   printf '  %s── %s%s\n' "$dim" "$HELP_KEYS" "$r"
   row "$(k jump M-a)" "$HELP_K_JUMP"

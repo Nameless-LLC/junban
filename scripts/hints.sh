@@ -2,7 +2,6 @@
 # The guide line. Tells you the one key that matters right now:
 #   someone is waiting → a red banner pointing at the jump key
 #   someone finished   → a green banner
-#   two agents share a git tree → which windows, and how to split them
 #   otherwise          → the five keys worth remembering, plus a quiet count of
 #                        agents parked for a day
 
@@ -26,7 +25,7 @@ esac
 # Display width of plain text, erring wide: ASCII is 1, a few symbols this line
 # uses are 1, anything else (CJK, emoji) counts as 2.
 dw() {
-  local s=${1//[✓·→…⚠]/.} a
+  local s=${1//[✓·→…]/.} a
   a=${s//[^ -~]/}
   echo $((${#a} + 2 * (${#s} - ${#a})))
 }
@@ -113,35 +112,39 @@ banner() {
   [ -n "$right" ] && right="#[bg=$tint]$right"
 }
 
-# The calm line: the five keys worth remembering, today's wait, parked agents.
+# The calm line: the five keys worth remembering, then today's wait and parked agents.
 keys=""
 for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
   keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
 done
+info=""
 # How long agents sat on you today. Seeing the number is most of the fix.
 if [ "$(opt @junban-meter on)" = on ]; then
   IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
   if [ "${mc:-0}" -gt 0 ]; then
     # shellcheck disable=SC2059
-    keys="$keys#[fg=$cm]⏱ $(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
+    info="#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
     # Quicker than your own recent days is the one comparison worth making.
     # shellcheck disable=SC2059
     case "$mtr" in
-      -*) keys="$keys · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
-      +*) keys="$keys · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
+      -*) info="$info · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
+      +*) info="$info · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
     esac
-    keys="$keys  "
+    info="$info  "
   fi
 fi
 # Parked agents can sit for days, so this rides along instead of taking over.
 # shellcheck disable=SC2059
-[ "$z" -gt 0 ] && keys="$keys#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
+[ "$z" -gt 0 ] && info="$info#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
 
-# With @junban-guide-lines 3 there are two guide rows ($2 = 1 or 2):
-#   row 1: the banner and its recap across the whole width, else the keys
-#   row 2: the keys under a banner, and the tip
+# With @junban-guide-lines 3 (the default) there are two guide rows ($2 = 1 or 2):
+#   row 1: the banner and its recap, today's wait on the right when it fits;
+#          without a banner, today's wait and parked agents
+#   row 2: the keys and the tip
+# On one row the keys and the wait together run past ~110 columns in Japanese,
+# so the wait at the end was clipped off.
 tip=$right
-[ "$row" = 1 ] && right=""
+[ "$row" = 1 ] && right="${info:+#[align=right]$info}"
 left=""
 # shellcheck disable=SC2059
 if [ "$w" -gt 0 ]; then
@@ -151,9 +154,9 @@ elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 fi
 case "$row" in
-  1) [ -z "$left" ] && left=$keys ;;
-  2) right=$tip; if [ -n "$left" ]; then left=$keys; else left=""; fi ;;
-  *) [ -z "$left" ] && left=$keys ;;
+  1) [ -z "$left" ] && { left=$info; right=""; } ;;
+  2) left=$keys; right=$tip ;;
+  *) [ -z "$left" ] && left=$keys$info ;;
 esac
 
 # Whatever the left says matters more than a tip: drop the tip if they collide.
