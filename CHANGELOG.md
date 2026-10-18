@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 — 2026-10-18
+
+### Added
+
+- **Alt+w closes the window.** It asks first and names the window, since the agent in it stops. It sits on the keys row next to Alt+[ ], which now reads "prev / next" to make room. `@junban-nav-keys off` turns it off with the other window keys.
+
 ## 0.4.0 — 2026-10-18
 
 ### Added

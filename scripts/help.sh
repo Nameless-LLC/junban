@@ -23,6 +23,7 @@ nav=$(opt @junban-nav-keys on)
     row "Alt+[ / ]" "$HELP_K_PREVNEXT"
     row "Alt+Tab" "$HELP_K_LAST"
     row "Alt+z" "$HELP_K_ZOOM"
+    row "Alt+w" "$HELP_K_CLOSE"
   fi
   row "$(k new M-n)" "$HELP_K_NEW"
   row "$(k scratch M-g)" "$HELP_K_SHELL"

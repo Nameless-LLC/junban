@@ -68,7 +68,7 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 | **Alt+g** | Scratch shell in a popup that survives closing |
 | **Alt+/** | Cheat sheet, generated from your actual bindings, with today's timeline and the wait report |
 | prefix T | Today's timeline: a row per window, when each agent worked, waited on you, or finished |
-| Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | Go to window · prev/next · last · zoom |
+| Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z · Alt+w | Go to window · prev/next · last · zoom · close (asks first) |
 
 Terminal doesn't send Alt? Every action also works after the prefix: `prefix a`, `f`, `C`, `g`, `/`.
 
@@ -119,7 +119,7 @@ set -g @junban-key-new M-n
 set -g @junban-key-scratch M-g
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     # e.g. M-y (prefix T always works)
-set -g @junban-nav-keys on         # Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z
+set -g @junban-nav-keys on         # Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z, Alt+w
 set -g @junban-prefix-keys on      # prefix a/f/C/g/ fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when the tree is taken | off
