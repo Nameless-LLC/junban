@@ -5,11 +5,9 @@
 #   otherwise          → today's wait and a quiet count of agents parked for a
 #                        day, and (on its own row) the five keys worth remembering
 
-# The right edge rotates one tip per minute (@junban-tips off to hide).
-#
 # $1 is the client width (#{client_width}). With it the line is fitted to the
-# terminal: the tip goes first, then the recap is cut with "…", so the banner
-# itself always shows. Without it nothing is fitted (tmux clips at the edge).
+# terminal: today's wait beside a banner goes first, then the recap is cut with
+# "…", so the banner itself always shows. Without it nothing is fitted (tmux clips at the edge).
 . "$(dirname "$0")/lib.sh"
 load_i18n
 
@@ -74,13 +72,6 @@ kg=$(key_for scratch M-g g)
 kh=$(key_for help M-/ /)
 
 right=""
-if [ "$(opt @junban-tips on)" = on ]; then
-  tip=${TIPS[$(($(date +%s) / 60 % ${#TIPS[@]}))]}
-  # Tips are written with the default keys; show the user's actual ones.
-  tip=${tip//Alt+a/$kj}; tip=${tip//Alt+f/$kf}; tip=${tip//Alt+g/$kg}
-  right="#[align=right]#[fg=$cdim]💡 $tip "
-fi
-tiptext=${tip:-}
 
 # mix COLOR [PCT] — COLOR laid faintly over the line's background, PCT % of it
 # (default @junban-tint, 20; 0 turns the tint off). Only #rrggbb colors mix.
@@ -109,7 +100,7 @@ banner() {
     else right=""; next_line=$(fit "$next_line" "$room"); fi
   fi
   left="$head#[fg=$1]$next_line"
-  # The tip, if it stays, sits on the same wash.
+  # Today's wait, if it stays, sits on the same wash.
   [ -n "$right" ] && right="#[bg=$tint]$right"
 }
 
@@ -141,13 +132,10 @@ fi
 # With @junban-guide-lines 3 (the default) there are two guide rows ($2 = 1 or 2):
 #   row 1: the banner and its recap, today's wait on the right when it fits;
 #          without a banner, today's wait and parked agents
-#   row 2: the keys; the tip too while a banner holds row 1
-# When calm the tip sits right of today's wait, cut with "…" rather than dropped:
-# after the keys it never fitted 110 columns in Japanese, so no tip ever showed.
+#   row 2: the keys
 # With @junban-guide-lines 2 there is one, with no keys on it: the keys and the
 # wait together ran past ~110 columns in Japanese and clipped the wait off. The
 # keys show there while the prefix is pending instead (junban.tmux).
-tip=$right
 [ "$row" = 1 ] && right="${info:+#[align=right]$info}"
 left=""
 # shellcheck disable=SC2059
@@ -158,18 +146,11 @@ elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 fi
 case "$row" in
-  1) if [ -z "$left" ]; then
-       left=$info; right=""
-       room=$((cols - $(dws "$info") - 6))
-       if [ -n "$tiptext" ] && { [ "$cols" -eq 0 ] || [ "$room" -ge 12 ]; }; then
-         [ "$cols" -gt 0 ] && tiptext=$(fit "$tiptext" "$room")
-         right="#[align=right]#[fg=$cdim]💡 $tiptext "
-       fi
-     fi ;;
-  2) if [ -n "$left" ]; then right=$tip; else right=""; fi; left=$keys ;;
+  1) [ -z "$left" ] && { left=$info; right=""; } ;;
+  2) left=$keys; right="" ;;
   *) [ -z "$left" ] && left=$info ;;
 esac
 
-# Whatever the left says matters more than a tip: drop the tip if they collide.
+# Whatever the left says matters more than what sits right of it.
 [ "$cols" -gt 0 ] && [ -n "$right" ] && [ $(($(dws "$left") + 2 + $(dws "$right"))) -gt "$cols" ] && right=""
 printf '%s%s' "$left" "$right"

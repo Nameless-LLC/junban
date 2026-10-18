@@ -78,7 +78,7 @@ The full manual, with every option: [junban.namelessjp.com/manual](https://junba
 
 Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one plain tmux plugin with no daemon, and adds what we found nowhere else: a status line that names your next key, parked agents sinking out of the way, and window names from a local model that ignore "ok".
 
-**It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding. A tip rotates in the corner once a minute.
+**It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding.
 
 **Badges don't get stuck.** Hooks have blind spots: press Esc mid-turn and no "stop" event ever fires, so hook-only tools show "working" forever. junban cross-checks Claude Code's own live session records (`~/.claude/sessions`) and verifies the process really runs in that pane. A pane id is only unique per tmux server, so it checks the process tree too.
 
@@ -110,7 +110,6 @@ set -g @junban-guide on            # the second status line
 set -g @junban-guide-lines 3       # 2 = no keys row; the keys show while the prefix is down
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
 set -g @junban-tint-waiting 35     # the same for ✋ (an agent stopped on you)
-set -g @junban-tips on             # rotating tip on the right
 set -g @junban-lang ja             # en | ja | th (default: from $LANG)
 
 # Keys ("" to unbind)

@@ -65,7 +65,7 @@ if [ "$(opt @junban-guide on)" = on ]; then
     done
   fi
   pk=${pk//,/#,}   # a comma would end the #{?…} branch early
-  # Three rows by default: the banner (or today's wait) on one, the keys and tip below.
+  # Three rows by default: the banner (or today's wait) on one, the keys below.
   # @junban-guide-lines 2 drops the keys row; the keys then show only after the prefix.
   if [ "$(opt @junban-guide-lines 3)" = 3 ]; then
     # A shade darker, so the keys row sits apart from both the banner and the pane.

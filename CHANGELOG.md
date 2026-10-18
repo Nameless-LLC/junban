@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.10 — 2026-10-18
+
+### Removed
+
+- **Tips.** With three rows they never had room, and cut to fit they could not be read. `@junban-tips` is gone; Alt+/ still lists every key.
+
+### Fixed
+
+- The manual's calm example shows the wait and the keys on their own rows, as the guide does now.
+
 ## 0.3.9 — 2026-10-18
 
 ### Removed

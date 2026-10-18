@@ -219,8 +219,6 @@ has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
 has   "calm row 1 is today's wait"  "$(bash "$S/hints.sh" 110 1)" "kept waiting 1h"
 hasnt "…without the keys"           "$(bash "$S/hints.sh" 110 1)" "Alt+f"
 has   "calm row 2 is the keys"      "$(bash "$S/hints.sh" 110 2)" "Alt+f"
-has   "calm row 1 carries the tip"  "$(plain 110 1)" "💡"
-hasnt "calm row 2 leaves it to row 1" "$(plain 110 2)" "💡"
 calm=$(plain 110 1); calm=${calm//[✓·→…]/x}; calm=${calm//[^ -~]/xx}
 if [ ${#calm} -le 110 ]; then ok "calm row 1 fits 110 columns"; else bad "calm row 1 fits 110 columns" "${#calm} cols"; fi
 hasnt "…without the wait"           "$(bash "$S/hints.sh" 110 2)" "kept waiting"
@@ -345,22 +343,19 @@ tmux set -w -t u:7 @junban "done" \; set -w -t u:7 @junban_ts 5 \; set -w -t u:7
 has "✓ banner carries the recap"    "$(bash "$S/hints.sh")" "r: tests pass"
 tmux set -w -t u:6 @junban waiting \; set -w -t u:6 @junban_ts 9 \; set -w -t u:6 @junban_recap "which branch?"
 has "✋ beats ✓ in the banner"       "$(bash "$S/hints.sh")" "m: which branch?"
-# fitted to the client width: the tip goes first, then the recap is cut with …
+# fitted to the client width: the recap is cut with …
 tmux set -w -t u:6 @junban_recap "はい、英語圏の人には英語で表示されます。いま日本語なのは設定のためです"
-has   "wide terminal keeps the tip"   "$(plain 200)" "💡"
-hasnt "narrow terminal drops the tip" "$(plain 100)" "💡"
 has   "narrow terminal cuts the recap with …" "$(plain 70)" "…"
 has   "banner survives a narrow terminal" "$(plain 50)" "Alt+a to jump"
 long=$(plain 70); long=${long//[✓·→…]/x}; long=${long//[^ -~]/xx}
 if [ ${#long} -le 70 ]; then ok "cut line fits the width"; else bad "cut line fits the width" "${#long} cols"; fi
 has   "C locale still counts characters" "$(LC_ALL=C plain 70)" "…"
-# three rows: the banner (or today's wait) on row 1, the keys and tip on row 2
+# three rows: the banner (or today's wait) on row 1, the keys on row 2
 has   "row 1 carries the banner"      "$(plain 120 1)" "Alt+a to jump"
-hasnt "row 1 has no tip"              "$(plain 200 1)" "💡"
 has   "wide row 1: wait right of the banner" "$(plain 200 1)" "kept waiting"
 hasnt "narrow row 1: the banner wins" "$(plain 80 1)" "kept waiting"
 has   "row 2 keeps the keys under a banner" "$(plain 200 2)" "Alt+f"
-has   "row 2 carries the tip"         "$(plain 400 2)" "💡"
+hasnt "no tips on any row"            "$(plain 400 1)$(plain 400 2)$(plain 400)" "💡"
 has   "banner row takes a wash of its color" "$(bash "$S/hints.sh" 120 1)" "#[fill=#613b42]"
 tmux set -g @junban-tint 0
 has   "tint 0 leaves the row plain"   "$(bash "$S/hints.sh" 120 1)" "#[fill=#1e2127]"
