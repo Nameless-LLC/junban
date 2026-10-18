@@ -54,16 +54,27 @@ fi
 [ "$(tmux show -gv status-interval)" -gt 5 ] 2>/dev/null && tmux set -g status-interval 5
 
 if [ "$(opt @junban-guide on)" = on ]; then
+  # While the prefix is pending, the last guide row lists what can follow it. Built
+  # here rather than in hints.sh: a #() job would show its old output for a moment,
+  # and the hint is only worth anything the instant the prefix goes down.
+  load_i18n
+  pk="#[fg=$cr]0-9#[fg=$mut] $T_PK_WIN  #[fg=$cr]n/p#[fg=$mut] $T_PK_NP"
+  if [ "$(opt @junban-prefix-keys on)" = on ]; then
+    for pair in "a|$T_NEXT" "f|$T_LIST" "C|$T_NEW" "g|$T_SHELL" "/|$T_HELP"; do
+      pk="$pk  #[fg=$cr]${pair%%|*}#[fg=$mut] ${pair#*|}"
+    done
+  fi
+  pk=${pk//,/#,}   # a comma would end the #{?…} branch early
   # Three rows by default: the banner (or today's wait) on one, the keys and tip below.
-  # @junban-guide-lines 2 squeezes them into one row.
+  # @junban-guide-lines 2 drops the keys row; the keys then show only after the prefix.
   if [ "$(opt @junban-guide-lines 3)" = 3 ]; then
     # A shade darker, so the keys row sits apart from both the banner and the pane.
     bg2=$(opt @junban-color-bg2 "#17191d")
     tmux set -g status 3 \; \
          set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 1)" \; \
-         set -g status-format[2] "#[bg=$bg2]#[fill=$bg2]#[align=left]#($S/hints.sh #{client_width} 2)"
+         set -g status-format[2] "#[bg=$bg2]#[fill=$bg2]#[align=left]#{?client_prefix,$pk,#($S/hints.sh #{client_width} 2)}"
   else
-    tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width})"
+    tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#{?client_prefix,$pk,#($S/hints.sh #{client_width})}"
     # Back from 3 rows: drop our third row, never a user's own.
     case "$(tmux show -gv 'status-format[2]' 2>/dev/null)" in *hints.sh*) tmux set -gu 'status-format[2]' ;; esac
   fi

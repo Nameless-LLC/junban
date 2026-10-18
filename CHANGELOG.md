@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.7 — 2026-10-18
+
+### Added
+
+- **The prefix tells you what can follow it.** While Ctrl+b (your prefix) is down, the keys row lists `0-9`, `n/p` and junban's prefix keys instead of the Alt ones. Useful where Alt never reaches tmux (phones, some web terminals).
+
+### Changed
+
+- **`@junban-guide-lines 2` now means "no keys row".** The one guide row shows the ✋/✓ banner or today's wait; the keys appear there only while the prefix is down. The default stays at three rows.
+
 ## 0.3.6 — 2026-10-18
 
 ### Changed

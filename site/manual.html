@@ -252,8 +252,8 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
         <p lang="en">The banner sits on the second line; today's wait moves to its right end when there is room. On a narrow terminal the recap is cut first, so the banner always fits.</p>
         <p lang="ja">帯は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。端末の幅が狭いときは1行要約から省略するので、帯そのものは必ず表示されます。</p>
-        <p lang="en"><code>@junban-guide-lines 2</code> puts everything on one line, as before 0.3.5. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
-        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、0.3.5 より前と同じく1行にまとめます。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
+        <p lang="en"><code>@junban-guide-lines 2</code> drops the keys row once you know the keys. While the prefix (Ctrl+b) is down, the remaining row lists what can follow it. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
+        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行をなくします。prefix（Ctrl+b）を押している間は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
       </section>
 
       <section id="recap">
@@ -359,7 +359,7 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
 set -g @junban-theme on            <span class="c"># off = keep your theme, only add badges and the counter</span>
 set -g @junban-position top        <span class="c"># top | bottom</span>
 set -g @junban-guide on            <span class="c"># the guide line</span>
-set -g @junban-guide-lines 3       <span class="c"># 2 = banner, keys and wait on one row</span>
+set -g @junban-guide-lines 3       <span class="c"># 2 = no keys row; the keys show after the prefix</span>
 set -g @junban-tint 20             <span class="c"># % of the banner colour washed over its row (0 = off)</span>
 set -g @junban-tint-waiting 35     <span class="c"># the same for ✋</span>
 set -g @junban-tips on             <span class="c"># rotating tip on the right</span>

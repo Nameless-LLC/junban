@@ -71,9 +71,10 @@ tmux set -g @junban-lang th
 has "guide in Thai"                 "$(bash "$S/hints.sh")" "รอคุณตอบ"
 tmux set -gu @junban-lang
 tmux set -w -t s:2 @junban idle \; set -w -t s:1 @junban idle
-has "guide lists keys when calm"    "$(bash "$S/hints.sh")" "Alt+f"
+has "keys row lists keys when calm" "$(bash "$S/hints.sh" 0 2)" "Alt+f"
+hasnt "single guide row has no keys" "$(bash "$S/hints.sh")" "Alt+n"
 tmux set -g @junban-key-jump M-j
-has "guide follows remapped keys"   "$(bash "$S/hints.sh")" "Alt+j"
+has "guide follows remapped keys"   "$(bash "$S/hints.sh" 0 2)" "Alt+j"
 tmux set -gu @junban-key-jump
 
 echo "naming"
@@ -365,8 +366,19 @@ tmux set -gu @junban-tint
 tmux set -gu @junban-guide-lines; bash "$ROOT/junban.tmux"
 eq  "unset → three status rows"      "$(tmux show -gv status)" "3"
 has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
+# Prefix down: the keys row lists what can follow it. Evaluate the branch as if pressed.
+pressed() { tmux display -p "$(tmux show -gv "status-format[$1]" | sed 's/#{?client_prefix,/#{?#{==:a,a},/')" | sed 's/#\[[^]]*\]//g'; }
+has   "prefix shows what follows it" "$(pressed 2)" "0-9 that window  n/p next / previous window  a next  f all agents"
+hasnt "…instead of the guide"        "$(pressed 2)" "Alt+f"
+tmux set -g @junban-lang ja; bash "$ROOT/junban.tmux"
+has   "prefix hint in Japanese"      "$(pressed 2)" "a 次へ  f 一覧"
+tmux set -gu @junban-lang
+tmux set -g @junban-prefix-keys off; bash "$ROOT/junban.tmux"
+hasnt "prefix keys off → only tmux's own" "$(pressed 2)" "a next"
+tmux set -gu @junban-prefix-keys
 tmux set -g @junban-guide-lines 2; bash "$ROOT/junban.tmux"
 eq  "back to two rows"              "$(tmux show -gv status)" "2"
+has "one guide row: prefix hint too" "$(pressed 1)" "f all agents"
 hasnt "our third row removed"       "$(tmux show -gv 'status-format[2]')" "hints.sh"
 tmux set -w -t u:6 @junban idle
 # notifications: the ✓ one comes from recap.py, with the line
