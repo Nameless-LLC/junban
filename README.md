@@ -76,7 +76,7 @@ The full manual, with every option: [junban.namelessjp.com/manual](https://junba
 
 ## What makes it different
 
-Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one plain tmux plugin with no daemon, and adds what we found nowhere else: a status line that names your next key, a warning when two agents share a git checkout, parked agents sinking out of the way, and window names from a local model that ignore "ok".
+Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one plain tmux plugin with no daemon, and adds what we found nowhere else: a status line that names your next key, parked agents sinking out of the way, and window names from a local model that ignore "ok".
 
 **It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding. A tip rotates in the corner once a minute.
 
@@ -84,7 +84,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Windows name themselves after the task, and stay named.** By default a window takes the first line of your prompt. Point it at any model (a small model resident in a local Ollama answers in under a second) and it summarises the last few prompts instead. Replies like "ok", "yes", "進めて" or "ครับ" never rename anything. A window you name yourself (`prefix ,`) is never touched again.
 
-**It catches the two habits that cost the most.** Two agents in one git working tree overwrite each other's edits and commit each other's half-done work; those windows get a red ! on their tab. Alt+n then starts the second Claude Code in its own worktree (`claude --worktree`) instead. Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones.
+**Parked agents get out of the way.** Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones. When an agent already works in the tree, Alt+n starts the next Claude Code in its own worktree (`claude --worktree`).
 
 **It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or what came of the turn ("tests pass, PR #12 opened"). With a namer model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
 
@@ -126,7 +126,6 @@ set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when the tree is taken | off
 
 # Hygiene
-set -g @junban-shared-check on     # ! when two agents share a git working tree
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
 set -g @junban-meter on            # today's wait total on the guide line
 set -g @junban-meter-cap 60        # minutes one wait can count for

@@ -123,7 +123,7 @@ python3 "$S/heal.py"
 eq  "agent exited to shell → cleared" "$(get s:2 @junban)" "idle"
 eq  "…and its dir forgotten"        "$(tmux display -p -t "$p2" '#{@junban_cwd}')" ""
 
-echo "shared trees and parked agents"
+echo "Alt+n worktrees and parked agents"
 tmux kill-server; sleep 0.2
 repo="$WORK/repo"; git init -q "$repo"; mkdir -p "$repo/sub"
 git -C "$repo" -c user.name=t -c user.email=t@t commit -q --allow-empty -m init
@@ -137,14 +137,15 @@ tmux new-window -d -t u:5 -n e -c "$repo"     # a plain shell: no agent register
 for w in 1 2 3 4; do tmux set -w -t "u:$w" @junban idle \; set -w -t "u:$w" @junban_ts "$(date +%s)"; done
 sleep 0.3   # let pane_current_path settle
 scan() { tmux set -g @junban-scan-at 0; python3 "$S/scan.py"; }
-scan
-eq  "same tree flagged"             "$(get u:1 @junban_shared)" "2"
-eq  "subdir counts as same tree"    "$(get u:2 @junban_shared)" "2"
-eq  "separate worktree not flagged" "$(get u:3 @junban_shared)" ""
-eq  "\$HOME never flagged"          "$(get u:4 @junban_shared)" ""
-eq  "shell without agent ignored"   "$(get u:5 @junban_shared)" ""
-hasnt "no shared banner on the guide line" "$(bash "$S/hints.sh")" "a · b"
-has "badge shows !"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
+tree() { python3 "$S/scan.py" --tree "$1"; }
+eq  "agents in a tree counted"      "$(tree "$repo")" "2"
+eq  "subdir counts as same tree"    "$(tree "$repo/sub")" "2"
+eq  "separate worktree counted apart" "$(tree "$WORK/wt")" "1"
+eq  "\$HOME never counted"          "$(tree "$HOME")" "0"
+# Sharing a tree is how people work, so it is not flagged (0.3.8).
+tmux set -w -t u:1 @junban_shared 2; scan
+eq  "old shared flag cleared"       "$(get u:1 @junban_shared)" ""
+hasnt "no shared badge"             "$(tmux show -gv @junban-badge)" "@junban_shared"
 # ⚠ and ⏱ are one column to tmux but drawn as two-column emoji by xterm.js
 # (VS Code), which clips them in half.
 hasnt "no ⚠ in the badge"           "$(tmux show -gv @junban-badge)" "⚠"
@@ -154,13 +155,11 @@ hasnt "no ⏱ on the guide line"      "$(bash "$S/hints.sh")" "⏱"
 git -C "$repo" worktree add -q "$WORK/wt2" -b side2
 tmux new-window -d -t u:9 -n f -c "$repo"; p9=$(tmux display -p -t u:9 '#{pane_id}')
 (cd "$WORK/wt2" && TMUX_PANE=$p9 bash "$S/state.sh" idle </dev/null)
-scan
-eq  "hook dir beats pane path"      "$(get u:9 @junban_shared)" ""
-eq  "…others still counted 2"       "$(get u:1 @junban_shared)" "2"
-TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$repo\"}"; scan
-eq  "payload cwd recorded"          "$(get u:9 @junban_shared)" "3"
-TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$WORK/wt2\"}"; scan
-eq  "moving to a worktree clears ⚠" "$(get u:9 @junban_shared)" ""
+eq  "hook dir beats pane path"      "$(tree "$repo")" "2"
+TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$repo\"}"
+eq  "payload cwd recorded"          "$(tree "$repo")" "3"
+TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$WORK/wt2\"}"
+eq  "moving to a worktree counts apart" "$(tree "$repo")" "2"
 eq  "agent dir kept per pane"       "$(tmux display -p -t "$p9" '#{@junban_cwd}')" "$WORK/wt2"
 TMUX_PANE=$p9 bash "$S/state.sh" clear </dev/null
 eq  "closing forgets the agent dir" "$(tmux display -p -t "$p9" '#{@junban_cwd}')" ""
@@ -173,8 +172,8 @@ tmux set -gu @junban-new-worktree
 tmux set -g @junban-agent-cmd codex
 eq  "other agents start plain"      "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$repo")" "codex"
 tmux set -gu @junban-agent-cmd
-tmux set -w -t u:2 -u @junban; scan
-eq  "flag clears when one leaves"   "$(get u:1 @junban_shared)" ""
+tmux set -w -t u:2 -u @junban
+eq  "an agent leaving frees the tree" "$(tree "$repo")" "1"
 tmux set -w -t u:3 @junban_ts $(( $(date +%s) - 30 * 3600 ))
 tmux set -w -t u:4 @junban running \; set -w -t u:4 @junban_ts 1
 scan
@@ -215,8 +214,7 @@ near "one long wait capped at 60m"  "$(cut -f1 <<<"$line")" "$((90 + 30 + 3600))
 tmux set -g @junban-meter-cap 10
 near "cap is configurable"          "$(bash "$S/stats.sh" --line | cut -f1)" "$((90 + 30 + 600))"
 tmux set -gu @junban-meter-cap
-tmux set -w -t u:1 @junban_shared ""; for w in 1 2 3 4; do tmux set -w -t "u:$w" -u @junban_stale; done
-tmux set -w -t u:1 -u @junban_shared
+for w in 1 2 3 4; do tmux set -w -t "u:$w" -u @junban_stale; done
 has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
 has   "calm row 1 is today's wait"  "$(bash "$S/hints.sh" 110 1)" "kept waiting 1h"
 hasnt "…without the keys"           "$(bash "$S/hints.sh" 110 1)" "Alt+f"

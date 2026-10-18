@@ -29,7 +29,7 @@ fi
 t() { tmux "$@" 2>/dev/null; }
 cur=$(t display -p -t "$pane" '#{@junban}')
 
-# Where the agent really works, for scan.py's shared-tree check. tmux's
+# Where the agent really works, for Alt+n's "is this tree taken" check. tmux's
 # pane_current_path reads the foreground process group's leader, and a pane
 # started as `bash -c "claude --worktree; …"` (Alt+n) never gives claude its own
 # group, so tmux keeps reporting the repo root the worktree was made from. The
