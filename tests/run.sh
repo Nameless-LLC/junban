@@ -32,6 +32,8 @@ eq  "three status rows by default"  "$(tmux show -gv status)" "3"
 # list-keys with a key argument prints nothing on tmux 3.7, so search the table
 has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')" "jump.sh"
 has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
+has "Alt+w asks before closing"     "$(tmux list-keys -T root | grep -F ' M-w ')" "confirm-before"
+has "…naming the window"            "$(tmux list-keys -T root | grep -F ' M-w ')" "#W"
 has "badge in window format"        "$(tmux show -gv window-status-format)" "@junban-badge"
 # Alt+1 is the first tab: a session whose tabs start at 0 is renumbered from 1.
 tmux set -g base-index 0 \; set -g renumber-windows off
@@ -81,9 +83,10 @@ has "guide in Thai"                 "$(bash "$S/hints.sh")" "รอคุณต�
 tmux set -gu @junban-lang
 tmux set -w -t s:2 @junban idle \; set -w -t s:1 @junban idle
 has "keys row lists keys when calm" "$(bash "$S/hints.sh" 0 2)" "Alt+f"
-has "keys row lists window moves"   "$(plain 0 2)" "Alt+f all agents  Alt+[ ] previous / next window  Alt+n"
+has "keys row lists window moves"   "$(plain 0 2)" "Alt+f all agents  Alt+[ ] prev / next  Alt+w close  Alt+n"
 tmux set -g @junban-nav-keys off
 hasnt "…not when nav keys are off"  "$(plain 0 2)" "Alt+[ ]"
+hasnt "…nor Alt+w"                  "$(plain 0 2)" "Alt+w"
 tmux set -gu @junban-nav-keys
 tmux set -g @junban-lang ja
 nav=$(plain 0 2); nav=${nav//[^ -~]/xx}

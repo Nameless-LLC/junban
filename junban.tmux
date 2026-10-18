@@ -129,4 +129,6 @@ if [ "$(opt @junban-nav-keys on)" = on ]; then
   for i in 1 2 3 4 5 6 7 8 9; do tmux bind -n "M-$i" select-window -t ":=$i"; done
   tmux bind -n 'M-[' previous-window \; bind -n 'M-]' next-window \; \
        bind -n M-Tab last-window \; bind -n M-z resize-pane -Z
+  # Closing a window ends the agent in it, so it asks first, naming the window.
+  tmux bind -n M-w confirm-before -p "$T_CLOSE_ASK" kill-window
 fi
