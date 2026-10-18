@@ -610,7 +610,9 @@ eq  "files, lines, commits, PR"     "$(get u:17 @junban_review)" "2 files +3 −
 eq  "PR link kept"                  "$(get u:17 @junban_pr)" "https://github.com/o/r/pull/7"
 has "✓ banner says what changed"    "$(bash "$S/hints.sh" 160 1)" "2 files +3 −1"
 has "Alt+f preview shows the diff"  "$(FZF_PREVIEW_LINES=30 python3 "$S/review.py" preview u:17)" "f.txt"
-opened="$WORK/opened"; printf '#!/bin/sh\necho "$1" > %s\n' "$opened" > "$WORK/browser"; chmod +x "$WORK/browser"
+opened="$WORK/opened"
+# shellcheck disable=SC2016  # $1 belongs to the stub browser
+printf '#!/bin/sh\necho "$1" > %s\n' "$opened" > "$WORK/browser"; chmod +x "$WORK/browser"
 BROWSER="$WORK/browser" bash "$S/switch.sh" --open u:17; sleep 0.3
 eq  "Ctrl+o opens the PR"           "$(cat "$opened" 2>/dev/null)" "https://github.com/o/r/pull/7"
 tmux set -w -t u:17 @junban running; rvw "done" "{\"cwd\":\"$rv\"}"
