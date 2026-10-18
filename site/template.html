@@ -436,48 +436,48 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="why-list">
         <div class="why-row">
           <h3 lang="en">Badges heal themselves</h3><h3 lang="ja">「作業中」のまま残らない</h3>
-          <p lang="en">Press Esc mid-turn and no stop event fires, so hook-only tools say "working" forever. junban checks Claude Code's own session records in <code>~/.claude/sessions</code> and walks the process tree to be sure it is looking at the right pane.</p>
-          <p lang="ja">途中で Esc を押すと Claude Code は終了を知らせないため、表示が「作業中」のまま残ることがあります。junban は Claude Code の記録（<code>~/.claude/sessions</code>）を見て、正しい表示に直します。</p>
+          <p lang="en">Press Esc mid-turn and the badge still clears: junban reads Claude Code's own session records.</p>
+          <p lang="ja">Esc で止めても、Claude Code の記録（<code>~/.claude/sessions</code>）を見て表示を直します。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Longest wait goes first</h3><h3 lang="ja">長く待たせた順に移動</h3>
-          <p lang="en">Alt+a always takes you to the agent that has waited longest: questions and permissions before finished work.</p>
-          <p lang="ja">Alt+a を押すと、いちばん長く待っているエージェントへ移動します。質問や許可の依頼は、完了の知らせより先です。</p>
+          <p lang="en">Alt+a takes you to the agent that has waited longest.</p>
+          <p lang="ja">Alt+a で、いちばん長く待っているエージェントへ移動します。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">One line on what it needs</h3><h3 lang="ja">何を求めているかを1行で</h3>
-          <p lang="en">When an agent asks, needs permission or finishes, the banner and the Alt+f list say in one line what it wants or what came of the turn: "tests pass, PR #12 opened". Set up notifications and your phone gets the same line.</p>
-          <p lang="ja">エージェントが何を聞いているか、何が終わったかを1行で表示します（例:「テスト成功、PR #12 を作成」）。通知を設定すれば、スマホにも同じ1行が届きます。</p>
+          <p lang="en">What it asks, or what came of the turn, in one line. Notifications carry it too.</p>
+          <p lang="ja">何を聞いているか、何が終わったかを1行で表示します。通知を設定すれば、スマホにも届きます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Parked agents sink</h3><h3 lang="ja">放置したウィンドウは下へ</h3>
-          <p lang="en">Agents left for a day get a dim z and sink to the bottom, so the one that needs you is never lost among forty parked ones. Alt+n starts a second agent in its own worktree when one already works in that tree.</p>
-          <p lang="ja">1日放置したウィンドウには z が付き、一覧の下に移ります。放置したウィンドウが多くても、返事を待っているものを見失いません。同じフォルダですでにエージェントが動いているときは、Alt+n で起動したエージェントは別のフォルダ（worktree）で動きます。</p>
+          <p lang="en">Windows untouched for a day get a dim z and move to the bottom of the list.</p>
+          <p lang="ja">1日触っていないウィンドウには z が付き、一覧の下に移ります。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待ち時間を測る</h3>
-          <p lang="en">The guide line shows how long agents sat waiting on you today and your median reply time. Alt+/ adds a bar per day, this week against last, your best day and a streak, and prefix T shows the day as a timeline, a row per window. It all stays in a local file.</p>
-          <p lang="ja">今日エージェントを待たせた時間をステータスバーに表示します。<span class="nw">Alt+/ で</span>日ごとのグラフや先週との比較を、<span class="nw">prefix T で</span>その日のタイムラインを見られます。記録は自分のパソコンにだけ残ります。</p>
+          <p lang="en">Today's wait on the status line; a graph per day and the day's timeline in Alt+/.</p>
+          <p lang="ja">今日エージェントを待たせた時間を表示します。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Names that stay put</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
-          <p lang="en">Windows are named after the task, optionally by a local model in under a second. "ok", "yes", "進めて" or "ครับ" never rename anything, and a name you set yourself is never touched.</p>
-          <p lang="ja">作業内容からウィンドウに名前が付きます。「OK」「進めて」のような返事では変わらず、自分で付けた名前も上書きしません。</p>
+          <p lang="en">Named after the task. Replies like "ok" or "進めて" never rename a window.</p>
+          <p lang="ja">作業内容から名前を付けます。「OK」「進めて」のような返事では変わりません。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Claude Code, Codex, Gemini</h3><h3 lang="ja">Claude Code・Codex・Gemini</h3>
-          <p lang="en">Run them side by side. Codex and Gemini show ✋ with the exact command they want to run; one line sets each one up.</p>
-          <p lang="ja">混ぜて使っても同じ一覧に並びます。Codex と Gemini では、実行しようとしているコマンドも表示します。</p>
+          <p lang="en">Mix them; they share one list.</p>
+          <p lang="ja">混ぜて使っても、同じ一覧に並びます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">English, 日本語, ไทย</h3><h3 lang="ja">英語・日本語・タイ語</h3>
-          <p lang="en">Picked from your locale. Japanese and Thai names are cut by display width, so tabs stay aligned.</p>
-          <p lang="ja">OS の言語設定に合わせて切り替わります。日本語の長い名前でもタブの幅が崩れません。</p>
+          <p lang="en">Picked from your locale.</p>
+          <p lang="ja">OS の言語設定に合わせて切り替わります。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
-          <p lang="en">tmux and bash, plus python3 for healing badges, names and the timeline. Nothing to keep alive. 175 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">tmux と bash で動きます（一部の機能は python3 を使います）。ほかに動かしておくプログラムはありません。Linux と macOS で175件のテストを通しています。</p>
+          <p lang="en">tmux and bash, with python3 for some features.</p>
+          <p lang="ja">tmux と bash で動きます。一部の機能は python3 を使います。</p>
         </div>
       </div>
     </section>
