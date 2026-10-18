@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.5 — 2026-10-18
+
+### Changed
+
+- **The ⚠ banner on the guide line is gone.** The tab badge already marks windows that share a working tree; repeating their names on the second row only took the space the keys and tips need.
+
+### Fixed
+
+- **⚠ on agents that already have their own worktree.** An agent that Alt+n started with `claude --worktree`, or one that moved into a worktree mid-session, was still reported as sharing the repo root, so junban warned about the very split it had made. tmux's `pane_current_path` shows the launching `bash -c` shell's directory, not claude's. The hooks now record the directory the agent actually works in (the payload's `cwd`, else the hook's own), and the shared-tree check uses it.
+
 ## 0.3.4 — 2026-10-18
 
 ### Changed

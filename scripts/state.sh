@@ -29,6 +29,28 @@ fi
 t() { tmux "$@" 2>/dev/null; }
 cur=$(t display -p -t "$pane" '#{@junban}')
 
+# Where the agent really works, for scan.py's shared-tree check. tmux's
+# pane_current_path reads the foreground process group's leader, and a pane
+# started as `bash -c "claude --worktree; …"` (Alt+n) never gives claude its own
+# group, so tmux keeps reporting the repo root the worktree was made from. The
+# hook runs in the agent's directory; the payload's cwd also follows EnterWorktree.
+dir=$PWD; prompt=""
+if [ -n "$input" ] && command -v python3 >/dev/null 2>&1; then
+  { IFS= read -r c; IFS= read -r prompt; } < <(printf '%s' "$input" | python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    d = {}
+d = d if isinstance(d, dict) else {}
+c = d.get("cwd")
+print(c if isinstance(c, str) and "\n" not in c else "")
+p = (d.get("prompt") or "").strip() if isinstance(d.get("prompt"), str) else ""
+print(" ".join(p.split())[:120] if p and not p.startswith("<") else "")' 2>/dev/null)
+  [ -n "$c" ] && dir=$c
+fi
+case "$st" in running|waiting|done|idle) [ -n "$dir" ] && t set -p -t "$pane" @junban_cwd "$dir" ;; esac
+
 # timeline STATE — one row per change. The key (server pid + window id) stays put
 # when the window is renamed; the name is what the timeline prints.
 timeline() {
@@ -45,6 +67,7 @@ case "$st" in
     # Closing the agent is not answering it, so no wait is logged.
     [ -n "$cur" ] && timeline clear
     for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap; do t set -wu -t "$pane" "$o"; done
+    t set -pu -t "$pane" @junban_cwd
     exit 0 ;;
   done)
     # You are looking at it right now: nothing to catch up on. Attached is not enough:
@@ -80,16 +103,8 @@ if [ "$st" != "$cur" ]; then
   t set -w -t "$pane" @junban_ts "$(date +%s)"
 fi
 
-if [ "$st" = running ] && [ -n "$input" ] && command -v python3 >/dev/null 2>&1; then
-  prompt=$(printf '%s' "$input" | python3 -c '
-import json, sys
-try:
-    p = (json.load(sys.stdin).get("prompt") or "").strip()
-except Exception:
-    p = ""
-if p and not p.startswith("<"):
-    print(" ".join(p.split())[:120])' 2>/dev/null)
-  [ -n "$prompt" ] && t set -w -t "$pane" @junban_prompt "$prompt" && t set -wu -t "$pane" @junban_recap
+if [ "$st" = running ] && [ -n "$prompt" ]; then
+  t set -w -t "$pane" @junban_prompt "$prompt" && t set -wu -t "$pane" @junban_recap
 fi
 
 # Optional desktop/phone notification, e.g.

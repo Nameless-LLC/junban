@@ -83,6 +83,9 @@ def main():
             # pane is back at a bare shell, so other agents driving state.sh survive.
             if all(c in SHELLS for c in v["cmds"]) and now - v["ts"] > GRACE:
                 tmux("set", "-w", "-t", wid, "@junban", "idle")
+                # The shell is the pane's directory again, not the agent's worktree.
+                for loc, _ in v["panes"]:
+                    tmux("set", "-pu", "-t", loc.rsplit(".", 1)[1], "@junban_cwd")
             continue
         if all(s.get("status") == "idle" and
                s.get("statusUpdatedAt", 0) / 1000 > v["ts"] + GRACE for s in sessions):
