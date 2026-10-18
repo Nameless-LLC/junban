@@ -1,6 +1,6 @@
 {
   "name": "junban",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Whose turn is it? Shows which of your parallel Claude Code sessions is waiting for you, right on your tmux tabs. Pair with the junban tmux plugin.",
   "author": { "name": "Nameless LLC", "url": "https://namelessjp.com" },
   "homepage": "https://github.com/Nameless-LLC/junban",

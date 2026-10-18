@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.8 — 2026-10-18
+
+### Fixed
+
+- **Tips never showed with three rows.** They sat after the keys on the last row, which leaves no room on a 110-column terminal in Japanese, so every tip was dropped. When calm, the tip now sits right of today's wait on the second row and is cut with "…" instead of dropped. During a ✋/✓ banner it moves back after the keys, where it shows if it fits.
+
 ## 0.3.7 — 2026-10-18
 
 ### Added
