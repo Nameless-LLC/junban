@@ -107,7 +107,7 @@ Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line.
 set -g @junban-theme on            # off = keep your theme, only add badges + counter
 set -g @junban-position top        # top | bottom
 set -g @junban-guide on            # the second status line
-set -g @junban-guide-lines 3       # 2 = banner, keys and wait squeezed onto one row
+set -g @junban-guide-lines 3       # 2 = no keys row; the keys show while the prefix is down
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
 set -g @junban-tint-waiting 35     # the same for ✋ (an agent stopped on you)
 set -g @junban-tips on             # rotating tip on the right

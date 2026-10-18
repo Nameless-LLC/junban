@@ -2,8 +2,8 @@
 # The guide line. Tells you the one key that matters right now:
 #   someone is waiting → a red banner pointing at the jump key
 #   someone finished   → a green banner
-#   otherwise          → the five keys worth remembering, plus a quiet count of
-#                        agents parked for a day
+#   otherwise          → today's wait and a quiet count of agents parked for a
+#                        day, and (on its own row) the five keys worth remembering
 
 # The right edge rotates one tip per minute (@junban-tips off to hide).
 #
@@ -141,8 +141,9 @@ fi
 #   row 1: the banner and its recap, today's wait on the right when it fits;
 #          without a banner, today's wait and parked agents
 #   row 2: the keys and the tip
-# On one row the keys and the wait together run past ~110 columns in Japanese,
-# so the wait at the end was clipped off.
+# With @junban-guide-lines 2 there is one, with no keys on it: the keys and the
+# wait together ran past ~110 columns in Japanese and clipped the wait off. The
+# keys show there while the prefix is pending instead (junban.tmux).
 tip=$right
 [ "$row" = 1 ] && right="${info:+#[align=right]$info}"
 left=""
@@ -156,7 +157,7 @@ fi
 case "$row" in
   1) [ -z "$left" ] && { left=$info; right=""; } ;;
   2) left=$keys; right=$tip ;;
-  *) [ -z "$left" ] && left=$keys$info ;;
+  *) [ -z "$left" ] && left=$info ;;
 esac
 
 # Whatever the left says matters more than a tip: drop the tip if they collide.
