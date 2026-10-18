@@ -84,7 +84,9 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones. When an agent already works in the tree, Alt+n starts the next Claude Code in its own worktree (`claude --worktree`).
 
-**It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
+**It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR.
+
+**Finished work can come in batches.** With `set -g @junban-done-batch 30`, ✓ wait for the next :00 or :30 and arrive as one notification; until then the status line only counts them. ✋ still interrupts at once.
 
 **It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
 
@@ -138,6 +140,7 @@ set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…
 # Notifications when an agent starts waiting or finishes (message on stdin)
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # the message includes the recap line; a public ntfy.sh topic is readable by anyone who knows its name
+set -g @junban-done-batch off      # 30 = ✓ arrive together every 30 minutes
 ```
 
 Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.

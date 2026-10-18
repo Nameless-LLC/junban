@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The guide line. Tells you the one key that matters right now:
 #   someone is waiting → a red banner pointing at the jump key
-#   someone finished   → a green banner
+#   someone finished   → a green banner (with @junban-done-batch, only once the
+#                        slot it finished in is over; until then a quiet count)
 #   otherwise          → today's wait and a quiet count of agents parked for a
 #                        day, and (on its own row) the keys worth remembering
 
@@ -42,21 +43,29 @@ fit() {
   printf '%s…' "${out% }"
 }
 
-w=0; d=0; z=0
+w=0; d=0; z=0; held=0
+slot=$(slot_start)
 # The window Alt+a would open (oldest ✋, else oldest ✓), so the banner can say
 # what it wants before you go there.
 next_rank=9; next_ts=0; next_line=""
 # Empty fields print as "-": read collapses runs of tab separators, which would
 # shift the fields. (tmux escapes control characters, so no \037 trick.)
-while IFS=$'\t' read -r s st name ts recap; do
-  case "$s" in waiting) w=$((w + 1)); rank=1 ;; done) d=$((d + 1)); rank=2 ;; *) rank=9 ;; esac
+while IFS=$'\t' read -r s st name ts recap review; do
+  case "$s" in
+    waiting) w=$((w + 1)); rank=1 ;;
+    done) if [ "$slot" -gt 0 ] && [ "${ts:-0}" -ge "$slot" ]; then held=$((held + 1)); rank=9
+          else d=$((d + 1)); rank=2; fi ;;
+    *) rank=9 ;;
+  esac
   if [ "$rank" -lt 9 ] && { [ "$rank" -lt "$next_rank" ] ||
        { [ "$rank" -eq "$next_rank" ] && [ "${ts:-0}" -lt "$next_ts" ]; }; }; then
     next_rank=$rank; next_ts=${ts:-0}
     next_line="$name"; [ "$recap" != - ] && next_line="$name: $recap"
+    # What a finished turn changed tells you how long reviewing it will take.
+    [ "$rank" = 2 ] && [ "$review" != - ] && next_line="$next_line · $review"
   fi
   [ "$st" != - ] && z=$((z + 1))
-done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}' 2>/dev/null)
+done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}	#{?@junban_review,#{@junban_review},-}' 2>/dev/null)
 
 bg=$(opt @junban-color-bg "#1e2127")
 cw=$(opt @junban-color-waiting "#e06c75")
@@ -113,12 +122,15 @@ for pair in "$kj|$T_NEXT" "$kf|$T_LIST" ${nav:+"$nav"} "$kn|$T_NEW" "$kg|$T_SHEL
   keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
 done
 info=""
+# Held ✓ stay out of the way: a count and when they will show.
+# shellcheck disable=SC2059
+[ "$held" -gt 0 ] && info="#[fg=$cd_]✓ $(printf "$T_HELD" "$held" "$(hhmm "$(slot_end "$slot")")")  "
 # How long agents sat on you today. Seeing the number is most of the fix.
 if [ "$(opt @junban-meter on)" = on ]; then
   IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
   if [ "${mc:-0}" -gt 0 ]; then
     # shellcheck disable=SC2059
-    info="#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
+    info="$info#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
     # Quicker than your own recent days is the one comparison worth making.
     # shellcheck disable=SC2059
     case "$mtr" in
