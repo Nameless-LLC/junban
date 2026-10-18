@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.9 — 2026-10-18
+
+### Removed
+
+- **The shared-tree `!` badge.** Several agents in one checkout is how many people work, so the badge was on almost all the time, and it gave you nothing to act on. It is gone, along with `@junban-shared-check`. Alt+n still starts a second Claude Code in its own worktree when one already works in that tree (`@junban-new-worktree`).
+
 ## 0.3.8 — 2026-10-18
 
 ### Fixed

@@ -20,7 +20,7 @@ sel=$(opt @junban-color-current-bg "#2c313c")
 # The badge, reusable in your own formats as #{E:@junban-badge}
 badge="#{?#{==:#{@junban},waiting},#[fg=$cw bold]✋ ,#{?#{==:#{@junban},done},#[fg=$cd_ bold]✓ ,#{?#{==:#{@junban},running},#[fg=$cr]● ,}}}"
 # ! another agent works in the same git tree; z untouched for @junban-stale-hours
-badge="$badge#{?@junban_shared,#[fg=$cr bold]! ,}#{?@junban_stale,#[fg=$dim nobold]z ,}"
+badge="$badge#{?@junban_stale,#[fg=$dim nobold]z ,}"
 tmux set -g @junban-badge "$badge"
 
 if [ "$(opt @junban-theme on)" = on ]; then

@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
-"""Spot the two habits that quietly cost the most when running many agents.
-
-1. Two agents in one working tree. They overwrite each other's edits and one of
-   them ends up committing the other's half-done work. Separate git worktrees
-   fix it. Windows that share a tree get @junban_shared = <count>.
-2. Agents parked for days. The list grows until the one that needs you is
-   lost among them. Idle/done windows untouched for @junban-stale-hours
-   (default 24) get @junban_stale = <hours>.
+"""Spot agents parked for days. The list grows until the one that needs you is
+lost among them. Idle/done windows untouched for @junban-stale-hours
+(default 24) get @junban_stale = <hours>.
 
 Runs from summary.sh on every status refresh, but does real work at most once
-per @junban-scan-interval seconds (default 30): it shells out to git.
+per @junban-scan-interval seconds (default 30).
 
 `scan.py --tree PATH` prints how many agent windows already work in PATH's
 working tree (used by new.sh to decide whether to start in a new worktree).
@@ -35,7 +30,7 @@ _tops = {}
 def toplevel(path):
     """The working tree root for path, or None when it is not worth checking.
     A linked worktree has its own root, so separate worktrees never collide.
-    $HOME is skipped: a dotfiles repo there would make every agent "shared"."""
+    $HOME is skipped: a dotfiles repo there would put every agent in one tree."""
     if not path:
         return None
     if path not in _tops:
@@ -109,13 +104,6 @@ def scan():
         setw(wid, "@junban_shared", "")
         setw(wid, "@junban_stale", "")
 
-    shared = {}
-    if opt("@junban-shared-check", "on") == "on":
-        for wids in trees(wins).values():
-            if len(wids) > 1:
-                for wid in wids:
-                    shared[wid] = len(wids)
-
     try:
         hours = float(opt("@junban-stale-hours", "24"))
     except ValueError:
@@ -126,8 +114,9 @@ def scan():
             age = (now - w["ts"]) / 3600
             if age >= hours:
                 stale = int(age)
-        if str(shared.get(wid, "")) != w["shared"]:
-            setw(wid, "@junban_shared", shared.get(wid, ""))
+        # @junban_shared is what 0.3.8 and earlier set for agents sharing a tree.
+        if w["shared"]:
+            setw(wid, "@junban_shared", "")
         if str(stale) != w["stale"]:
             setw(wid, "@junban_stale", stale)
 
