@@ -58,7 +58,8 @@ if [ "$(opt @junban-guide on)" = on ]; then
   # here rather than in hints.sh: a #() job would show its old output for a moment,
   # and the hint is only worth anything the instant the prefix goes down.
   load_i18n
-  pk="#[fg=$cr]0-9#[fg=$mut] $T_PK_WIN  #[fg=$cr]n/p#[fg=$mut] $T_PK_NP"
+  digits=0-9; [ "$(opt @junban-nav-keys on)" = on ] && digits=1-9
+  pk="#[fg=$cr]$digits#[fg=$mut] $T_PK_WIN  #[fg=$cr]n/p#[fg=$mut] $T_PK_NP"
   if [ "$(opt @junban-prefix-keys on)" = on ]; then
     for pair in "a|$T_NEXT" "f|$T_LIST" "C|$T_NEW" "g|$T_SHELL" "/|$T_HELP"; do
       pk="$pk  #[fg=$cr]${pair%%|*}#[fg=$mut] ${pair#*|}"
@@ -121,6 +122,10 @@ if [ "$(opt @junban-prefix-keys on)" = on ]; then
 fi
 
 if [ "$(opt @junban-nav-keys on)" = on ]; then
+  # Alt+1 should open the first tab: count tabs from 1 and close the gaps,
+  # including in sessions that already run with tabs from 0.
+  tmux set -g base-index 1 \; setw -g pane-base-index 1 \; set -g renumber-windows on
+  for s in $(tmux list-sessions -F '#{session_id}' 2>/dev/null); do tmux move-window -r -t "$s" 2>/dev/null; done
   for i in 1 2 3 4 5 6 7 8 9; do tmux bind -n "M-$i" select-window -t ":=$i"; done
   tmux bind -n 'M-[' previous-window \; bind -n 'M-]' next-window \; \
        bind -n M-Tab last-window \; bind -n M-z resize-pane -Z

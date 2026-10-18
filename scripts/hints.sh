@@ -106,9 +106,9 @@ banner() {
 
 # The calm line: the keys worth remembering, then today's wait and parked agents.
 keys=""
-# Alt+1-9 (@junban-nav-keys) moves between windows; tmux clips the end of the row,
+# Alt+[ ] (@junban-nav-keys) moves to the window beside; tmux clips the end of the row,
 # so it goes right after the two keys that matter most.
-nav=""; [ "$(opt @junban-nav-keys on)" = on ] && nav="Alt+1-9|$T_PK_WIN"
+nav=""; [ "$(opt @junban-nav-keys on)" = on ] && nav="Alt+[ ]|$HELP_K_PREVNEXT"
 for pair in "$kj|$T_NEXT" "$kf|$T_LIST" ${nav:+"$nav"} "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
   keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
 done

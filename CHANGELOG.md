@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.12 — 2026-10-18
+
+### Changed
+
+- **The keys row shows Alt+[ ] instead of Alt+1-9.** Stepping to the window beside is what you reach for; Alt+1-9 still works.
+- **Tabs count from 1.** Alt+1 opened the second tab when tabs started at 0. With `@junban-nav-keys` on (the default), junban sets `base-index 1` and `renumber-windows on` and renumbers running sessions, so the number on a tab is the one you press. The Ctrl+b hint says `1-9`.
+
 ## 0.3.11 — 2026-10-18
 
 ### Added
