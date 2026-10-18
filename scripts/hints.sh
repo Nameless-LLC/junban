@@ -45,22 +45,21 @@ fit() {
   printf '%s…' "${out% }"
 }
 
-w=0; d=0; z=0; shared=""
+w=0; d=0; z=0
 # The window Alt+a would open (oldest ✋, else oldest ✓), so the banner can say
 # what it wants before you go there.
 next_rank=9; next_ts=0; next_line=""
 # Empty fields print as "-": read collapses runs of tab separators, which would
 # shift the fields. (tmux escapes control characters, so no \037 trick.)
-while IFS=$'\t' read -r s sh st name ts recap; do
+while IFS=$'\t' read -r s st name ts recap; do
   case "$s" in waiting) w=$((w + 1)); rank=1 ;; done) d=$((d + 1)); rank=2 ;; *) rank=9 ;; esac
   if [ "$rank" -lt 9 ] && { [ "$rank" -lt "$next_rank" ] ||
        { [ "$rank" -eq "$next_rank" ] && [ "${ts:-0}" -lt "$next_ts" ]; }; }; then
     next_rank=$rank; next_ts=${ts:-0}
     next_line="$name"; [ "$recap" != - ] && next_line="$name: $recap"
   fi
-  [ "$sh" != - ] && shared="$shared${shared:+ · }$name"
   [ "$st" != - ] && z=$((z + 1))
-done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_shared,#{@junban_shared},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}' 2>/dev/null)
+done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}' 2>/dev/null)
 
 bg=$(opt @junban-color-bg "#1e2127")
 cw=$(opt @junban-color-waiting "#e06c75")
@@ -150,10 +149,6 @@ if [ "$w" -gt 0 ]; then
   banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")" "$(opt @junban-tint-waiting "$([ "$(opt @junban-tint 20)" = 0 ] && echo 0 || echo 35)")"
 elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
-elif [ -n "$shared" ]; then
-  tint=$(mix "$ck")
-  left="#[fill=$tint]#[fg=$bg,bg=$ck,bold] ⚠ $(printf "$T_SHARED" "$shared") #[bg=$tint,nobold]#[fg=$cm] $T_SHARED_GO"
-  [ -n "$right" ] && right="#[bg=$tint]$right"
 fi
 case "$row" in
   1) [ -z "$left" ] && left=$keys ;;

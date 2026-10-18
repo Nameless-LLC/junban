@@ -141,7 +141,7 @@ eq  "subdir counts as same tree"    "$(get u:2 @junban_shared)" "2"
 eq  "separate worktree not flagged" "$(get u:3 @junban_shared)" ""
 eq  "\$HOME never flagged"          "$(get u:4 @junban_shared)" ""
 eq  "shell without agent ignored"   "$(get u:5 @junban_shared)" ""
-has "guide names the sharing windows" "$(bash "$S/hints.sh")" "a · b"
+hasnt "no ⚠ banner on the guide line" "$(bash "$S/hints.sh")" "⚠"
 has "badge shows ⚠"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
 # Alt+n's `bash -c "claude --worktree; …"` keeps pane_current_path at the repo
 # root while claude works in its worktree; its hooks run there.

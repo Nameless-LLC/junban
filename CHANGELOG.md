@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.3.5 — 2026-10-18
+
+### Changed
+
+- **The ⚠ banner on the guide line is gone.** The tab badge already marks windows that share a working tree; repeating their names on the second row only took the space the keys and tips need.
 
 ### Fixed
 
