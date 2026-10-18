@@ -117,7 +117,7 @@ set -g @junban-key-new M-n
 set -g @junban-key-scratch M-g
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     # e.g. M-y (prefix T always works)
-set -g @junban-nav-keys on         # Alt+1..9, Alt+[ ], Alt+Tab, Alt+z
+set -g @junban-nav-keys on         # Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z
 set -g @junban-prefix-keys on      # prefix a/f/C/g/ fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when the tree is taken | off

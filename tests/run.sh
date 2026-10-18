@@ -33,6 +33,14 @@ eq  "three status rows by default"  "$(tmux show -gv status)" "3"
 has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')" "jump.sh"
 has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
 has "badge in window format"        "$(tmux show -gv window-status-format)" "@junban-badge"
+# Alt+1 is the first tab: a session whose tabs start at 0 is renumbered from 1.
+tmux set -g base-index 0 \; set -g renumber-windows off
+tmux new -d -s z0 \; new-window -d -t z0
+bash "$ROOT/junban.tmux"
+eq  "tabs renumbered from 1"        "$(tmux list-windows -t z0 -F '#I' | tr '\n' ' ')" "1 2 "
+tmux new-window -d -t z0 \; kill-window -t z0:1
+eq  "closing a tab closes the gap"  "$(tmux list-windows -t z0 -F '#I' | tr '\n' ' ')" "1 2 "
+tmux kill-session -t z0
 
 echo "state"
 st "$p1" running '{"prompt":"Refactor the billing\n  module please"}'
@@ -73,9 +81,9 @@ has "guide in Thai"                 "$(bash "$S/hints.sh")" "รอคุณต�
 tmux set -gu @junban-lang
 tmux set -w -t s:2 @junban idle \; set -w -t s:1 @junban idle
 has "keys row lists keys when calm" "$(bash "$S/hints.sh" 0 2)" "Alt+f"
-has "keys row lists window moves"   "$(plain 0 2)" "Alt+f all agents  Alt+1-9 that window  Alt+n"
+has "keys row lists window moves"   "$(plain 0 2)" "Alt+f all agents  Alt+[ ] previous / next window  Alt+n"
 tmux set -g @junban-nav-keys off
-hasnt "…not when nav keys are off"  "$(plain 0 2)" "Alt+1-9"
+hasnt "…not when nav keys are off"  "$(plain 0 2)" "Alt+[ ]"
 tmux set -gu @junban-nav-keys
 tmux set -g @junban-lang ja
 nav=$(plain 0 2); nav=${nav//[^ -~]/xx}
@@ -373,7 +381,7 @@ eq  "unset → three status rows"      "$(tmux show -gv status)" "3"
 has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
 # Prefix down: the keys row lists what can follow it. Evaluate the branch as if pressed.
 pressed() { tmux display -p "$(tmux show -gv "status-format[$1]" | sed 's/#{?client_prefix,/#{?#{==:a,a},/')" | sed 's/#\[[^]]*\]//g'; }
-has   "prefix shows what follows it" "$(pressed 2)" "0-9 that window  n/p next / previous window  a next  f all agents"
+has   "prefix shows what follows it" "$(pressed 2)" "1-9 that window  n/p next / previous window  a next  f all agents"
 hasnt "…instead of the guide"        "$(pressed 2)" "Alt+f"
 tmux set -g @junban-lang ja; bash "$ROOT/junban.tmux"
 has   "prefix hint in Japanese"      "$(pressed 2)" "a 次へ  f 一覧"
