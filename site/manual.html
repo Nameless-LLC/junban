@@ -187,7 +187,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td class="w b">✋</td><td><span lang="en">Waiting on you: a question, or permission to run something. Clears when you answer.</span><span lang="ja">あなたの返事待ち（質問、または実行の許可）。返事をすると消えます。</span></td></tr>
             <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or come back to that terminal.</span><span lang="ja">作業が終わり、まだ見ていない。そのウィンドウを開いた瞬間か、その端末に戻った時点で消えます。</span></td></tr>
             <tr><td class="r">●</td><td><span lang="en">Working.</span><span lang="ja">作業中。</span></td></tr>
-            <tr><td class="r b">⚠</td><td><span lang="en">Another agent works in the same git working tree. Two agents there overwrite each other's edits. See <a href="#new">Alt+n</a>.</span><span lang="ja">別のエージェントと同じ git の作業ツリーで動いている。互いの編集を上書きします。<a href="#new">Alt+n</a> を参照。</span></td></tr>
+            <tr><td class="r b">!</td><td><span lang="en">Another agent works in the same git working tree. Two agents there overwrite each other's edits. See <a href="#new">Alt+n</a>.</span><span lang="ja">別のエージェントと同じ git の作業ツリーで動いている。互いの編集を上書きします。<a href="#new">Alt+n</a> を参照。</span></td></tr>
             <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていない（<code>@junban-stale-hours</code>）。<kbd>Alt+f</kbd> の一覧で下に移ります。</span></td></tr>
           </tbody>
         </table></div>
@@ -235,13 +235,13 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       </section>
 
       <section id="guide">
-        <h2><span lang="en">The guide line</span><span lang="ja">案内行（2行目）</span></h2>
-        <p lang="en">junban adds a second status line that changes with the situation, so there is nothing to memorise.</p>
-        <p lang="ja">junban はステータスバーに2行目を足します。状況に合わせて中身が変わるので、何も覚えなくて済みます。</p>
-        <p lang="en"><span class="b">Calm.</span> The five keys worth knowing, the wait meter, and the mascot.</p>
-        <p lang="ja"><span class="b">平常時。</span>覚えておくと便利な5つのキー、待ち時間メーター、マスコット。</p>
-        <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">⏱ kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
-        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span><span class="rc">⏱ 今日の待ち時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前のウィンドウに戻る</span></div>
+        <h2><span lang="en">The guide line</span><span lang="ja">案内行（2・3行目）</span></h2>
+        <p lang="en">junban adds two status lines under the window tabs. The second line says what needs you, or today's wait when nothing does; the third lists the keys and a tip. Nothing to memorise.</p>
+        <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目は対応が必要なもの、無ければ今日の待ち時間。3行目はキーとヒントです。何も覚えなくて済みます。</p>
+        <p lang="en"><span class="b">Calm.</span> Today's wait on the second line, the five keys worth knowing on the third.</p>
+        <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間、3行目に覚えておくと便利な5つのキー。</p>
+        <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
+        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span><span class="rc">今日の待ち時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前のウィンドウに戻る</span></div>
         <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
         <p lang="ja"><span class="b w">誰かが待っているとき。</span>キーを示す赤い帯と、次に移動するウィンドウが何を求めているかの1行。</p>
         <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
@@ -250,10 +250,10 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の帯と、作業の結果の1行。</p>
         <div class="tl" lang="en"><span class="bn g">✓ 1 finished → Alt+a to review</span><span class="rc">pricing page copy: 3 files changed, tests pass</span></div>
         <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
-        <p lang="en">When two agents share a git tree, the line names the windows and how to split them. On a narrow terminal the recap is cut first, so the banner always fits.</p>
-        <p lang="ja">2つのエージェントが同じ git の作業ツリーで動いているときは、そのウィンドウの名前と分け方を出します。端末の幅が狭いときは1行要約から省略するので、帯そのものは必ず表示されます。</p>
-        <p lang="en"><code>@junban-guide-lines 3</code> gives the banner a row of its own, with the keys on a third row. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
-        <p lang="ja"><code>@junban-guide-lines 3</code> にすると、帯が独立した1行になり、キーは3行目に回ります。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
+        <p lang="en">The banner sits on the second line; today's wait moves to its right end when there is room. On a narrow terminal the recap is cut first, so the banner always fits.</p>
+        <p lang="ja">帯は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。端末の幅が狭いときは1行要約から省略するので、帯そのものは必ず表示されます。</p>
+        <p lang="en"><code>@junban-guide-lines 2</code> puts everything on one line, as before 0.3.5. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
+        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、0.3.5 より前と同じく1行にまとめます。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
       </section>
 
       <section id="recap">
@@ -359,7 +359,7 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
 set -g @junban-theme on            <span class="c"># off = keep your theme, only add badges and the counter</span>
 set -g @junban-position top        <span class="c"># top | bottom</span>
 set -g @junban-guide on            <span class="c"># the guide line</span>
-set -g @junban-guide-lines 2       <span class="c"># 3 = the banner gets a row of its own</span>
+set -g @junban-guide-lines 3       <span class="c"># 2 = banner, keys and wait on one row</span>
 set -g @junban-tint 20             <span class="c"># % of the banner colour washed over its row (0 = off)</span>
 set -g @junban-tint-waiting 35     <span class="c"># the same for ✋</span>
 set -g @junban-tips on             <span class="c"># rotating tip on the right</span>
@@ -384,10 +384,10 @@ set -g @junban-vscode-raise on     <span class="c"># off = Alt+a always switches
 set -g @junban-recap on            <span class="c"># one line on what each agent needs</span>
 
 <span class="c"># Habits and numbers</span>
-set -g @junban-shared-check on     <span class="c"># ⚠ when two agents share a git tree</span>
+set -g @junban-shared-check on     <span class="c"># ! when two agents share a git tree</span>
 set -g @junban-scan-interval 30    <span class="c"># seconds between those git checks</span>
 set -g @junban-stale-hours 24      <span class="c"># z after this long untouched (0 = off)</span>
-set -g @junban-meter on            <span class="c"># ⏱ on the guide line</span>
+set -g @junban-meter on            <span class="c"># wait total on the guide line</span>
 set -g @junban-meter-cap 60        <span class="c"># minutes one wait can count for</span>
 set -g @junban-goal 5              <span class="c"># streak: days with a median reply within this</span>
 

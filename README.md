@@ -58,7 +58,7 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 
 ## The only key you need
 
-**Alt+a.** When nothing is waiting, the second status line shows the five keys worth knowing. When something is, it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
+**Alt+a.** The bottom status line always shows the five keys worth knowing. When something is waiting, the line above it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
 
 | Key | |
 |---|---|
@@ -84,11 +84,11 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Windows name themselves after the task, and stay named.** By default a window takes the first line of your prompt. Point it at any model (a small model resident in a local Ollama answers in under a second) and it summarises the last few prompts instead. Replies like "ok", "yes", "進めて" or "ครับ" never rename anything. A window you name yourself (`prefix ,`) is never touched again.
 
-**It catches the two habits that cost the most.** Two agents in one git working tree overwrite each other's edits and commit each other's half-done work; those windows get a ⚠ on their tab. Alt+n then starts the second Claude Code in its own worktree (`claude --worktree`) instead. Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones.
+**It catches the two habits that cost the most.** Two agents in one git working tree overwrite each other's edits and commit each other's half-done work; those windows get a red ! on their tab. Alt+n then starts the second Claude Code in its own worktree (`claude --worktree`) instead. Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones.
 
 **It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or what came of the turn ("tests pass, PR #12 opened"). With a namer model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
 
-**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`⏱ kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
 
 **A timeline of your day.** prefix T (and the top of Alt+/) draws a row per window: yellow █ working, red ▓ waiting for you, green ▒ done and not looked at, then when you were active, how long agents worked and waited on you, and how many ran at once. `scripts/timeline.sh 1` shows yesterday. It is a view for you, and it stays on your machine; set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
 
@@ -107,7 +107,7 @@ Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line.
 set -g @junban-theme on            # off = keep your theme, only add badges + counter
 set -g @junban-position top        # top | bottom
 set -g @junban-guide on            # the second status line
-set -g @junban-guide-lines 2       # 3 = the banner gets a row of its own, keys + tip below
+set -g @junban-guide-lines 3       # 2 = banner, keys and wait squeezed onto one row
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
 set -g @junban-tint-waiting 35     # the same for ✋ (an agent stopped on you)
 set -g @junban-tips on             # rotating tip on the right
@@ -126,9 +126,9 @@ set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when the tree is taken | off
 
 # Hygiene
-set -g @junban-shared-check on     # ⚠ when two agents share a git working tree
+set -g @junban-shared-check on     # ! when two agents share a git working tree
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
-set -g @junban-meter on            # ⏱ today's wait total on the guide line
+set -g @junban-meter on            # today's wait total on the guide line
 set -g @junban-meter-cap 60        # minutes one wait can count for
 set -g @junban-goal 5              # streak: days with a median reply within this many minutes
 set -g @junban-mascot on           # off = hide the face on the status line

@@ -27,7 +27,7 @@ get() { tmux display -p -t "$1" "#{$2}"; }
 
 echo "plugin"
 bash "$ROOT/junban.tmux"
-eq  "guide line enabled"            "$(tmux show -gv status)" "2"
+eq  "three status rows by default"  "$(tmux show -gv status)" "3"
 # list-keys with a key argument prints nothing on tmux 3.7, so search the table
 has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')" "jump.sh"
 has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
@@ -141,8 +141,12 @@ eq  "subdir counts as same tree"    "$(get u:2 @junban_shared)" "2"
 eq  "separate worktree not flagged" "$(get u:3 @junban_shared)" ""
 eq  "\$HOME never flagged"          "$(get u:4 @junban_shared)" ""
 eq  "shell without agent ignored"   "$(get u:5 @junban_shared)" ""
-hasnt "no ⚠ banner on the guide line" "$(bash "$S/hints.sh")" "⚠"
-has "badge shows ⚠"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
+hasnt "no shared banner on the guide line" "$(bash "$S/hints.sh")" "a · b"
+has "badge shows !"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
+# ⚠ and ⏱ are one column to tmux but drawn as two-column emoji by xterm.js
+# (VS Code), which clips them in half.
+hasnt "no ⚠ in the badge"           "$(tmux show -gv @junban-badge)" "⚠"
+hasnt "no ⏱ on the guide line"      "$(bash "$S/hints.sh")" "⏱"
 # Alt+n's `bash -c "claude --worktree; …"` keeps pane_current_path at the repo
 # root while claude works in its worktree; its hooks run there.
 git -C "$repo" worktree add -q "$WORK/wt2" -b side2
@@ -212,6 +216,10 @@ tmux set -gu @junban-meter-cap
 tmux set -w -t u:1 @junban_shared ""; for w in 1 2 3 4; do tmux set -w -t "u:$w" -u @junban_stale; done
 tmux set -w -t u:1 -u @junban_shared
 has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
+has   "calm row 1 is today's wait"  "$(bash "$S/hints.sh" 110 1)" "kept waiting 1h"
+hasnt "…without the keys"           "$(bash "$S/hints.sh" 110 1)" "Alt+f"
+has   "calm row 2 is the keys"      "$(bash "$S/hints.sh" 110 2)" "Alt+f"
+hasnt "…without the wait"           "$(bash "$S/hints.sh" 110 2)" "kept waiting"
 tmux set -g @junban-lang ja
 has "meter in Japanese"             "$(bash "$S/hints.sh")" "今日の待ち時間 1時間"
 tmux set -gu @junban-lang
@@ -340,22 +348,24 @@ has   "wide terminal keeps the tip"   "$(plain 200)" "💡"
 hasnt "narrow terminal drops the tip" "$(plain 100)" "💡"
 has   "narrow terminal cuts the recap with …" "$(plain 70)" "…"
 has   "banner survives a narrow terminal" "$(plain 50)" "Alt+a to jump"
-long=$(plain 70); long=${long//[✓·→…⚠]/x}; long=${long//[^ -~]/xx}
+long=$(plain 70); long=${long//[✓·→…]/x}; long=${long//[^ -~]/xx}
 if [ ${#long} -le 70 ]; then ok "cut line fits the width"; else bad "cut line fits the width" "${#long} cols"; fi
 has   "C locale still counts characters" "$(LC_ALL=C plain 70)" "…"
-# @junban-guide-lines 3: the banner gets row 1, the keys and tip row 2
+# three rows: the banner (or today's wait) on row 1, the keys and tip on row 2
 has   "row 1 carries the banner"      "$(plain 120 1)" "Alt+a to jump"
 hasnt "row 1 has no tip"              "$(plain 200 1)" "💡"
+has   "wide row 1: wait right of the banner" "$(plain 200 1)" "kept waiting"
+hasnt "narrow row 1: the banner wins" "$(plain 80 1)" "kept waiting"
 has   "row 2 keeps the keys under a banner" "$(plain 200 2)" "Alt+f"
 has   "row 2 carries the tip"         "$(plain 400 2)" "💡"
 has   "banner row takes a wash of its color" "$(bash "$S/hints.sh" 120 1)" "#[fill=#613b42]"
 tmux set -g @junban-tint 0
 has   "tint 0 leaves the row plain"   "$(bash "$S/hints.sh" 120 1)" "#[fill=#1e2127]"
 tmux set -gu @junban-tint
-tmux set -g @junban-guide-lines 3; bash "$ROOT/junban.tmux"
-eq  "guide-lines 3 sets three status rows" "$(tmux show -gv status)" "3"
-has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
 tmux set -gu @junban-guide-lines; bash "$ROOT/junban.tmux"
+eq  "unset → three status rows"      "$(tmux show -gv status)" "3"
+has "third row runs the guide"      "$(tmux show -gv 'status-format[2]')" "hints.sh #{client_width} 2"
+tmux set -g @junban-guide-lines 2; bash "$ROOT/junban.tmux"
 eq  "back to two rows"              "$(tmux show -gv status)" "2"
 hasnt "our third row removed"       "$(tmux show -gv 'status-format[2]')" "hints.sh"
 tmux set -w -t u:6 @junban idle

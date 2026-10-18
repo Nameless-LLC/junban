@@ -48,7 +48,7 @@ TIPS=(
   "A green ✓ clears the moment you open that window"
   "If Alt is swallowed by your terminal, use prefix a / f / g"
   "Alt+n opens a second agent in its own worktree when one already works here"
-  "⏱ on the guide line is how long agents sat waiting on you today"
+  "\"kept waiting\" on the guide line is how long agents sat waiting on you today"
   "The banner says what the next agent wants, so you can decide before you switch"
 )
 HELP_TITLE="junban — whose turn is it?"

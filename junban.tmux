@@ -19,8 +19,8 @@ sel=$(opt @junban-color-current-bg "#2c313c")
 
 # The badge, reusable in your own formats as #{E:@junban-badge}
 badge="#{?#{==:#{@junban},waiting},#[fg=$cw bold]✋ ,#{?#{==:#{@junban},done},#[fg=$cd_ bold]✓ ,#{?#{==:#{@junban},running},#[fg=$cr]● ,}}}"
-# ⚠ another agent works in the same git tree; z untouched for @junban-stale-hours
-badge="$badge#{?@junban_shared,#[fg=$cr bold]⚠ ,}#{?@junban_stale,#[fg=$dim nobold]z ,}"
+# ! another agent works in the same git tree; z untouched for @junban-stale-hours
+badge="$badge#{?@junban_shared,#[fg=$cr bold]! ,}#{?@junban_stale,#[fg=$dim nobold]z ,}"
 tmux set -g @junban-badge "$badge"
 
 if [ "$(opt @junban-theme on)" = on ]; then
@@ -54,8 +54,9 @@ fi
 [ "$(tmux show -gv status-interval)" -gt 5 ] 2>/dev/null && tmux set -g status-interval 5
 
 if [ "$(opt @junban-guide on)" = on ]; then
-  # @junban-guide-lines 3 gives the banner a row of its own; the keys and tip go below.
-  if [ "$(opt @junban-guide-lines 2)" = 3 ]; then
+  # Three rows by default: the banner (or today's wait) on one, the keys and tip below.
+  # @junban-guide-lines 2 squeezes them into one row.
+  if [ "$(opt @junban-guide-lines 3)" = 3 ]; then
     # A shade darker, so the keys row sits apart from both the banner and the pane.
     bg2=$(opt @junban-color-bg2 "#17191d")
     tmux set -g status 3 \; \
