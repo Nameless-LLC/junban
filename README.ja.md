@@ -3,36 +3,36 @@
 # junban
 
 **いま、誰の番？**<br>
-AI エージェントを何体も並列で回すための tmux 操縦席。
+複数の AI エージェントを tmux で動かすときに、返事待ちのエージェントを教えるプラグイン。
 
 [English](README.md) · [日本語](README.ja.md) · [▶ 25秒のデモ](https://junban.namelessjp.com/)
 
-<a href="https://junban.namelessjp.com/"><img src="docs/hero-ja.svg" alt="junban の画面。tmux で Claude Code を6つ動かしていて、赤い帯が「2件があなたの返事待ち」と表示。Alt+a でいちばん長く待っているウィンドウへ飛び、Alt+f で全エージェントをプレビュー付きで一覧する" width="100%"></a>
+<a href="https://junban.namelessjp.com/"><img src="docs/hero-ja.svg" alt="junban の画面。tmux で Claude Code を6つ動かしていて、ステータスバーに赤い表示で「2件があなたの返事待ち」と出ている。Alt+a でいちばん長く待っているウィンドウへ移動し、Alt+f で全エージェントをプレビュー付きで一覧する" width="100%"></a>
 
 </div>
 
-AI エージェントを並べて仕事を頼むと、どこかで1つが、`psql` を実行してよいかの許可を20分前から待っています。全部のウィンドウを順に開くまで、それに気づけません。
+複数の AI エージェントを動かしていると、1つが20分も `psql` の実行許可を待っていた、ということが起きます。ウィンドウを1つずつ開くまで気づけません。
 
-**junban（順番）** はこれを解決します。そのうえで、次に押すべきキーまで教えます。
+**junban（順番）** は、返事待ちのエージェントを tmux のタブに表示し、次に押すキーを教えます。
 
-- **✋ 赤**：エージェントがあなたの返事を待っている（許可・質問）
+- **✋ 赤**：あなたの返事待ち（許可・質問）
 - **✓ 緑**：作業が終わったが、まだ見ていない
 - **● 黄**：作業中
 
-あとは **Alt+a** を押すだけで、いちばん長く待たせているウィンドウへ移動できます。
+**Alt+a** を押すと、いちばん長く待っているウィンドウへ移動します。
 
 ## 導入
 
-ターミナルで1行実行するだけです。
+ターミナルで1行実行します。
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
-tmux に junban を入れて読み込み直し、Claude Code があればそちらにもつなぎます。あとは **Alt+a** を押すだけです。
+tmux に junban が入り、Claude Code があれば連携も設定します。
 
 <details>
-<summary>TPM で入れる場合</summary>
+<summary>tmux のプラグイン管理ツール（TPM）で入れる場合</summary>
 
 `~/.tmux.conf` に追記して、prefix + I を押します。
 
@@ -40,7 +40,7 @@ tmux に junban を入れて読み込み直し、Claude Code があればそち�
 set -g @plugin 'Nameless-LLC/junban'
 ```
 
-続けて Claude Code につなぎます。
+続けて Claude Code と連携します。
 
 ```sh
 claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban
@@ -48,65 +48,63 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 </details>
 
-Codex CLI と Gemini CLI は `~/.tmux/plugins/junban/scripts/setup.sh codex`（または `gemini`）です。詳しくは[Claude Code 以外のエージェント](#claude-code-以外のエージェント)を見てください。
+Codex CLI と Gemini CLI は `~/.tmux/plugins/junban/scripts/setup.sh codex`（または `gemini`）を実行します。詳しくは[Claude Code 以外のエージェント](#claude-code-以外のエージェント)を見てください。
 
-必要なのは tmux 3.2 以上と bash です。fzf と python3 は任意ですが、入れておくのがおすすめです。
+tmux 3.2 以上と bash が必要です。python3 と fzf があれば、ウィンドウ名の自動設定・タイムライン・一覧の検索も使えます。
 
 ### うまく動かないとき
 
-`~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。それでも直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。ウィンドウの名前や依頼の内容は出力に含まれません。質問や使い方の相談は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へどうぞ。セキュリティの問題は公開せずに報告してください（[SECURITY.md](SECURITY.md)）。
+`~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。ウィンドウの名前や依頼の内容は出力に含まれません。質問は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へ。セキュリティの問題は公開せずに報告してください（[SECURITY.md](SECURITY.md)）。
 
 ## 覚えるキーは1つだけ
 
-**Alt+a** です。ステータスバーの一番下の行には、覚えておくと便利な5つのキーが常に出ます。誰かが待っているときは、その上の行が「Alt+a で移動」という帯に変わります。何も覚えなくても、画面が次の操作を教えてくれます。
+**Alt+a** です。ステータスバーの一番下の行には、よく使う5つのキーが出ます。返事待ちがあると、その上の行に「Alt+a で移動」と出ます。
 
 | キー | |
 |---|---|
 | **Alt+a** | 次に見るべきウィンドウへ移動。返事待ちが先、次に完了。それぞれ待った時間が長い順 |
-| **Alt+f** | 全エージェントの一覧。困っている順に並び、文字を打つと絞り込め、画面のプレビューも出る |
-| **Alt+n** | 今のディレクトリで新しいエージェントを開く（既に別のエージェントが作業中なら、別の worktree で開く） |
+| **Alt+f** | 全エージェントの一覧。待たせている順に並び、文字を打つと絞り込める。画面のプレビュー付き |
+| **Alt+n** | 今のディレクトリで新しいエージェントを起動（ほかのエージェントが作業中なら、別の worktree で起動） |
 | **Alt+g** | ポップアップのシェル。閉じても中身が残る |
-| **Alt+/** | 早見表。実際に割り当てたキーから自動で作る。今日のタイムラインと待ち時間の集計も出る |
+| **Alt+/** | キーの一覧。今日のタイムラインと待ち時間の集計も出る |
 | prefix T | 今日のタイムライン。ウィンドウごとに、作業中・返事待ち・完了の時間帯を1行で表示 |
 | Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | 番号のウィンドウへ · 前/次 · 直前 · 最大化 |
 
-端末が Alt キーを横取りする場合は、prefix の後に `a` `f` `C` `g` `/` を押しても同じ操作ができます。
+端末が Alt キーを使ってしまう場合は、prefix の後に `a` `f` `C` `g` `/` を押しても同じ操作ができます。
 
-すべての設定項目を載せたマニュアル: [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/)
+すべての設定項目はマニュアルにあります: [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/)
 
-## 他のプラグインとの違い
+## 似たツールとの違い
 
-タブにバッジを出すプラグインは[多く](#先行事例)、待たせた順に移動するもの（gs/tmux-agent-status）や待ち時間を測るもの（muxa）もあります（[比較表](https://junban.namelessjp.com/#compare)）。junban はそれらを常駐プロセスのない素の tmux プラグイン1つにまとめ、ほかで見つからなかった機能として、次のキーを示すステータス行・放置ウィンドウを一覧の下に移す表示・短い返事で変わらない手元モデルのウィンドウ名を加えています。
+タブにアイコンを出すプラグインは[多く](#先行事例)あり、待たせた順に移動するもの（gs/tmux-agent-status）や待ち時間を測るもの（muxa）もあります（[比較表](https://junban.namelessjp.com/#compare)）。junban は、これらを常駐プロセスなしの tmux プラグイン1つで使えるようにしました。次に押すキーの表示と、放置したウィンドウを一覧の下に移す表示は、ほかのツールでは見つかりませんでした。
 
-**状態だけでなく、次の一手を示します。** 2行目の案内は状況に応じて変わるので、配属初日の人でもキーを1つも覚えずに使えます。
+**「作業中」のまま残りません。** 途中で Esc を押すと Claude Code は終了を知らせないため、フックだけで状態を見るツールでは「作業中」のまま残ります。junban は Claude Code のセッション記録（`~/.claude/sessions`）を見て、正しい表示に直します。プロセスの親子関係もたどって、そのウィンドウのエージェントかどうかを確かめます。
 
-**バッジが「作業中」のまま止まりません。** フックには抜けがあります。作業の途中で Esc を押すと終了イベントが飛ばないため、フックだけで状態を作るツールは「作業中」を表示し続けます。junban は Claude Code 自身が書いているセッション記録（`~/.claude/sessions`）と照らし合わせて、止まった状態を直します。その際、プロセスが本当にそのウィンドウの中で動いているかも確かめます。ウィンドウの ID は tmux サーバーごとにしか一意でないので、プロセスの親子関係まで見ています。
+**ウィンドウ名は作業内容から自動で付きます。** 標準では依頼の1行目が名前になります。LLM を設定すると、直近の依頼をまとめた名前にします（ローカルの Ollama で小さいモデルを動かせば1秒以内）。「OK」「進めて」のような短い返事では変わらず、自分で付けた名前（`prefix ,`）も上書きしません。
 
-**ウィンドウの名前は作業内容から付き、短い返事では変わりません。** 既定では、依頼の1行目がウィンドウの名前になります。モデルを指定すると、直近の依頼をまとめた名前にします。手元の Ollama に小さいモデルを常駐させておけば1秒かかりません。「OK」「進めて」のような短い返事では名前を変えません。自分で付けた名前（`prefix ,`）は二度と上書きしません。
+**放置したウィンドウは下へ移ります。** 1日以上触っていないウィンドウには `z` が付き、Alt+f の一覧の下に移ります。放置したウィンドウが多くても、返事を待っているものを見失いません。同じフォルダですでにエージェントが動いているときは、Alt+n で起動する Claude Code が別の worktree（`claude --worktree`）で動きます。
 
-**放置したウィンドウは下へ移ります。** 1日以上触っていないウィンドウには薄い `z` が付き、Alt+f の一覧では下に移り、件数がキー案内の後ろに出ます。放置されたウィンドウが40個あっても、あなたを待っている1つを見失いません。同じ作業ツリーですでにエージェントが動いているときは、Alt+n で後から起動する Claude Code が別の worktree（`claude --worktree`）で起動します。
+**待ち時間を測ります。** ステータスバーに、今日エージェントを待たせた合計と、返事までの時間の中央値が出ます（`今日の待ち時間 42分 · 返答の中央値 3分10秒`）。Alt+/ では、直近7日の棒グラフ、先週との比較、自己ベストの日、目標以内に返せた日の連続記録、今日いちばん待たせたウィンドウが見られます。`scripts/stats.sh 30` で30日前までさかのぼれます。待ち時間は ✋ や ✓ が付いてから、返事をするかウィンドウを開くまでです。見ている最中に終わった分は数えず、1回あたり最大1時間で打ち切ります。記録は自分の PC の TSV ファイルにだけ残ります。
 
-**エージェントがあなたを待った時間を測ります。** 2行目の案内に、今日の合計と返答の中央値が出ます（`今日の待ち時間 42分 · 返答の中央値 3分10秒`）。Alt+/ を押すと、直近7日の日ごとの棒グラフ、先週との比較（返答の中央値と合計）、自己ベストの日、目標以内に返せた日の連続記録、今日いちばん待たせたウィンドウが出ます。`scripts/stats.sh 30` でさらに前までさかのぼれます。待ち時間は ✋ や ✓ が付いてから、返事をするかウィンドウを開くまでです。見ている最中に終わった分は数えず、一晩放置しても1回あたり最大1時間で打ち切ります。記録は手元の TSV ファイルにだけ残ります。
+**1日のタイムラインが見られます。** prefix T（と Alt+/ の上部）で、ウィンドウごとに1行、黄色の █ が作業中、赤の ▓ が返事待ち、緑の ▒ が完了・未確認として並びます。下には、稼働していた時間帯、作業時間、待たせた時間、同時に動いたウィンドウの最大数が出ます。`scripts/timeline.sh 1` で前日を表示します。Alt キーで開きたい場合は `@junban-key-timeline M-y` を設定します（Claude Code では Alt+t が思考の切り替えなので、標準では割り当てていません）。
 
-**1日のタイムラインが見られます。** prefix T（と Alt+/ の上部）で、ウィンドウごとに1行、黄色の █ が作業中、赤の ▓ があなたの返事待ち、緑の ▒ が完了・未確認として並びます。下には稼働していた時間帯、エージェントの作業時間と待たせた時間、最大いくつのウィンドウが同時に動いたかが出ます。`scripts/timeline.sh 1` で前日を表示します。自分の1日をふり返るための画面で、データは手元から出ません。Alt キーで開きたい場合は `@junban-key-timeline M-y` を設定します（Claude Code では Alt+t が思考の切り替えなので、標準では割り当てていません）。
+**マスコットがいます。** ステータスバーに、状況に合わせて表情が変わるマスコットが出ます。返事待ちがあれば `[▮ ▮]!`、終わったら `[◠ ◠]`、作業中は `[▮▮ ]`、何もないときは `[▬ ▬]z` です。`set -g @junban-mascot off` で消せます。
 
-**マスコットがいます。** ステータス行に掲示板の「目」が出て、状況に合わせて変わります。待っているウィンドウがあれば `[▮ ▮]!`、終わったら `[◠ ◠]`、動いている間は `[▮▮ ]` と左右を見回し、することがないときは `[▬ ▬]z` です。Alt+/ の集計では1週間の様子にひと言コメントします。初期設定でオンです。`set -g @junban-mascot off` で消せます。
+**英語・日本語・タイ語に対応しています。** OS の言語設定に合わせて切り替わります。日本語やタイ語のウィンドウ名も表示幅で切り詰めるので、タブの幅が崩れません。
 
-**日本語とタイ語に対応しています。** 英語・日本語・タイ語を標準で同梱し、ロケールから自動で選びます。日本語やタイ語のウィンドウ名はバイト数ではなく表示幅で切り詰めるので、タブの並びが崩れません。
+**何を求めているかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたときに、その内容を1行でステータスバーと Alt+f の一覧に出します（例:「テスト成功、PR #12 を作成」）。LLM を設定していれば LLM がまとめ、なければ返答の最初の1行を使います。スマホ通知にも同じ1行が出ます。止めるときは `set -g @junban-recap off` です。
 
-**何を求めているかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたとき、✋/✓ の帯と Alt+f の一覧に「何を求めているか／何が起きたか」を1行で出します（例:「テスト成功、PR #12 を作成」）。命名用のモデルを設定していればモデルが書き、なければ返答の最初の1行を使います。スマホ通知にも同じ1行が載ります。止めるときは `set -g @junban-recap off` です。
-
-**tmux と bash で動きます。** 表示の修正・名前付け・タイムラインには python3 を使います。常駐プロセスは不要です。テストは175件あり、CI で Linux と macOS の両方で回しています。
+**tmux と bash で動きます。** 一部の機能は python3 を使います。常駐プロセスはありません。175件のテストを、Linux と macOS の CI で実行しています。
 
 ## 設定
 
-すべて任意です。`~/.tmux.conf` の、プラグインを読み込む行より**前に**書いてください。設定項目の一覧は [README.md](README.md#configuration) にあります。日本語での表示を固定したい場合は、次の1行を書きます。
+すべて任意です。`~/.tmux.conf` の、プラグインを読み込む行より**前に**書いてください。設定項目の一覧は [README.md](README.md#configuration) にあります。日本語の表示に固定したい場合は、次の1行を書きます。
 
 ```tmux
 set -g @junban-lang ja
 ```
 
-ウィンドウの名前付けを手元の LLM にさせる例:
+ウィンドウ名をローカルの LLM に付けさせる例:
 
 ```tmux
 set -g @junban-rename llm
@@ -118,8 +116,8 @@ set -g @junban-namer-model qwen3:8b
 
 | エージェント | 導入 | できること |
 |---|---|---|
-| Claude Code | プラグイン（上の1行で入ります） | ✋ ✓ ●、1行要約、ウィンドウの名前。Esc で止めてもバッジが自動で直る |
-| Codex CLI | `scripts/setup.sh codex` のあと、Codex で `/hooks` を開いて一度だけ信頼する | ✋ ✓ ●、実行したいコマンドを1行要約に出す、ウィンドウの名前。Esc でバッジが消える |
+| Claude Code | プラグイン（上の1行で入ります） | ✋ ✓ ●、1行要約、ウィンドウの名前。Esc で止めても表示が自動で直る |
+| Codex CLI | `scripts/setup.sh codex` のあと、Codex で `/hooks` を開いて一度だけ承認する | ✋ ✓ ●、実行したいコマンドを1行要約に出す、ウィンドウの名前。Esc で表示が消える |
 | Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●、実行したいコマンドを1行要約に出す、ウィンドウの名前 |
 
 ```sh
@@ -127,9 +125,9 @@ set -g @junban-namer-model qwen3:8b
 ~/.tmux/plugins/junban/scripts/setup.sh gemini   # ~/.gemini/settings.json に書く
 ```
 
-どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。元のファイルは `.bak` に残し、`--print` を付けると書き込まずに中身だけ見られます。`set -g @junban-agent-cmd codex` にすると Alt+n で Codex が起動します。
+どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。元のファイルは `.bak` に残ります。`--print` を付けると、書き込まずに内容だけ表示します。`set -g @junban-agent-cmd codex` にすると Alt+n で Codex が起動します。
 
-ほかのツールも、コマンドを実行できれば何でもつなげられます。junban が見ているのは tmux のウィンドウオプション1つだけです。
+ほかのツールも、コマンドを実行できればつなげられます。junban が見ているのは tmux のウィンドウオプション1つだけです。
 
 ```sh
 ~/.tmux/plugins/junban/scripts/state.sh running   # waiting | done | idle | clear
@@ -137,7 +135,7 @@ set -g @junban-namer-model qwen3:8b
 
 ## 先行事例
 
-重なる機能を持つプラグインがあり、用途によってはこちらの方が合うかもしれません。
+機能が重なるプラグインです。用途によってはこちらの方が合うかもしれません。
 [tmux-agent-indicator](https://github.com/accessd/tmux-agent-indicator) ·
 [tmux-agent-status (RatulMaharaj)](https://github.com/RatulMaharaj/tmux-agent-status) ·
 [tmux-agent-status (rorhcdream)](https://github.com/rorhcdream/tmux-agent-status)（セッション記録がフックより確かだと示したのはこのプロジェクトです） ·
@@ -145,4 +143,4 @@ set -g @junban-namer-model qwen3:8b
 [claude-code-tmux-status](https://github.com/XavierYounan/claude-code-tmux-status) ·
 [tmux-window-notifier](https://github.com/mrf/tmux-window-notifier)
 
-MIT ライセンス。[Nameless](https://namelessjp.com) で毎日使っています。
+MIT ライセンス。開発元の [Nameless](https://namelessjp.com) で毎日使っています。

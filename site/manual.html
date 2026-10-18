@@ -207,7 +207,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       <section id="keys">
         <h2><span lang="en">Keys</span><span lang="ja">キー</span></h2>
         <p lang="en">If your terminal doesn't send Alt, every key has a prefix fallback.</p>
-        <p lang="ja">Alt が効かない端末でも、prefix の後に押すキーで同じことができます。</p>
+        <p lang="ja">Alt キーが使えない端末でも、prefix の後に押すキーで同じことができます。</p>
         <div class="tw"><table>
           <thead><tr><th lang="en">Key</th><th lang="ja">キー</th><th>prefix</th><th lang="en">What it does</th><th lang="ja">動作</th></tr></thead>
           <tbody>
@@ -419,7 +419,7 @@ set -g @junban-notify-cmd '…'</pre>
         <p lang="ja">Claude Code なら <code>/junban:doctor</code> でも同じです。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。ウィンドウの名前・依頼の内容・秘密の値は含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
         <ul>
           <li lang="en"><span class="b">Alt keys do nothing.</span> Your terminal isn't sending Alt. Use the prefix keys, or see the macOS note under <a href="#keys">Keys</a>.</li>
-          <li lang="ja"><span class="b">Alt キーが効かない。</span>端末が Alt を送っていません。prefix のキーを使うか、<a href="#keys">キー</a>の macOS の注記を見てください。</li>
+          <li lang="ja"><span class="b">Alt キーが使えない。</span>端末が Alt を送っていません。prefix のキーを使うか、<a href="#keys">キー</a>の macOS の注記を見てください。</li>
           <li lang="en"><span class="b">No badges.</span> Start a new agent session after installing; sessions that were already running pick up the hooks on their next prompt.</li>
           <li lang="ja"><span class="b">バッジが出ない。</span>導入後に新しいセッションを始めてください。すでに動いていたセッションは、次に依頼したときから反映されます。</li>
           <li lang="en"><span class="b">Codex shows nothing.</span> Trust the hooks once with <code>/hooks</code> in Codex.</li>
