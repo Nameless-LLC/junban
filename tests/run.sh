@@ -73,6 +73,14 @@ has "guide in Thai"                 "$(bash "$S/hints.sh")" "รอคุณต�
 tmux set -gu @junban-lang
 tmux set -w -t s:2 @junban idle \; set -w -t s:1 @junban idle
 has "keys row lists keys when calm" "$(bash "$S/hints.sh" 0 2)" "Alt+f"
+has "keys row lists window moves"   "$(plain 0 2)" "Alt+f all agents  Alt+1-9 that window  Alt+n"
+tmux set -g @junban-nav-keys off
+hasnt "…not when nav keys are off"  "$(plain 0 2)" "Alt+1-9"
+tmux set -gu @junban-nav-keys
+tmux set -g @junban-lang ja
+nav=$(plain 0 2); nav=${nav//[^ -~]/xx}
+if [ ${#nav} -le 110 ]; then ok "Japanese keys row fits 110 columns"; else bad "Japanese keys row fits 110 columns" "${#nav} cols"; fi
+tmux set -gu @junban-lang
 hasnt "single guide row has no keys" "$(bash "$S/hints.sh")" "Alt+n"
 tmux set -g @junban-key-jump M-j
 has "guide follows remapped keys"   "$(bash "$S/hints.sh" 0 2)" "Alt+j"

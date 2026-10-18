@@ -58,7 +58,7 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 
 ## The only key you need
 
-**Alt+a.** The bottom status line always shows the five keys worth knowing. When something is waiting, the line above it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
+**Alt+a.** The bottom status line always shows the keys worth knowing. When something is waiting, the line above it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
 
 | Key | |
 |---|---|

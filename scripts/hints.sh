@@ -3,7 +3,7 @@
 #   someone is waiting → a red banner pointing at the jump key
 #   someone finished   → a green banner
 #   otherwise          → today's wait and a quiet count of agents parked for a
-#                        day, and (on its own row) the five keys worth remembering
+#                        day, and (on its own row) the keys worth remembering
 
 # $1 is the client width (#{client_width}). With it the line is fitted to the
 # terminal: today's wait beside a banner goes first, then the recap is cut with
@@ -104,9 +104,12 @@ banner() {
   [ -n "$right" ] && right="#[bg=$tint]$right"
 }
 
-# The calm line: the five keys worth remembering, then today's wait and parked agents.
+# The calm line: the keys worth remembering, then today's wait and parked agents.
 keys=""
-for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
+# Alt+1-9 (@junban-nav-keys) moves between windows; tmux clips the end of the row,
+# so it goes right after the two keys that matter most.
+nav=""; [ "$(opt @junban-nav-keys on)" = on ] && nav="Alt+1-9|$T_PK_WIN"
+for pair in "$kj|$T_NEXT" "$kf|$T_LIST" ${nav:+"$nav"} "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
   keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
 done
 info=""
