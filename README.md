@@ -3,7 +3,7 @@
 # junban
 
 **Whose turn is it?**<br>
-A tmux cockpit for running many AI coding agents at once.
+A tmux plugin that shows which of your AI coding agents is waiting on you.
 
 [English](README.md) · [日本語](README.ja.md) · [▶ 25-second demo](https://junban.namelessjp.com/)
 
@@ -11,7 +11,7 @@ A tmux cockpit for running many AI coding agents at once.
 
 </div>
 
-Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a `psql` command. You only find out when you click through every window.
+Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a `psql` command. You only find out by opening every window.
 
 **junban** (順番, Japanese for *"whose turn"*) fixes that, and tells you what to press next.
 
@@ -29,10 +29,10 @@ One line in a terminal:
 curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
-It installs junban into tmux, reloads it, and connects Claude Code if you have it. Then press **Alt+a**.
+It installs junban into tmux and connects Claude Code if you have it.
 
 <details>
-<summary>With TPM instead</summary>
+<summary>With TPM (the tmux plugin manager) instead</summary>
 
 Add to `~/.tmux.conf` and press prefix + I:
 
@@ -50,15 +50,15 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Other agents](#other-agents).
 
-Requires tmux ≥ 3.2 and bash. fzf and python3 are optional but recommended.
+Requires tmux ≥ 3.2 and bash. python3 and fzf are optional; they add window naming, the timeline and list search.
 
 ### Something wrong?
 
-Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions and setups go to [Discussions](https://github.com/Nameless-LLC/junban/discussions). Security issues: please report privately, see [SECURITY.md](SECURITY.md).
+Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions go to [Discussions](https://github.com/Nameless-LLC/junban/discussions). Security issues: please report privately, see [SECURITY.md](SECURITY.md).
 
 ## The only key you need
 
-**Alt+a.** The bottom status line always shows the keys worth knowing. When something is waiting, the line above it turns into a banner pointing at Alt+a. You don't need to remember anything; the screen tells you.
+**Alt+a.** The bottom status line always shows the keys worth knowing. When an agent is waiting, the line above it shows a banner pointing at Alt+a.
 
 | Key | |
 |---|---|
@@ -70,33 +70,31 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 | prefix T | Today's timeline: a row per window, when each agent worked, waited on you, or finished |
 | Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z | Go to window · prev/next · last · zoom |
 
-Terminal swallows Alt? Every action also works after the prefix: `prefix a`, `f`, `C`, `g`, `/`.
+Terminal doesn't send Alt? Every action also works after the prefix: `prefix a`, `f`, `C`, `g`, `/`.
 
 The full manual, with every option: [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/).
 
 ## What makes it different
 
-Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one plain tmux plugin with no daemon, and adds what we found nowhere else: a status line that names your next key, parked agents sinking out of the way, and window names from a local model that ignore "ok".
+Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait (gs/tmux-agent-status) or measure waiting (muxa); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one tmux plugin with no daemon, and adds two things we didn't find elsewhere: a status line that shows your next key, and idle windows that move out of the way.
 
-**It tells you what to do, not just what's happening.** The guide line changes with the situation, so a new teammate can be productive on day one without learning a single binding.
+**Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to make sure it has the right pane.
 
-**Badges don't get stuck.** Hooks have blind spots: press Esc mid-turn and no "stop" event ever fires, so hook-only tools show "working" forever. junban cross-checks Claude Code's own live session records (`~/.claude/sessions`) and verifies the process really runs in that pane. A pane id is only unique per tmux server, so it checks the process tree too.
+**Windows are named after the task.** By default a window takes the first line of your prompt. Set a model and it summarises your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
-**Windows name themselves after the task, and stay named.** By default a window takes the first line of your prompt. Point it at any model (a small model resident in a local Ollama answers in under a second) and it summarises the last few prompts instead. Replies like "ok", "yes", "進めて" or "ครับ" never rename anything. A window you name yourself (`prefix ,`) is never touched again.
+**Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones. When an agent already works in the tree, Alt+n starts the next Claude Code in its own worktree (`claude --worktree`).
 
-**Parked agents get out of the way.** Agents left idle for a day get a dim `z`, sink to the bottom of the Alt+f list, and are counted after the keys, so the one that needs you never gets lost among forty parked ones. When an agent already works in the tree, Alt+n starts the next Claude Code in its own worktree (`claude --worktree`).
+**It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
 
-**It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or what came of the turn ("tests pass, PR #12 opened"). With a namer model set, the model writes it; otherwise it is the first real line of the reply. Phone notifications carry the same line. Turn it off with `set -g @junban-recap off`.
-
-**It measures how long your agents sat waiting on you.** The guide line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
 
 **A timeline of your day.** prefix T (and the top of Alt+/) draws a row per window: yellow █ working, red ▓ waiting for you, green ▒ done and not looked at, then when you were active, how long agents worked and waited on you, and how many ran at once. `scripts/timeline.sh 1` shows yesterday. It is a view for you, and it stays on your machine; set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
 
-**A small mascot.** The call board's eyes sit on the status line, reacting to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
+**A small mascot.** A face on the status line reacts to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
 
-**Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
+**Speaks your language.** English, 日本語 and ไทย built in, chosen from your system language. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash**, plus python3 for healing badges, names and the timeline. No daemon, no background process, nothing to keep alive. 175 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash**, plus python3 for some features. Nothing runs in the background. 175 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 
@@ -126,7 +124,7 @@ set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when th
 
 # Hygiene
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
-set -g @junban-meter on            # today's wait total on the guide line
+set -g @junban-meter on            # today's wait total on the status line
 set -g @junban-meter-cap 60        # minutes one wait can count for
 set -g @junban-goal 5              # streak: days with a median reply within this many minutes
 set -g @junban-mascot on           # off = hide the face on the status line
@@ -148,7 +146,7 @@ Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`
 
 | Agent | Setup | What you get |
 |---|---|---|
-| Claude Code | the plugin (installed by the line above) | ✋ ✓ ●, one-line recap, names; badges heal themselves after Esc |
+| Claude Code | the plugin (installed by the line above) | ✋ ✓ ●, one-line recap, names; badges fix themselves after Esc |
 | Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recap names the command it wants to run, names; Esc clears the badge |
 | Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recap names the command it wants to run, names |
 

@@ -346,7 +346,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.3.4</b><span lang="en">New: a timeline of your day, and a full manual</span><span lang="ja">1日のタイムラインとマニュアルを追加</span></a>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
-        <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
+        <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> shows on your tmux tabs which agents are waiting for you, and tells you the one key to press.</p>
         <p class="lede" lang="ja">複数の AI エージェントを動かしていると、1つが20分も <code>psql</code> の実行許可を待っていた、ということが起きます。<b>junban</b> は、返事待ちのエージェントを tmux のタブに表示し、次に押すキーを教えます。</p>
         <div class="cmd">
           <code id="cmd-hero">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code>
@@ -363,7 +363,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="stage">
       <div class="buddy"><span class="say" id="say" aria-hidden="true"></span><svg class="jbm" id="hero-face" viewBox="0 0 200 150" data-state="wait" aria-hidden="true" focusable="false"><defs><pattern id="jb-led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern><filter id="jb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter></defs><rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/><rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/><g class="look"><g class="eyes"><g class="pair"><g class="open"><g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/></g><g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g></g></g></g></svg></div>
       <div class="board" id="board">
-        <div class="board-head"><span lang="en">Now calling</span><span lang="ja">返事待ち</span><span class="live">Alt+a</span></div>
+        <div class="board-head"><span lang="en">Waiting on you</span><span lang="ja">返事待ち</span><span class="live">Alt+a</span></div>
         <div class="now">
           <div class="num" id="b-num">4</div>
           <div class="who" aria-live="polite">
@@ -399,7 +399,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <section data-pal="wait:problem">
       <p class="eyebrow"><span lang="en">The problem</span><span lang="ja">こんなこと、ありませんか</span></p>
-      <h2 lang="en">Every tab looks the same. One of them is stuck on you.</h2>
+      <h2 lang="en">Every tab looks the same. One of them is waiting for you.</h2>
       <h2 lang="ja">どれが返事を<wbr>待っているのか、<wbr>見ても分からない。</h2>
       <div class="ba">
         <div class="ba-row before">
@@ -422,7 +422,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <div class="onekey">
         <div class="keys" aria-label="Alt plus a"><span class="key">Alt</span>+<span class="key a">a</span></div>
         <div>
-          <h2 lang="en">You don't learn junban. It tells you.</h2>
+          <h2 lang="en">No keys to memorise. The status line shows them.</h2>
           <h2 lang="ja">使い方は<wbr>画面に出ます。</h2>
           <div class="prose" lang="en"><p>The bottom status line lists the keys worth knowing. When someone needs you, the line above it turns into a banner pointing at Alt+a.</p></div>
           <div class="prose" lang="ja"><p>ステータスバーの一番下に、よく使うキーを表示します。返事待ちがあれば、その上の行に「Alt+a で移動」を表示します。</p></div>
@@ -443,8 +443,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <h2 lang="ja">エージェントが<wbr>多いほど便利です。</h2>
       <div class="why-list">
         <div class="why-row">
-          <h3 lang="en">Badges heal themselves</h3><h3 lang="ja">「作業中」のまま残らない</h3>
-          <p lang="en">Press Esc mid-turn and the badge still clears: junban reads Claude Code's own session records.</p>
+          <h3 lang="en">Badges never get stuck</h3><h3 lang="ja">「作業中」のまま残らない</h3>
+          <p lang="en">Press Esc mid-task and the badge still updates: junban reads Claude Code's own session records.</p>
           <p lang="ja">Esc で止めても、Claude Code の記録（<code>~/.claude/sessions</code>）を見て表示を直します。</p>
         </div>
         <div class="why-row">
@@ -454,22 +454,22 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">One line on what it needs</h3><h3 lang="ja">何を求めているかを1行で</h3>
-          <p lang="en">What it asks, or what came of the turn, in one line. Notifications carry it too.</p>
+          <p lang="en">Each agent's question, or the result of its work, in one line. Phone notifications show it too.</p>
           <p lang="ja">何を聞いているか、何が終わったかを1行で表示します。通知を設定すれば、スマホにも届きます。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Parked agents sink</h3><h3 lang="ja">放置したウィンドウは下へ</h3>
+          <h3 lang="en">Idle windows move down</h3><h3 lang="ja">放置したウィンドウは下へ</h3>
           <p lang="en">Windows untouched for a day get a dim z and move to the bottom of the list.</p>
           <p lang="ja">1日触っていないウィンドウには z が付き、一覧の下に移ります。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待ち時間を測る</h3>
-          <p lang="en">Today's wait on the status line; a graph per day and the day's timeline in Alt+/.</p>
+          <p lang="en">The status line shows how long agents waited on you today. Alt+/ adds a daily graph and today's timeline.</p>
           <p lang="ja">今日エージェントを待たせた時間を表示します。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Names that stay put</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
-          <p lang="en">Named after the task. Replies like "ok" or "進めて" never rename a window.</p>
+          <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
+          <p lang="en">Windows are named after the task. Short replies like "ok" don't rename them.</p>
           <p lang="ja">作業内容から名前を付けます。「OK」「進めて」のような返事では変わりません。</p>
         </div>
         <div class="why-row">
@@ -479,12 +479,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">English, 日本語, ไทย</h3><h3 lang="ja">英語・日本語・タイ語</h3>
-          <p lang="en">Picked from your locale.</p>
+          <p lang="en">Follows your system language.</p>
           <p lang="ja">OS の言語設定に合わせて切り替わります。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
-          <p lang="en">tmux and bash, with python3 for some features.</p>
+          <p lang="en">Runs on tmux and bash (python3 for some features). Nothing runs in the background.</p>
           <p lang="ja">tmux と bash で動きます。一部の機能は python3 を使います。</p>
         </div>
       </div>
@@ -511,21 +511,21 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </table>
       </div>
       <div class="cmp-note">
-        <p lang="en">— means we did not find it in that project's README or docs on 18 Oct 2026, not that it can never do it. Where they lead: muxa adds a mailbox, an MCP server and a Mac app; workmux merges and cleans up worktrees; samleeney/tmux-agent-status has a sidebar and park modes. Launchers such as claude-squad, agent-deck and Conductor start each agent for you in its own worktree; junban watches the ones you already started. Spotted a mistake? <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">Tell us</a>.</p>
+        <p lang="en">— means we didn't find it in the project's README or docs on 18 Oct 2026; the feature may still exist. Some tools do things junban doesn't: muxa has a Mac app and an MCP server, and workmux merges and cleans up worktrees. Spotted a mistake? <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">Tell us</a>.</p>
         <p lang="ja">「—」は、2026年10月18日時点で公式の説明に記載が見つからなかったものです。機能が無いとは限りません。muxa の Mac アプリや、workmux の worktree の片付けのように、ほかのツールにしか無い機能もあります。誤りがあれば<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
       </div>
     </section>
 
     <section id="install" data-pal="done:install">
       <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
-      <h2 lang="en">One line. Alt+/ shows you around.</h2>
+      <h2 lang="en">Install in one line.</h2>
       <h2 lang="ja">導入は1行です</h2>
-      <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux, reloads tmux if you are inside it, and connects Claude Code if you have it. Alt+/ lists the keys; when an agent waits on you, Alt+a takes you there.</p></div>
+      <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux and connects Claude Code if you have it. Alt+/ lists the keys.</p></div>
       <div class="prose" lang="ja"><p>ターミナルに貼り付けると、tmux に junban が入り、Claude Code があれば連携も設定します。キーの一覧は Alt+/ で見られます。</p></div>
       <div class="step main">
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
-        <p lang="en">Needs tmux ≥ 3.2 and git. python3 (healing, names, timeline) and fzf (searchable list) are optional. <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
+        <p lang="en">Needs tmux ≥ 3.2 and git. python3 and fzf are optional; they add window naming, the timeline and list search. <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
         <p lang="ja">tmux 3.2 以上と git が必要です。python3 と fzf があれば、ウィンドウ名の自動設定・タイムライン・一覧の検索も使えます。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">Or, depending on what you use</p>
@@ -534,7 +534,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="step">
           <div class="bar"><span class="t"><span lang="en">tmux (TPM)</span><span lang="ja">tmux（TPM）</span></span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</pre>
-          <p lang="en">Add to <code>~/.tmux.conf</code>, then press prefix + I.</p>
+          <p lang="en">If you use TPM, the tmux plugin manager: add this to <code>~/.tmux.conf</code>, then press prefix + I.</p>
           <p lang="ja">tmux のプラグイン管理ツール（TPM）を使っている場合です。<code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
         </div>
         <div class="step">
@@ -546,7 +546,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="step">
           <div class="bar"><span class="t">Codex CLI</span><button class="copy" type="button" data-copy="cmd-codex"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-codex">~/.tmux/plugins/junban/scripts/setup.sh codex</pre>
-          <p lang="en">Then open <code>/hooks</code> in Codex once and trust them.</p>
+          <p lang="en">Then open <code>/hooks</code> in Codex once and approve the hooks.</p>
           <p lang="ja">そのあと Codex で一度 <code>/hooks</code> を開き、承認します。</p>
         </div>
         <div class="step">
@@ -560,12 +560,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <section data-pal="idle:faq">
       <p class="eyebrow"><span lang="en">Questions</span><span lang="ja">よくある質問</span></p>
-      <h2 lang="en">Before you ask.</h2>
+      <h2 lang="en">Common questions</h2>
       <h2 lang="ja">導入前によく聞かれること</h2>
       <div class="faq">
         <details>
           <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 向けステータス表示と何が違う？</span></summary>
-          <p lang="en">Many put an icon on each tab, and a few also jump to the longest wait or measure waiting; see <a href="#compare">the comparison</a>. junban puts those in one plain tmux plugin with no daemon, and adds what we did not find elsewhere: a status line that names the next key, parked agents sinking out of the way, and window names from a local model that ignore "ok".</p>
+          <p lang="en">Many put an icon on each tab, and a few also jump to the longest wait or measure waiting; see <a href="#compare">the comparison</a>. junban does those in one tmux plugin with no daemon, and adds two things we didn't find elsewhere: a status line that shows the next key, and idle windows that move out of the way.</p>
           <p lang="ja">タブにアイコンを出すツールは多くあります。junban は、待たせた順の移動、待ち時間の計測、次に押すキーの表示を、tmux のプラグイン1つで使えるようにしたものです（<a href="#compare">比較表</a>）。</p>
         </details>
         <details>
@@ -575,7 +575,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
-          <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to keep yours; junban then only splices in its badges and counter.</p>
+          <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to keep yours; junban then only adds its badges and counter.</p>
           <p lang="ja">標準では junban のステータスバーになります。<code>set -g @junban-theme off</code> を足すと今の見た目のままで、バッジと件数だけが加わります。</p>
         </details>
         <details>
