@@ -602,7 +602,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     </section>
   </main>
 
-  <button type="button" class="pal" id="pal" hidden aria-label="Back to the call board"><span class="say" id="pal-say"></span>{{FACE pal idle}}</button>
+  <button type="button" class="pal" id="pal" hidden aria-label="Back to the top"><span class="say" id="pal-say"></span>{{FACE pal idle}}</button>
 
   <footer>
     <span class="zz">{{FACE foot sleep}}<span lang="en">MIT · Built at <a href="https://namelessjp.com">Nameless</a>, where it runs all day.</span>
@@ -676,7 +676,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     why: { en: 'More agents, less chaos.', ja: '増えても迷わないよ' }, install: { en: 'One line. Go!', ja: '1行でいけるよ' },
     problem: { en: 'Which one is waiting?', ja: 'どれが待ってる？' }, faq: { en: 'Ask away.', ja: 'なんでも聞いてね' },
     compare: { en: 'Pick what fits.', ja: '合うものを選んでね' },
-    sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the board?', ja: '上に戻る？' } };
+    sleepy: { en: 'zz…', ja: 'すやぁ…' }, hi: { en: 'Back to the top?', ja: '上に戻る？' } };
   var palState = 'idle', palTimer = null, napTimer = null, asleep = false;
   function palSay(key, ms) {
     clearTimeout(palTimer); PS.textContent = key ? PALS[key][L()] : '';
