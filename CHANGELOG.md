@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- **⚠ on agents that already have their own worktree.** An agent that Alt+n started with `claude --worktree`, or one that moved into a worktree mid-session, was still reported as sharing the repo root, so junban warned about the very split it had made. tmux's `pane_current_path` shows the launching `bash -c` shell's directory, not claude's. The hooks now record the directory the agent actually works in (the payload's `cwd`, else the hook's own), and the shared-tree check uses it.
+
 ## 0.3.4 — 2026-10-18
 
 ### Changed

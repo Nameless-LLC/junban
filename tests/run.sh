@@ -116,9 +116,10 @@ printf '{"pid":%d,"tmux":"s:%s.%s","status":"idle","statusUpdatedAt":%d}' $$ "$w
 python3 "$S/heal.py"
 eq  "same pane id, other process → ignored" "$(get s:1 @junban)" "running"
 rm "$HOME/.claude/sessions/$$.json"
-tmux set -w -t s:2 @junban running \; set -w -t s:2 @junban_ts 1
+tmux set -w -t s:2 @junban running \; set -w -t s:2 @junban_ts 1 \; set -p -t "$p2" @junban_cwd /gone
 python3 "$S/heal.py"
 eq  "agent exited to shell → cleared" "$(get s:2 @junban)" "idle"
+eq  "…and its dir forgotten"        "$(tmux display -p -t "$p2" '#{@junban_cwd}')" ""
 
 echo "shared trees and parked agents"
 tmux kill-server; sleep 0.2
@@ -142,6 +143,22 @@ eq  "\$HOME never flagged"          "$(get u:4 @junban_shared)" ""
 eq  "shell without agent ignored"   "$(get u:5 @junban_shared)" ""
 has "guide names the sharing windows" "$(bash "$S/hints.sh")" "a · b"
 has "badge shows ⚠"                 "$(tmux show -gv @junban-badge)" "@junban_shared"
+# Alt+n's `bash -c "claude --worktree; …"` keeps pane_current_path at the repo
+# root while claude works in its worktree; its hooks run there.
+git -C "$repo" worktree add -q "$WORK/wt2" -b side2
+tmux new-window -d -t u:9 -n f -c "$repo"; p9=$(tmux display -p -t u:9 '#{pane_id}')
+(cd "$WORK/wt2" && TMUX_PANE=$p9 bash "$S/state.sh" idle </dev/null)
+scan
+eq  "hook dir beats pane path"      "$(get u:9 @junban_shared)" ""
+eq  "…others still counted 2"       "$(get u:1 @junban_shared)" "2"
+TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$repo\"}"; scan
+eq  "payload cwd recorded"          "$(get u:9 @junban_shared)" "3"
+TMUX_PANE=$p9 bash "$S/state.sh" running <<<"{\"cwd\":\"$WORK/wt2\"}"; scan
+eq  "moving to a worktree clears ⚠" "$(get u:9 @junban_shared)" ""
+eq  "agent dir kept per pane"       "$(tmux display -p -t "$p9" '#{@junban_cwd}')" "$WORK/wt2"
+TMUX_PANE=$p9 bash "$S/state.sh" clear </dev/null
+eq  "closing forgets the agent dir" "$(tmux display -p -t "$p9" '#{@junban_cwd}')" ""
+tmux kill-window -t u:9
 eq  "new agent here → worktree"     "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$repo")" "claude --worktree"
 eq  "new agent in free tree → plain" "$(JUNBAN_DRY_RUN=1 bash "$S/new.sh" "$WORK")" "claude"
 tmux set -g @junban-new-worktree off

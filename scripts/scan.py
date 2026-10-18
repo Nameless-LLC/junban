@@ -57,9 +57,12 @@ def agent_windows(leftovers=None):
     wins = {}
     rows = tmux("list-panes", "-a", "-F",
                 "#{window_id}\t#{@junban}\t#{@junban_ts}\t#{pane_current_path}"
-                "\t#{@junban_shared}\t#{@junban_stale}").splitlines()
+                "\t#{@junban_shared}\t#{@junban_stale}\t#{@junban_cwd}").splitlines()
     for row in rows:
-        wid, state, ts, path, shared, stale = (row.split("\t") + [""] * 6)[:6]
+        wid, state, ts, path, shared, stale, cwd = (row.split("\t") + [""] * 7)[:7]
+        # The directory the agent's hooks ran in (state.sh) beats pane_current_path,
+        # which shows the launching shell's directory, not a worktree claude moved to.
+        path = cwd or path
         if not state:
             if leftovers is not None and (shared or stale):
                 leftovers.add(wid)
