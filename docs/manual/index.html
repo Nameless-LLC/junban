@@ -169,7 +169,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja">ターミナルでこれを実行します。tmux に junban を入れて読み込み直し、Claude Code があればそちらにもつなぎます。</p>
         <pre>curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
         <p lang="en">With <a href="https://github.com/tmux-plugins/tpm">TPM</a>, add <code>set -g @plugin 'Nameless-LLC/junban'</code> to <code>~/.tmux.conf</code>, press prefix + <kbd>I</kbd>, then connect Claude Code:</p>
-        <p lang="ja"><a href="https://github.com/tmux-plugins/tpm">TPM</a> を使う場合は、<code>~/.tmux.conf</code> に <code>set -g @plugin 'Nameless-LLC/junban'</code> を足して prefix + <kbd>I</kbd> を押し、Claude Code をつなぎます。</p>
+        <p lang="ja">tmux のプラグイン管理ツール <a href="https://github.com/tmux-plugins/tpm">TPM</a> を使う場合は、<code>~/.tmux.conf</code> に <code>set -g @plugin 'Nameless-LLC/junban'</code> を足して prefix + <kbd>I</kbd> を押し、Claude Code をつなぎます。</p>
         <pre>claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
         <p lang="en">Needs tmux 3.2 or newer and bash. python3 and fzf are optional but recommended: python3 runs the badge repair, recaps and reports; fzf makes the <kbd>Alt+f</kbd> list searchable. Works on Linux and macOS.</p>
         <p lang="ja">必要なのは tmux 3.2 以上と bash です。python3 と fzf は任意ですが、入れておくのがおすすめです。python3 はバッジの自動修復・1行要約・集計に、fzf は <kbd>Alt+f</kbd> の一覧の検索に使います。Linux と macOS で動きます。</p>
@@ -192,7 +192,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
           </tbody>
         </table></div>
         <p lang="en">The right end of the status bar counts all sessions: ✋ waiting, ✓ done, ● running. Next to it sits the mascot, the call board's eyes:</p>
-        <p lang="ja">ステータスバーの右端には、全セッションの件数（✋ 返事待ち・✓ 完了・● 作業中）が出ます。その隣にいるのがマスコット、呼び出し掲示板の「目」です。</p>
+        <p lang="ja">ステータスバーの右端には、全セッションの件数（✋ 返事待ち・✓ 完了・● 作業中）が出ます。その隣には、状況に合わせて表情が変わるマスコットがいます。</p>
         <div class="tw"><table><tbody>
           <tr><td><code>[▮ ▮]!</code></td><td><span lang="en">someone is waiting on you</span><span lang="ja">誰かがあなたを待っている</span></td></tr>
           <tr><td><code>[◠ ◠]</code></td><td><span lang="en">one finished</span><span lang="ja">作業が終わった</span></td></tr>
@@ -235,7 +235,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       </section>
 
       <section id="guide">
-        <h2><span lang="en">The guide line</span><span lang="ja">案内行（2・3行目）</span></h2>
+        <h2><span lang="en">The guide line</span><span lang="ja">ステータスバーの2・3行目</span></h2>
         <p lang="en">junban adds two status lines under the window tabs. The second line says what needs you, or today's wait when nothing does; the third lists the keys and a tip. Nothing to memorise.</p>
         <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目は対応が必要なもの、無ければ今日の待ち時間。3行目はキーとヒントです。何も覚えなくて済みます。</p>
         <p lang="en"><span class="b">Calm.</span> Today's wait on the second line, the five keys worth knowing on the third.</p>
@@ -243,23 +243,23 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
         <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span><span class="rc">今日の待ち時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前のウィンドウに戻る</span></div>
         <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
-        <p lang="ja"><span class="b w">誰かが待っているとき。</span>キーを示す赤い帯と、次に移動するウィンドウが何を求めているかの1行。</p>
+        <p lang="ja"><span class="b w">誰かが待っているとき。</span>赤い表示で押すキーを示し、次に移動するウィンドウが何を求めているかを1行で出します。</p>
         <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
         <div class="tl" lang="ja"><span class="bn">✋ 返事待ちが2件 → Alt+a で移動</span><span class="rc">DB 移行: 開発 DB で psql を実行したい</span></div>
         <p lang="en"><span class="b d">Someone finished.</span> A green banner, with what came of the turn.</p>
-        <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の帯と、作業の結果の1行。</p>
+        <p lang="ja"><span class="b d">誰かが終わったとき。</span>緑の表示と、作業の結果の1行が出ます。</p>
         <div class="tl" lang="en"><span class="bn g">✓ 1 finished → Alt+a to review</span><span class="rc">pricing page copy: 3 files changed, tests pass</span></div>
         <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: 3ファイル変更、テスト成功</span></div>
         <p lang="en">The banner sits on the second line; today's wait moves to its right end when there is room. On a narrow terminal the recap is cut first, so the banner always fits.</p>
-        <p lang="ja">帯は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。端末の幅が狭いときは1行要約から省略するので、帯そのものは必ず表示されます。</p>
+        <p lang="ja">この赤・緑の表示は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。端末の幅が狭いときは1行要約から省くので、押すキーの表示は必ず残ります。</p>
         <p lang="en"><code>@junban-guide-lines 2</code> drops the keys row once you know the keys. While the prefix (Ctrl+b) is down, the remaining row lists what can follow it. <code>@junban-tint</code> washes the banner's colour over its row (<code>@junban-tint-waiting</code> for ✋).</p>
-        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行をなくします。prefix（Ctrl+b）を押している間は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> は帯の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
+        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行をなくします。prefix（Ctrl+b）を押している間は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> は赤・緑の色を行全体に薄く広げます（✋ のときは <code>@junban-tint-waiting</code>）。</p>
       </section>
 
       <section id="recap">
         <h2><span lang="en">One-line recaps</span><span lang="ja">1行要約</span></h2>
         <p lang="en">When an agent asks you something, wants permission or finishes, junban writes one line on it: the question, the command it wants to run, or what came of the turn ("tests pass, PR #12 opened"). It shows in the banner, in the <kbd>Alt+f</kbd> list and in phone notifications, so you can decide before you switch.</p>
-        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。帯、<kbd>Alt+f</kbd> の一覧、スマホ通知に出るので、ウィンドウを切り替える前に判断できます。</p>
+        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。ステータスバー、<kbd>Alt+f</kbd> の一覧、スマホ通知に出るので、ウィンドウを切り替える前に判断できます。</p>
         <p lang="en">With a namer model set (<a href="#names">below</a>) the model writes it; otherwise it is the first real line of the reply. <code>@junban-recap off</code> turns it off.</p>
         <p lang="ja">命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければ返答の最初の意味のある1行を使います。<code>@junban-recap off</code> で止められます。</p>
       </section>
@@ -276,7 +276,7 @@ set -g @junban-namer-url http://localhost:11434      <span class="c"># Ollama, o
 set -g @junban-namer-model qwen3:8b
 set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var holding the key (…/v1 only)</span></pre>
         <p lang="en">A small local model names a window in under a second. If the model is unreachable, the prompt is used.</p>
-        <p lang="ja">手元の小さなモデルなら1秒以内に名前が付きます。モデルにつながらないときは、頼んだ内容をそのまま使います。</p>
+        <p lang="ja">自分の PC で動かす小さなモデル（Ollama など）なら、1秒以内に名前が付きます。モデルにつながらないときは、頼んだ内容をそのまま使います。</p>
       </section>
 
       <section id="report">
@@ -285,7 +285,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
         <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）瞬間から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（60分）で打ち切るので、一晩放置しても数字が崩れません。</p>
         <ul>
           <li lang="en">The guide line shows today's total and your median reply, against the seven days before.</li>
-          <li lang="ja">案内行に、今日の合計と返答の中央値が、直近7日との比較付きで出ます。</li>
+          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が、直近7日との比較付きで出ます。</li>
           <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last, your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
           <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較、自己ベストの日、今日いちばん待たせたウィンドウ、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
           <li lang="en"><code>scripts/stats.sh 30</code> goes back 30 days.</li>
@@ -311,7 +311,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
         <h2><span lang="en">The timeline</span><span lang="ja">タイムライン</span></h2>
         <p lang="en">prefix <kbd>T</kbd> (and the top of <kbd>Alt+/</kbd>) shows when your agents worked today: one row per window, <span class="r">█</span> working, <span class="w">▓</span> waiting for your answer, <span class="d">▒</span> done and not looked at. Below it: when you were active, how long agents worked, how long they waited on you, and how many ran at once. <code>scripts/timeline.sh 1</code> shows yesterday.</p>
         <p lang="ja">prefix <kbd>T</kbd>（と <kbd>Alt+/</kbd> の上部）で、今日エージェントがいつ動いたかが見られます。ウィンドウごとに1行で、<span class="r">█</span> 作業中、<span class="w">▓</span> あなたの返事待ち、<span class="d">▒</span> 完了・未確認です。下には、稼働していた時間帯、エージェントの作業時間、あなたを待った時間、最大いくつのウィンドウが同時に動いたかが出ます。<code>scripts/timeline.sh 1</code> で前日を表示します。</p>
-        <div class="note"><p lang="en">It is a view for you, about your own day. It stays on your machine.</p><p lang="ja">自分の1日をふり返るための、自分用の画面です。データは手元のマシンから出ません。</p></div>
+        <div class="note"><p lang="en">It is a view for you, about your own day. It stays on your machine.</p><p lang="ja">自分の1日をふり返るための、自分用の画面です。データは自分の PC から出ません。</p></div>
       </section>
 
       <section id="notify">

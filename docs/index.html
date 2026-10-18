@@ -353,7 +353,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <button class="copy" type="button" id="copy-hero" data-copy="cmd-hero"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
         </div>
         <p class="hint" lang="en">Installs into tmux and connects Claude Code <span class="nw">· MIT · tmux ≥ 3.2, git</span></p>
-        <p class="hint" lang="ja">tmux に導入し、Claude Code とも連携します <span class="nw">· MIT · tmux 3.2 以上・git</span></p>
+        <p class="hint" lang="ja">tmux に導入し、Claude Code とも連携します <span class="nw">· MIT · tmux 3.2 以上と git が必要</span></p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="stars"></span></a>
           <a class="btn" href="#install"><span lang="en">Install in one line</span><span lang="ja">1行で導入</span></a>
@@ -485,7 +485,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
           <p lang="en">tmux and bash, plus python3 for healing badges, names and the timeline. Nothing to keep alive. 175 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">tmux と bash で動きます。表示の修正・名前付け・タイムラインには python3 を使います。ほかに動かしておくプログラムはありません。Linux と macOS で175件のテストを通しています。</p>
+          <p lang="ja">tmux と bash で動きます（一部の機能は python3 を使います）。ほかに動かしておくプログラムはありません。Linux と macOS で175件のテストを通しています。</p>
         </div>
       </div>
     </section>
@@ -506,7 +506,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
             <tr><th scope="row"><span lang="en">Two agents sharing one git checkout</span><span lang="ja">同じフォルダで<wbr>2つ動かしたとき</span></th><td class="jb"><span class="y">✓</span><span lang="en">! warning, Alt+n opens a worktree</span><span lang="ja">! で警告・Alt+n で別フォルダに起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">作業ごとに別フォルダを作る</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドのものは別フォルダ</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">次に押すキーを<wbr>表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">local model; “ok” never renames</span><span lang="ja">ローカルの LLM・短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude’s own session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
-            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity＋画面から判定するものも</span></td><td><span lang="en">Claude, Codex, Gemini and 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
+            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini and 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -519,29 +519,29 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     <section id="install" data-pal="done:install">
       <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
       <h2 lang="en">One line. Alt+/ shows you around.</h2>
-      <h2 lang="ja">1行貼り付けて、<wbr><span class="nw">Alt+/ でキーを確認。</span></h2>
+      <h2 lang="ja">導入は1行です</h2>
       <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux, reloads tmux if you are inside it, and connects Claude Code if you have it. Alt+/ lists the keys; when an agent waits on you, Alt+a takes you there.</p></div>
-      <div class="prose" lang="ja"><p>ターミナルに貼り付けると、tmux に junban が入ります。tmux の中で実行すれば設定を読み直し、Claude Code があれば連携も設定します。Alt+/ でキーの一覧が出ます。エージェントが返事を待ったら、Alt+a でそこへ移動します。</p></div>
+      <div class="prose" lang="ja"><p>ターミナルに貼り付けると、tmux に junban が入り、Claude Code があれば連携も設定します。キーの一覧は Alt+/ で見られます。</p></div>
       <div class="step main">
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
         <p lang="en">Needs tmux ≥ 3.2 and git. python3 (healing, names, timeline) and fzf (searchable list) are optional. <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
-        <p lang="ja">tmux 3.2 以上と git が必要です。python3（表示の修正・名前付け・タイムライン）と fzf（一覧の検索）は任意です。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
+        <p lang="ja">tmux 3.2 以上と git が必要です。python3 と fzf があれば、ウィンドウ名の自動設定・タイムライン・一覧の検索も使えます。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">Or, depending on what you use</p>
       <p class="more" lang="ja">個別に導入する場合</p>
       <div class="steps">
         <div class="step">
-          <div class="bar"><span class="t">TPM</span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
+          <div class="bar"><span class="t"><span lang="en">tmux (TPM)</span><span lang="ja">tmux（TPM）</span></span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</pre>
           <p lang="en">Add to <code>~/.tmux.conf</code>, then press prefix + I.</p>
-          <p lang="ja"><code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
+          <p lang="ja">tmux のプラグイン管理ツール（TPM）を使っている場合です。<code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
         </div>
         <div class="step">
           <div class="bar"><span class="t">Claude Code</span><button class="copy" type="button" data-copy="cmd-claude"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-claude">claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
           <p lang="en">Only if you installed with TPM. The line above does this for you.</p>
-          <p lang="ja">TPM で導入した場合だけ必要です。上の1行で導入した場合は自動で設定されます。</p>
+          <p lang="ja">TPM で入れた場合だけ必要です。上の1行で入れた場合は自動で設定されます。</p>
         </div>
         <div class="step">
           <div class="bar"><span class="t">Codex CLI</span><button class="copy" type="button" data-copy="cmd-codex"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
@@ -571,7 +571,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
           <p lang="en">Not by default. State lives in tmux options, and the wait meter in a local file only you can read. Two things leave the machine only if you turn them on: with a model set, your recent prompts and the agent's reply go to that URL to name the window and write the one-line recap (a local Ollama keeps them on your machine); with a notify command set, the recap goes wherever that command sends it. A public ntfy.sh topic can be read by anyone who knows its name.</p>
-          <p lang="ja">標準では送りません。記録は自分のパソコンにだけ残ります。送るのは、自分で設定した次の2つだけです。モデルを設定すると、ウィンドウ名と1行の要約を作るために、最近の指示と返答をその送り先（ローカルの Ollama など）に送ります。通知コマンドを設定すると、その1行を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていればだれでも読めます。</p>
+          <p lang="ja">標準では送りません。記録は自分のパソコンにだけ残ります。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りを設定した送り先（ローカルの Ollama など）に送ります。通知を設定すると、その1行を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていればだれでも読めます。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
