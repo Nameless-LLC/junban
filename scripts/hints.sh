@@ -80,6 +80,7 @@ if [ "$(opt @junban-tips on)" = on ]; then
   tip=${tip//Alt+a/$kj}; tip=${tip//Alt+f/$kf}; tip=${tip//Alt+g/$kg}
   right="#[align=right]#[fg=$cdim]💡 $tip "
 fi
+tiptext=${tip:-}
 
 # mix COLOR [PCT] — COLOR laid faintly over the line's background, PCT % of it
 # (default @junban-tint, 20; 0 turns the tint off). Only #rrggbb colors mix.
@@ -140,7 +141,9 @@ fi
 # With @junban-guide-lines 3 (the default) there are two guide rows ($2 = 1 or 2):
 #   row 1: the banner and its recap, today's wait on the right when it fits;
 #          without a banner, today's wait and parked agents
-#   row 2: the keys and the tip
+#   row 2: the keys; the tip too while a banner holds row 1
+# When calm the tip sits right of today's wait, cut with "…" rather than dropped:
+# after the keys it never fitted 110 columns in Japanese, so no tip ever showed.
 # With @junban-guide-lines 2 there is one, with no keys on it: the keys and the
 # wait together ran past ~110 columns in Japanese and clipped the wait off. The
 # keys show there while the prefix is pending instead (junban.tmux).
@@ -155,8 +158,15 @@ elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 fi
 case "$row" in
-  1) [ -z "$left" ] && { left=$info; right=""; } ;;
-  2) left=$keys; right=$tip ;;
+  1) if [ -z "$left" ]; then
+       left=$info; right=""
+       room=$((cols - $(dws "$info") - 6))
+       if [ -n "$tiptext" ] && { [ "$cols" -eq 0 ] || [ "$room" -ge 12 ]; }; then
+         [ "$cols" -gt 0 ] && tiptext=$(fit "$tiptext" "$room")
+         right="#[align=right]#[fg=$cdim]💡 $tiptext "
+       fi
+     fi ;;
+  2) if [ -n "$left" ]; then right=$tip; else right=""; fi; left=$keys ;;
   *) [ -z "$left" ] && left=$info ;;
 esac
 

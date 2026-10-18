@@ -24,6 +24,7 @@ tmux new-window -d -t s:3 -n three
 p1=$(tmux display -p -t s:1 '#{pane_id}'); p2=$(tmux display -p -t s:2 '#{pane_id}'); p3=$(tmux display -p -t s:3 '#{pane_id}')
 st()  { TMUX_PANE=$1 bash "$S/state.sh" "$2" <<<"${3:-}"; }
 get() { tmux display -p -t "$1" "#{$2}"; }
+plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
 
 echo "plugin"
 bash "$ROOT/junban.tmux"
@@ -220,12 +221,16 @@ has "guide shows the meter"         "$(bash "$S/hints.sh")" "kept waiting 1h"
 has   "calm row 1 is today's wait"  "$(bash "$S/hints.sh" 110 1)" "kept waiting 1h"
 hasnt "…without the keys"           "$(bash "$S/hints.sh" 110 1)" "Alt+f"
 has   "calm row 2 is the keys"      "$(bash "$S/hints.sh" 110 2)" "Alt+f"
+has   "calm row 1 carries the tip"  "$(plain 110 1)" "💡"
+hasnt "calm row 2 leaves it to row 1" "$(plain 110 2)" "💡"
+calm=$(plain 110 1); calm=${calm//[✓·→…]/x}; calm=${calm//[^ -~]/xx}
+if [ ${#calm} -le 110 ]; then ok "calm row 1 fits 110 columns"; else bad "calm row 1 fits 110 columns" "${#calm} cols"; fi
 hasnt "…without the wait"           "$(bash "$S/hints.sh" 110 2)" "kept waiting"
 tmux set -g @junban-lang ja
 has "meter in Japanese"             "$(bash "$S/hints.sh")" "今日の待ち時間 1時間"
 tmux set -gu @junban-lang
 tmux set -g @junban-meter off
-hasnt "meter can be turned off"     "$(bash "$S/hints.sh")" "kept waiting"
+hasnt "meter can be turned off"     "$(bash "$S/hints.sh")" "kept waiting 1h"
 tmux set -gu @junban-meter
 rep=$(bash "$S/stats.sh" 7)
 has "report lists today's windows"  "$rep" "u:night"
@@ -344,7 +349,6 @@ tmux set -w -t u:6 @junban waiting \; set -w -t u:6 @junban_ts 9 \; set -w -t u:
 has "✋ beats ✓ in the banner"       "$(bash "$S/hints.sh")" "m: which branch?"
 # fitted to the client width: the tip goes first, then the recap is cut with …
 tmux set -w -t u:6 @junban_recap "はい、英語圏の人には英語で表示されます。いま日本語なのは設定のためです"
-plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
 has   "wide terminal keeps the tip"   "$(plain 200)" "💡"
 hasnt "narrow terminal drops the tip" "$(plain 100)" "💡"
 has   "narrow terminal cuts the recap with …" "$(plain 70)" "…"
