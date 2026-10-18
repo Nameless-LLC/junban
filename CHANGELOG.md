@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.11 — 2026-10-18
+
+### Added
+
+- **The keys row shows Alt+1-9.** Moving to a window by its number sits right after Alt+a and Alt+f, so it stays if a narrow terminal clips the end. Hidden with `@junban-nav-keys off`.
+
 ## 0.3.10 — 2026-10-18
 
 ### Removed
