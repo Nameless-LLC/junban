@@ -12,7 +12,6 @@ cat > "$CONF" <<CONF
 set -g base-index 1
 set -g default-terminal tmux-256color
 set -g @junban-lang $LANG_
-set -g @junban-tips on
 run-shell "$ROOT/junban.tmux"
 CONF
 SCREENS="$ROOT/tools/screens/$LANG_"

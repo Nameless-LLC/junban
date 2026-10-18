@@ -107,7 +107,8 @@ td { color: #c7c9ce; }
 .tl .bn { background: #e06c75; color: #1e2127; font-weight: 600; padding: 4px 8px; border-radius: 3px; }
 .tl .bn.g { background: #98c379; }
 .tl .rc { color: #c7c9ce; }
-.tl .tip { margin-left: auto; color: #5c6370; }
+.tl.rows { flex-direction: column; align-items: flex-start; gap: 9px; }
+.tl.rows > div { display: flex; gap: 14px; }
 .tl .face { font-family: var(--f-mono); }
 
 footer { border-top: 1px solid var(--line); padding-block: 24px 40px; display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: space-between; font-size: .82rem; color: var(--dim); }
@@ -235,12 +236,12 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
 
       <section id="guide">
         <h2><span lang="en">The guide line</span><span lang="ja">ステータスバーの2・3行目</span></h2>
-        <p lang="en">junban adds two status lines under the window tabs. The second line says what needs you, or today's wait when nothing does; the third lists the keys and a tip. Nothing to memorise.</p>
-        <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目は対応が必要なもの、無ければ今日の待ち時間。3行目はキーとヒントです。何も覚えなくて済みます。</p>
-        <p lang="en"><span class="b">Calm.</span> Today's wait on the second line, the five keys worth knowing on the third.</p>
-        <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間、3行目に覚えておくと便利な5つのキー。</p>
-        <div class="tl" lang="en"><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span><span class="rc">kept waiting 42m today · median reply 3m10s</span><span class="tip">Alt+Tab goes back</span></div>
-        <div class="tl" lang="ja"><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span><span class="rc">今日の待ち時間 42分 · 返答の中央値 3分10秒</span><span class="tip">Alt+Tab で直前のウィンドウに戻る</span></div>
+        <p lang="en">junban adds two status lines under the window tabs. The second line says what needs you, or today's wait when nothing does; the third lists the keys. Nothing to memorise.</p>
+        <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目は対応が必要なもの、無ければ今日の待ち時間。3行目はキーです。何も覚えなくて済みます。</p>
+        <p lang="en"><span class="b">Calm.</span> Today's wait on the second line, the five keys worth knowing on the third. While the prefix (Ctrl+b) is down, the third line lists what can follow it instead.</p>
+        <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間、3行目に覚えておくと便利な5つのキー。prefix（Ctrl+b）を押している間は、3行目が続けて押せるキーに変わります。</p>
+        <div class="tl rows" lang="en"><div><span>kept waiting 42m today · median reply 3m10s</span></div><div><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span></div></div>
+        <div class="tl rows" lang="ja"><div><span>今日の待ち時間 42分 · 返答の中央値 3分10秒</span></div><div><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span></div></div>
         <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
         <p lang="ja"><span class="b w">誰かが待っているとき。</span>赤い表示で押すキーを示し、次に移動するウィンドウが何を求めているかを1行で出します。</p>
         <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
@@ -361,7 +362,6 @@ set -g @junban-guide on            <span class="c"># the guide line</span>
 set -g @junban-guide-lines 3       <span class="c"># 2 = no keys row; the keys show after the prefix</span>
 set -g @junban-tint 20             <span class="c"># % of the banner colour washed over its row (0 = off)</span>
 set -g @junban-tint-waiting 35     <span class="c"># the same for ✋</span>
-set -g @junban-tips on             <span class="c"># rotating tip on the right</span>
 set -g @junban-mascot on           <span class="c"># off = hide the face</span>
 set -g @junban-name-width 12       <span class="c"># characters of a window name on a tab</span>
 set -g @junban-lang ja             <span class="c"># en | ja | th (default: from $LANG)</span>
