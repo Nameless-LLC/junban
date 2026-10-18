@@ -96,7 +96,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Speaks your language.** English, 日本語 and ไทย built in, picked from your locale. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash.** No daemon, no background process, nothing to keep alive. 175 tests; CI runs them on Linux and macOS.
+**Plain tmux and bash**, plus python3 for healing badges, names and the timeline. No daemon, no background process, nothing to keep alive. 175 tests; CI runs them on Linux and macOS.
 
 ## Configuration
 

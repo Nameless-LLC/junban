@@ -87,7 +87,7 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .lang { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; background: rgba(255,255,255,.02); }
 .lang button { font: 500 .78rem/1 var(--f-body); color: var(--muted); background: none; border: 0; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
 .lang button[aria-pressed="true"] { background: var(--text); color: var(--ink); }
-@media (max-width: 480px) { .mark small { display: none; } .top.stuck nav > a:not(.hstar) { display: none; } .top nav { gap: 12px; } }
+@media (max-width: 480px) { .mark small { display: none; } .top.stuck nav > a:not(.hstar), .hstar.off { display: none; } .top nav { gap: 12px; } }
 @media (max-width: 400px) { .top nav { gap: 8px; } .lang button { padding: 7px 9px; } }
 
 /* hero */
@@ -178,6 +178,7 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .try button { font: 400 .84rem/1 var(--f-sign); color: var(--board-text); background: #1b1a1c; border: 1px solid #4a4440; border-bottom-width: 3px; border-radius: 7px; padding: 8px 12px; cursor: pointer; transition: border-color .2s; }
 .try button:hover { border-color: var(--board-lit); }
 .try .nudge { color: var(--board-lit); animation: blink 1.6s steps(2, end) infinite; }
+@media (hover: none) { .try .nudge { visibility: hidden; } }
 .calm .num { color: #7cc483; text-shadow: 0 0 22px rgba(124,196,131,.45); }
 
 /* real terminal */
@@ -186,7 +187,7 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .shot video { display: block; background: #0e1013; width: 100%; height: auto; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; border: 1px solid var(--line-2); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 60px 120px -50px rgba(0,0,0,.95); }
 .shot figcaption { font: 400 .78rem/1.5 var(--f-mono); color: var(--dim); margin-top: 14px; display: flex; gap: 10px; align-items: center; }
 .shot figcaption::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--wait); box-shadow: 0 0 8px var(--wait-glow); flex: none; }
-.shot video.tall { display: none; aspect-ratio: 4 / 5; }
+.shot video.tall { display: none; aspect-ratio: 4 / 5; object-fit: contain; }
 @media (max-width: 640px) { .shot video.wide { display: none !important; } .shot video.tall:not([hidden]) { display: block; } }
 
 /* sections */
@@ -331,7 +332,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     <nav>
       <a class="btn primary hstar off" id="hstar" href="https://github.com/Nameless-LLC/junban" tabindex="-1"><span aria-hidden="true">★</span><span lang="en">Star</span><span lang="ja">スター</span><span class="count" id="hstars"></span></a>
       <a href="manual/" class="gh-text"><span lang="en">Manual</span><span lang="ja">マニュアル</span></a>
-      <a href="https://github.com/Nameless-LLC/junban"><span class="gh-text">GitHub</span><span aria-hidden="true"> ↗</span></a>
+      <a href="https://github.com/Nameless-LLC/junban">GitHub<span aria-hidden="true"> ↗</span></a>
       <div class="lang" role="group" aria-label="Language">
         <button type="button" id="lang-en" data-set="en" aria-pressed="true">EN</button>
         <button type="button" id="lang-ja" data-set="ja" aria-pressed="false">日本語</button>
@@ -342,7 +343,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   <main id="top">
     <div class="hero">
       <div>
-        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.3</b><span lang="en">Now with Codex CLI and Gemini CLI</span><span lang="ja">Codex CLI と Gemini CLI に対応</span></a>
+        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.3.4</b><span lang="en">New: a timeline of your day, and a full manual</span><span lang="ja">1日のタイムラインとマニュアルを追加</span></a>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
         <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> puts every agent's turn on your tmux tabs and tells you the one key to press.</p>
@@ -351,8 +352,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <code id="cmd-hero">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code>
           <button class="copy" type="button" id="copy-hero" data-copy="cmd-hero"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
         </div>
-        <p class="hint" lang="en">Installs into tmux and connects Claude Code <span class="nw">· MIT · tmux ≥ 3.2</span></p>
-        <p class="hint" lang="ja">tmux に導入し、Claude Code とも連携します <span class="nw">· MIT · tmux 3.2 以上</span></p>
+        <p class="hint" lang="en">Installs into tmux and connects Claude Code <span class="nw">· MIT · tmux ≥ 3.2, git</span></p>
+        <p class="hint" lang="ja">tmux に導入し、Claude Code とも連携します <span class="nw">· MIT · tmux 3.2 以上・git</span></p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/Nameless-LLC/junban"><span aria-hidden="true">★</span><span lang="en">Star on GitHub</span><span lang="ja">GitHub でスター</span><span class="count" id="stars"></span></a>
           <a class="btn" href="#install"><span lang="en">Install in one line</span><span lang="ja">1行で導入</span></a>
@@ -360,12 +361,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       </div>
 
       <div class="stage">
-      <div class="buddy"><span class="say" id="say" aria-live="polite"></span><svg class="jbm" id="hero-face" viewBox="0 0 200 150" data-state="wait" aria-hidden="true" focusable="false"><defs><pattern id="jb-led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern><filter id="jb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter></defs><rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/><rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/><g class="look"><g class="eyes"><g class="pair"><g class="open"><g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/></g><g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g></g></g></g></svg></div>
-      <div class="board" id="board" aria-live="polite" aria-label="Example: the agent queue right now">
+      <div class="buddy"><span class="say" id="say" aria-hidden="true"></span><svg class="jbm" id="hero-face" viewBox="0 0 200 150" data-state="wait" aria-hidden="true" focusable="false"><defs><pattern id="jb-led" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0H6M0 0V6" stroke="#121417" stroke-width="1.6" fill="none"/></pattern><filter id="jb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter></defs><rect x="14" y="10" width="172" height="130" rx="32" fill="#262a31"/><rect x="23" y="19" width="154" height="112" rx="25" fill="#0b0c0e"/><g class="look"><g class="eyes"><g class="pair"><g class="open"><g filter="url(#jb-glow)" opacity=".5"><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/></g><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="currentColor"/><rect class="eye" x="63" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/><rect class="eye" x="111" y="45" width="26" height="60" rx="13" fill="url(#jb-led)"/></g><g class="happy" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"><path d="M64 86 Q76 60 88 86"/><path d="M112 86 Q124 60 136 86"/></g></g></g></g></svg></div>
+      <div class="board" id="board">
         <div class="board-head"><span lang="en">Now calling</span><span lang="ja">返事待ち</span><span class="live">Alt+a</span></div>
         <div class="now">
           <div class="num" id="b-num">4</div>
-          <div class="who">
+          <div class="who" aria-live="polite">
             <div class="name" id="b-name">✋ db migration</div>
             <div class="why" lang="en" id="b-why-en">Wants to run psql on dev · waited 4m</div>
             <div class="why" lang="ja" id="b-why-ja">開発 DB で psql の許可待ち · 4分</div>
@@ -388,10 +389,10 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     </div>
 
     <figure class="shot rv" data-pal="run:video">
-      <video class="wide" lang="en" src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
-      <video class="wide" lang="ja" src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、次へ。最後に Alt+f で全エージェントを検索"></video>
-      <video class="tall" lang="en" data-src="media/junban-demo-mobile-en.mp4" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
-      <video class="tall" lang="ja" data-src="media/junban-demo-mobile-ja.mp4" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
+      <video class="wide" lang="en" data-src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that waited longest, approve, Alt+a again, then Alt+f to search every agent"></video>
+      <video class="wide" lang="ja" data-src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、次へ。最後に Alt+f で全エージェントを検索"></video>
+      <video class="tall" lang="en" data-src="media/junban-demo-mobile-en.mp4" poster="hero-en.svg" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
+      <video class="tall" lang="ja" data-src="media/junban-demo-mobile-ja.mp4" poster="hero-ja.svg" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds.</figcaption>
       <figcaption lang="ja">実際の tmux の操作を場面ごとに収録した25秒の動画です。</figcaption>
     </figure>
@@ -453,8 +454,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">One line on what it needs</h3><h3 lang="ja">何を求めているかを1行で</h3>
-          <p lang="en">When an agent asks, needs permission or finishes, the banner and the Alt+f list say in one line what it wants or what came of the turn: "tests pass, PR #12 opened". Phone notifications carry the same line.</p>
-          <p lang="ja">エージェントが何を聞いているか、何が終わったかを1行で表示します（例:「テスト成功、PR #12 を作成」）。スマホへの通知にも同じ1行が出ます。</p>
+          <p lang="en">When an agent asks, needs permission or finishes, the banner and the Alt+f list say in one line what it wants or what came of the turn: "tests pass, PR #12 opened". Set up notifications and your phone gets the same line.</p>
+          <p lang="ja">エージェントが何を聞いているか、何が終わったかを1行で表示します（例:「テスト成功、PR #12 を作成」）。通知を設定すれば、スマホにも同じ1行が届きます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Catches the costly habits</h3><h3 lang="ja">上書きと放置を知らせる</h3>
@@ -482,9 +483,9 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">OS の言語設定に合わせて切り替わります。日本語の長い名前でもタブの幅が崩れません。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Just tmux and bash</h3><h3 lang="ja">tmux と bash だけ</h3>
-          <p lang="en">No daemon, nothing to keep alive. 175 tests, run in CI on Linux and macOS.</p>
-          <p lang="ja">ほかに動かしておくプログラムはありません。Linux と macOS で175件のテストを通しています。</p>
+          <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
+          <p lang="en">tmux and bash, plus python3 for healing badges, names and the timeline. Nothing to keep alive. 175 tests, run in CI on Linux and macOS.</p>
+          <p lang="ja">tmux と bash で動きます。表示の修正・名前付け・タイムラインには python3 を使います。ほかに動かしておくプログラムはありません。Linux と macOS で175件のテストを通しています。</p>
         </div>
       </div>
     </section>
@@ -500,12 +501,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <thead><tr><th scope="col"></th><th scope="col" class="jb">junban<small><span lang="en">tmux plugin · bash</span><span lang="ja">tmux プラグイン・bash</span></small></th><th scope="col"><a href="https://github.com/gs/tmux-agent-status">gs/tmux-agent-status</a><small><span lang="en">tmux plugin</span><span lang="ja">tmux プラグイン</span></small></th><th scope="col"><a href="https://github.com/samleeney/tmux-agent-status">samleeney/tmux-agent-status</a><small><span lang="en">tmux plugin + daemon</span><span lang="ja">tmux プラグイン＋常駐</span></small></th><th scope="col"><a href="https://github.com/Open330/muxa">muxa</a><small><span lang="en">Rust daemon + TUI, beta</span><span lang="ja">Rust の常駐＋TUI・β版</span></small></th><th scope="col"><a href="https://github.com/raine/workmux">workmux</a><small><span lang="en">worktree CLI for tmux</span><span lang="ja">tmux 用 worktree CLI</span></small></th><th scope="col"><a href="https://code.claude.com/docs/en/agent-view">Claude Code agent view</a><small><span lang="en">built in, preview</span><span lang="ja">標準機能・プレビュー</span></small></th></tr></thead>
           <tbody>
             <tr><th scope="row"><span lang="en">Watches agents you already run</span><span lang="ja">起動済みの<wbr>エージェントを表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks + screen</span><span lang="ja">フック＋画面</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span lang="en">background sessions only</span><span lang="ja">バックグラウンドのセッションだけ</span></td></tr>
-            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待っているものへ<wbr>移動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">キーを設定可能（既定は未設定）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">newest first</span><span lang="ja">新しい順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
+            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待っているものへ<wbr>移動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">キーを設定可能（既定は未設定）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">dashboard: waiting, done, working</span><span lang="ja">一覧で返事待ち・完了・作業中の順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
             <tr><th scope="row"><span lang="en">Wait-time meter and day timeline</span><span lang="ja">待ち時間の<wbr>計測と<wbr>1日の<wbr>タイムライン</span></th><td class="jb"><span class="y">✓</span><span lang="en">local file only</span><span lang="ja">記録は自分の PC だけ</span></td><td class="n">—</td><td class="n">—</td><td><span class="y">✓</span><span lang="en"><code>stats</code>, <code>timeline</code></span><span lang="ja"><code>stats</code>・<code>timeline</code></span></td><td><span lang="en">time in current state</span><span lang="ja">今の状態の経過時間</span></td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Two agents sharing one git checkout</span><span lang="ja">同じフォルダで<wbr>2つ動かしたとき</span></th><td class="jb"><span class="y">✓</span><span lang="en">⚠ warning, Alt+n opens a worktree</span><span lang="ja">⚠ で警告・Alt+n で別フォルダに起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">作業ごとに別フォルダを作る</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドのものは別フォルダ</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">次に押すキーを<wbr>表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">local model; “ok” never renames</span><span lang="ja">ローカルの LLM・短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude’s own session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
-            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini</span><span lang="ja">Claude・Codex・Gemini</span></td><td><span lang="en">Claude, Codex, Gemini and 5 more</span><span lang="ja">Claude・Codex・Gemini ほか5種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
+            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + any via a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude, Codex, opencode, pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity＋画面から判定するものも</span></td><td><span lang="en">Claude, Codex, Gemini and 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -517,13 +518,15 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <section id="install" data-pal="done:install">
       <p class="eyebrow"><span lang="en">Install</span><span lang="ja">導入</span></p>
-      <h2 lang="en">One line. Then press Alt+a.</h2>
-      <h2 lang="ja">1行貼り付けて、<wbr><span class="nw">Alt+a を押すだけ。</span></h2>
-      <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux, reloads it, and connects Claude Code if you have it.</p></div>
-      <div class="prose" lang="ja"><p>ターミナルに貼り付けると、tmux に junban が入ります。Claude Code があれば連携も設定します。</p></div>
+      <h2 lang="en">One line. Alt+/ shows you around.</h2>
+      <h2 lang="ja">1行貼り付けて、<wbr><span class="nw">Alt+/ でキーを確認。</span></h2>
+      <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux, reloads tmux if you are inside it, and connects Claude Code if you have it. Alt+/ lists the keys; when an agent waits on you, Alt+a takes you there.</p></div>
+      <div class="prose" lang="ja"><p>ターミナルに貼り付けると、tmux に junban が入ります。tmux の中で実行すれば設定を読み直し、Claude Code があれば連携も設定します。Alt+/ でキーの一覧が出ます。エージェントが返事を待ったら、Alt+a でそこへ移動します。</p></div>
       <div class="step main">
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
+        <p lang="en">Needs tmux ≥ 3.2 and git. python3 (healing, names, timeline) and fzf (searchable list) are optional. <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
+        <p lang="ja">tmux 3.2 以上と git が必要です。python3（表示の修正・名前付け・タイムライン）と fzf（一覧の検索）は任意です。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">Or, depending on what you use</p>
       <p class="more" lang="ja">個別に導入する場合</p>
@@ -567,8 +570,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
-          <p lang="en">No. State lives in tmux options, and the wait meter in a local file only you can read. Naming windows with a model is opt-in and goes only to the URL you set, such as a local Ollama.</p>
-          <p lang="ja">送りません。記録は自分のパソコンにだけ残ります。ウィンドウ名を LLM で付ける機能を使う場合だけ、自分で設定した先（ローカルの Ollama など）に送ります。</p>
+          <p lang="en">Not by default. State lives in tmux options, and the wait meter in a local file only you can read. Two things leave the machine only if you turn them on: with a model set, your recent prompts and the agent's reply go to that URL to name the window and write the one-line recap (a local Ollama keeps them on your machine); with a notify command set, the recap goes wherever that command sends it. A public ntfy.sh topic can be read by anyone who knows its name.</p>
+          <p lang="ja">標準では送りません。記録は自分のパソコンにだけ残ります。送るのは、自分で設定した次の2つだけです。モデルを設定すると、ウィンドウ名と1行の要約を作るために、最近の指示と返答をその送り先（ローカルの Ollama など）に送ります。通知コマンドを設定すると、その1行を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていればだれでも読めます。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
@@ -633,13 +636,14 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     b.addEventListener('click', function () { setLang(b.dataset.set); if (SAY) show(faceNow[0], faceNow[1]); });
   });
   document.querySelectorAll('.copy').forEach(function (btn) {
+    // kept once: a second click within 1.6s would otherwise save "Copied" as the label
+    var label = btn.innerHTML, back = null;
     btn.addEventListener('click', function () {
       var el = document.getElementById(btn.dataset.copy);
       flash('done', 'copied', 1500);
       var done = function () {
-        var old = btn.innerHTML;
         btn.textContent = root.lang === 'ja' ? 'コピーしました' : 'Copied';
-        setTimeout(function () { btn.innerHTML = old; }, 1600);
+        clearTimeout(back); back = setTimeout(function () { btn.innerHTML = label; }, 1600);
       };
       var select = function () {
         var r = document.createRange(); r.selectNodeContents(el);
@@ -777,20 +781,24 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   document.getElementById('board-next').addEventListener('click', next);
   document.addEventListener('keydown', function (e) {
     var tag = (e.target && e.target.tagName) || '';
-    if (/INPUT|TEXTAREA|SELECT/.test(tag) || e.ctrlKey || e.metaKey) return;
+    // only while the board is on screen, so "a" stays free for find-as-you-type and the rest of the page
+    if (!boardShown || /INPUT|TEXTAREA|SELECT/.test(tag) || e.ctrlKey || e.metaKey) return;
     if (e.code === 'KeyA' || e.key === 'a' || e.key === 'A') { e.preventDefault(); next(); }
   });
   document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { render(false); }); });
   render(false);
 
-  // phones get the portrait crop; load it only there
+  // four cuts (language × wide/phone); fetch only the one on screen
   var mq = window.matchMedia('(max-width: 640px)');
   function videos() {
-    document.querySelectorAll('.shot video.tall').forEach(function (v) {
-      if (mq.matches && !v.src) { v.src = v.dataset.src; v.autoplay = true; v.play && v.play().catch(function () {}); }
+    document.querySelectorAll('.shot video').forEach(function (v) {
+      var want = v.lang === L() && v.classList.contains('tall') === mq.matches;
+      if (want && !v.src) { v.src = v.dataset.src; v.autoplay = true; }
+      if (want) { v.play && v.play().catch(function () {}); } else if (!v.paused) { v.pause(); }
     });
   }
   videos(); if (mq.addEventListener) mq.addEventListener('change', videos);
+  document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', videos); });
 
   // once the hero buttons scroll away, the header keeps a Star button in reach
   if ('IntersectionObserver' in window) {
@@ -822,7 +830,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   // live star count (silently skipped if the API is unreachable)
   try {
     fetch('https://api.github.com/repos/Nameless-LLC/junban').then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && d.stargazers_count) { ['stars', 'hstars', 'estars'].forEach(function (id) { document.getElementById(id).textContent = d.stargazers_count; }); } })
+      // a handful of stars reads as "nobody uses this"; show the count once it says something
+      .then(function (d) { if (d && d.stargazers_count >= 50) { ['stars', 'hstars', 'estars'].forEach(function (id) { document.getElementById(id).textContent = d.stargazers_count; }); } })
       .catch(function () {});
   } catch (e) {}
 
