@@ -65,7 +65,7 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 | **Alt+a** | Jump to the agent that needs you: waiting before finished, longest first |
 | **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview |
 | **Alt+n** | New agent window in the current directory (in its own worktree if another agent already works there) |
-| **Alt+g** | Scratch shell in a popup that survives closing |
+| **Alt+,** | Settings: what Alt+n starts, language, status rows and more. Saved to `~/.config/junban/settings.conf` |
 | **Alt+/** | Cheat sheet, generated from your actual bindings, with today's timeline and the wait report |
 | prefix T | Today's timeline: a row per window, when each agent worked, waited on you, or finished |
 | Alt+1…9 · Alt+[ ] · Alt+Tab · Alt+z · Alt+w | Go to window · prev/next · last · zoom · close (asks first) |
@@ -100,7 +100,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 ## Configuration
 
-Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line.
+Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The common ones are also on **Alt+,**, which saves to `~/.config/junban/settings.conf`; a choice made there wins over the same line in tmux.conf.
 
 ```tmux
 # Look
@@ -116,7 +116,8 @@ set -g @junban-lang ja             # en | ja | th (default: from $LANG)
 set -g @junban-key-jump M-a
 set -g @junban-key-list M-f
 set -g @junban-key-new M-n
-set -g @junban-key-scratch M-g
+set -g @junban-key-scratch ""     # e.g. M-g (prefix g always works)
+set -g @junban-key-settings M-,
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     # e.g. M-y (prefix T always works)
 set -g @junban-nav-keys on         # Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z, Alt+w

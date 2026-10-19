@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-10-19
+
+### Added
+
+- **Settings on Alt+,.** A menu for what Alt+n starts, the language, where the status line sits and how many rows it has, the wait meter, ✓ in batches and the mascot. A choice applies at once and is saved to `~/.config/junban/settings.conf`, which junban reads on every load, so tmux.conf is never rewritten. The two Alt+n choices that skip permission checks ask first; "Type a command…" takes anything else.
+
+### Changed
+
+- **Alt+g is no longer bound by default.** Claude Code runs a shell command with `!`, and the scratch shell was rarely opened. prefix g still opens it, and `set -g @junban-key-scratch M-g` brings the Alt key back. Alt+, takes its place on the keys row.
+
 ## 0.4.5 — 2026-10-19
 
 ### Changed

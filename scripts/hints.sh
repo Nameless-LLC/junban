@@ -79,7 +79,7 @@ cdim=$(opt @junban-color-dim "#5c6370")
 kj=$(key_for jump M-a a)
 kf=$(key_for list M-f f)
 kn=$(key_for new M-n C)
-kg=$(key_for scratch M-g g)
+ks=$(opt @junban-key-settings M-,); [ -n "$ks" ] && ks=$(keylabel "$ks")
 kh=$(key_for help M-/ /)
 
 right=""
@@ -120,7 +120,7 @@ keys=""
 # Alt+[ ] and Alt+w (@junban-nav-keys) move to and close the window beside; tmux clips
 # the end of the row, so they go right after the two keys that matter most.
 nav=(); [ "$(opt @junban-nav-keys on)" = on ] && nav=("Alt+[ ]|$T_PREVNEXT" "Alt+w|$T_CLOSE")
-for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "${nav[@]}" "$kn|$T_NEW" "$kg|$T_SHELL" "$kh|$T_HELP"; do
+for pair in "$kj|$T_NEXT" "$kf|$T_LIST" "${nav[@]}" "$kn|$T_NEW" ${ks:+"$ks|$T_SETTINGS"} "$kh|$T_HELP"; do
   keys="$keys#[fg=$ck]${pair%%|*}#[fg=$cm] ${pair#*|}  "
 done
 info=""

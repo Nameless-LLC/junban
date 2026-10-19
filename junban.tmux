@@ -6,6 +6,9 @@ S="$CURRENT_DIR/scripts"
 . "$S/lib.sh"
 
 tmux set -g @junban-dir "$CURRENT_DIR"
+# Choices made in the Alt+, menu, before anything below reads an option.
+settings=${XDG_CONFIG_HOME:-$HOME/.config}/junban/settings.conf
+[ -f "$settings" ] && tmux source-file -q "$settings"
 
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
@@ -95,7 +98,10 @@ tmux set -g focus-events on \; set -s extended-keys on \; set -s set-clipboard o
 bind_root() { [ -n "$1" ] && tmux bind -n "$1" "${@:2}"; }
 
 kj=$(opt @junban-key-jump M-a); kf=$(opt @junban-key-list M-f); kn=$(opt @junban-key-new M-n)
-kg=$(opt @junban-key-scratch M-g); kh=$(opt @junban-key-help M-/)
+# No Alt key for the scratch shell by default: Claude Code runs a command with !,
+# and the key was rarely touched. prefix g still opens it.
+kg=$(opt @junban-key-scratch ""); kh=$(opt @junban-key-help M-/)
+ks=$(opt @junban-key-settings M-,)
 # No Alt key by default: Alt+t already toggles thinking in Claude Code.
 kt=$(opt @junban-key-timeline "")
 popup_list=(display-popup -E -w 90% -h 85% "$S/switch.sh")
@@ -111,6 +117,7 @@ bind_root "$kn" "${new_agent[@]}"
 bind_root "$kg" "${popup_scratch[@]}"
 bind_root "$kh" "${popup_help[@]}"
 bind_root "$kt" "${popup_timeline[@]}"
+bind_root "$ks" run -b "bash $S/settings.sh"
 
 if [ "$(opt @junban-prefix-keys on)" = on ]; then
   tmux bind a run -b "$S/jump.sh"

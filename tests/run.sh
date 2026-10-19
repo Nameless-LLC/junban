@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 S="$ROOT/scripts"
 WORK=$(mktemp -d)
 trap 'tmux kill-server 2>/dev/null; rm -rf "$WORK"' EXIT
-unset TMUX TMUX_PANE
+unset TMUX TMUX_PANE XDG_CONFIG_HOME XDG_STATE_HOME
 export TMUX_TMPDIR="$WORK" HOME="$WORK/home" LANG=C.UTF-8
 mkdir -p "$HOME/.claude/sessions"
 cd "$WORK" || exit 1   # not inside a git repo, or every test window would share one tree
@@ -32,6 +32,9 @@ eq  "three status rows by default"  "$(tmux show -gv status)" "3"
 # list-keys with a key argument prints nothing on tmux 3.7, so search the table
 has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')" "jump.sh"
 has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
+has "Alt+, opens the settings"     "$(tmux list-keys -T root | grep -F ' M-, ')" "settings.sh"
+eq  "Alt+g left free by default"    "$(tmux list-keys -T root | grep -cF ' M-g ')" "0"
+has "…prefix g still opens the shell" "$(tmux list-keys -T prefix | grep -E ' g +display-popup')" "scratch"
 has "Alt+w asks before closing"     "$(tmux list-keys -T root | grep -F ' M-w ')" "confirm-before"
 has "…naming the window"            "$(tmux list-keys -T root | grep -F ' M-w ')" "#W"
 has "badge in window format"        "$(tmux show -gv window-status-format)" "@junban-badge"
@@ -626,6 +629,34 @@ eq  "late result after a new prompt dropped" "$(get u:17 @junban_review)" "2 fil
 st "$pv" idle; st "$pv" running '{"prompt":"next task"}'
 eq  "a new prompt clears it"        "$(get u:17 @junban_review)" ""
 tmux kill-window -t u:17
+
+echo "settings menu"
+conf="$HOME/.config/junban/settings.conf"
+menu=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")
+has "menu lists what Alt+n starts"  "$menu" "Alt+n starts"
+has "…with its current value"       "$menu" "claude"
+has "…and where it saves"           "$menu" "~/.config/junban/settings.conf"
+sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-agent-cmd)
+has "bypass is on offer"            "$sub" "claude --dangerously-skip-permissions"
+has "…and asks first"               "$(grep -F 'dangerously-skip' <<<"$sub" | grep -c confirm-before)" "2"
+has "current choice is ticked"      "$sub" "✓ claude"
+for m in "" "menu @junban-agent-cmd" "menu @junban-lang"; do
+  # shellcheck disable=SC2086
+  JUNBAN_DRY_RUN=1 bash "$S/settings.sh" $m | grep -E '^(run|confirm|display)' > "$WORK/menu.cmds"
+  eq "menu commands parse (${m:-top})" "$(tmux source-file -n "$WORK/menu.cmds" 2>&1)" ""
+done
+bash "$S/settings.sh" set @junban-mascot off
+eq  "a choice applies at once"      "$(tmux show -gv @junban-mascot)" "off"
+eq  "…and is saved"                 "$(cat "$conf")" "set -g @junban-mascot 'off'"
+bash "$S/settings.sh" set @junban-mascot on
+eq  "saving again replaces the line" "$(grep -c junban-mascot "$conf")" "1"
+bash "$S/settings.sh" set @junban-agent-cmd "claude --model \"x\" 'it'"
+tmux set -gu @junban-agent-cmd; bash "$ROOT/junban.tmux"
+eq  "saved choices load with junban, quotes and all" "$(tmux show -gv @junban-agent-cmd)" "claude --model \"x\" 'it'"
+bash "$S/settings.sh" set @junban-key-jump M-q; eq "only menu options can be set" "$?" "1"
+eq  "…and nothing was saved"         "$(grep -c key-jump "$conf")" "0"
+has "keys row shows Alt+,"           "$(plain 160 2)" "Alt+, settings"
+rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot
 
 echo "theme off"
 tmux kill-server; sleep 0.2

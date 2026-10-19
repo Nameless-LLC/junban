@@ -214,7 +214,8 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">いちばん待たせているウィンドウへ移動。✋ が ✓ より先、待った時間の長い順。</span></td></tr>
             <tr><td><kbd>Alt+f</kbd></td><td><kbd>f</kbd></td><td><span lang="en">Every agent in one list, neediest first, with a live preview.</span><span lang="ja">全エージェントの一覧。待たせている順で、中身のプレビュー付き。</span></td></tr>
             <tr><td><kbd>Alt+n</kbd></td><td><kbd>C</kbd></td><td><span lang="en">Start a new agent in this directory.</span><span lang="ja">このディレクトリで新しいエージェントを起動する。</span></td></tr>
-            <tr><td><kbd>Alt+g</kbd></td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time.</span><span lang="ja">ポップアップのシェル。閉じても中身は残り、次に開くと続きから使えます。</span></td></tr>
+            <tr><td><kbd>Alt+,</kbd></td><td class="m">—</td><td><span lang="en">Settings: what <kbd>Alt+n</kbd> starts, language, status rows, the wait meter, ✓ in batches, the mascot. A choice applies at once and is saved to <code>~/.config/junban/settings.conf</code>, so tmux.conf stays yours.</span><span lang="ja">設定。<kbd>Alt+n</kbd> で起動するもの、言語、ステータス行、待ち時間の表示、✓ をまとめて表示、マスコットを選べます。選んだ値はすぐに反映され、<code>~/.config/junban/settings.conf</code> に保存されます（tmux.conf は書き換えません）。</span></td></tr>
+            <tr><td class="m">—</td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time. No Alt key by default; set <code>@junban-key-scratch M-g</code> to add one.</span><span lang="ja">ポップアップのシェル。閉じても中身は残り、次に開くと続きから使えます。Alt キーは標準では割り当てていません。<code>@junban-key-scratch M-g</code> で追加できます。</span></td></tr>
             <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>T</kbd></td><td><span lang="en">Today's <a href="#timeline">timeline</a>. No Alt key by default (Alt+t toggles thinking in Claude Code); set <code>@junban-key-timeline</code> to add one.</span><span lang="ja">今日の<a href="#timeline">タイムライン</a>。Alt キーは標準では割り当てていません（Claude Code では Alt+t が思考の切り替えのため）。<code>@junban-key-timeline</code> で追加できます。</span></td></tr>
             <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd></td><td class="m">—</td><td><span lang="en">Window by number.</span><span lang="ja">番号のウィンドウへ移動。</span></td></tr>
@@ -245,8 +246,8 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目は対応が必要なもの、無ければ今日の待ち時間。3行目はキーです。何も覚えなくて済みます。</p>
         <p lang="en"><span class="b">Calm.</span> Today's wait on the second line, the keys worth knowing on the third. While the prefix (Ctrl+b) is down, the third line lists what can follow it instead.</p>
         <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間、3行目に覚えておくと便利なキー。prefix（Ctrl+b）を押している間は、3行目が続けて押せるキーに変わります。</p>
-        <div class="tl rows" lang="en"><div><span>kept waiting 42m today · median reply 3m10s</span></div><div><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+[ ]</b> prev / next</span><span><b>Alt+w</b> close</span><span><b>Alt+n</b> new agent</span><span><b>Alt+g</b> scratch shell</span><span><b>Alt+/</b> keys</span></div></div>
-        <div class="tl rows" lang="ja"><div><span>今日の待ち時間 42分 · 返答の中央値 3分10秒</span></div><div><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+[ ]</b> 前／次</span><span><b>Alt+w</b> 閉じる</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+g</b> シェル</span><span><b>Alt+/</b> キー一覧</span></div></div>
+        <div class="tl rows" lang="en"><div><span>kept waiting 42m today · median reply 3m10s</span></div><div><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+[ ]</b> prev / next</span><span><b>Alt+w</b> close</span><span><b>Alt+n</b> new agent</span><span><b>Alt+,</b> settings</span><span><b>Alt+/</b> keys</span></div></div>
+        <div class="tl rows" lang="ja"><div><span>今日の待ち時間 42分 · 返答の中央値 3分10秒</span></div><div><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+[ ]</b> 前／次</span><span><b>Alt+w</b> 閉じる</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+,</b> 設定</span><span><b>Alt+/</b> キー一覧</span></div></div>
         <p lang="en"><span class="b w">Someone is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
         <p lang="ja"><span class="b w">誰かが待っているとき。</span>赤い表示で押すキーを示し、次に移動するウィンドウが何を求めているかを1行で出します。</p>
         <div class="tl" lang="en"><span class="bn">✋ 2 waiting on you → Alt+a to jump</span><span class="rc">db migration: wants to run psql on dev</span></div>
@@ -377,7 +378,8 @@ set -g @junban-lang ja             <span class="c"># en | ja | th (default: from
 set -g @junban-key-jump M-a
 set -g @junban-key-list M-f
 set -g @junban-key-new M-n
-set -g @junban-key-scratch M-g
+set -g @junban-key-scratch ""     <span class="c"># e.g. M-g (prefix g always works)</span>
+set -g @junban-key-settings M-,
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     <span class="c"># e.g. M-y</span>
 set -g @junban-nav-keys on         <span class="c"># Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z, Alt+w</span>

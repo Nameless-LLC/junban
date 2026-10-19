@@ -26,7 +26,8 @@ nav=$(opt @junban-nav-keys on)
     row "Alt+w" "$HELP_K_CLOSE"
   fi
   row "$(k new M-n)" "$HELP_K_NEW"
-  row "$(k scratch M-g)" "$HELP_K_SHELL"
+  row "$(k scratch "")" "$HELP_K_SHELL"
+  row "$(k settings M-,)" "$HELP_K_SETTINGS"
   row "$(k help M-/)" "$HELP_K_HELP"
   [ -n "$(k timeline "")" ] && row "$(k timeline "")" "$HELP_K_TIMELINE"
   if [ "$(opt @junban-prefix-keys on)" = on ]; then
