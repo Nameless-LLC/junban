@@ -97,6 +97,7 @@ change() {
 }
 
 # amount TOKEN — a change token as people read it: "32%" or "2.3×" (T_TIMES).
+# shellcheck disable=SC2059  # i18n strings are printf formats by design
 amount() {
   case "$1" in
     x*) printf "$T_TIMES" "${1#x}" ;;

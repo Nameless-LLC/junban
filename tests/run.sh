@@ -26,7 +26,7 @@ st()  { TMUX_PANE=$1 bash "$S/state.sh" "$2" <<<"${3:-}"; }
 get() { tmux display -p -t "$1" "#{$2}"; }
 plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
 # soon TARGET OPTION WANT — the option once it reads WANT (async hooks), or after 5 s.
-soon() { local v i; for i in $(seq 100); do v=$(get "$1" "$2"); [ "$v" = "$3" ] && break; sleep 0.05; done; printf '%s' "$v"; }
+soon() { local v _; for _ in $(seq 100); do v=$(get "$1" "$2"); [ "$v" = "$3" ] && break; sleep 0.05; done; printf '%s' "$v"; }
 
 echo "plugin"
 bash "$ROOT/junban.tmux"
@@ -655,6 +655,7 @@ menu=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")
 has "menu lists what Alt+n starts"  "$menu" "Alt+n starts"
 has "…with its current value"       "$menu" "claude"
 has "…a way out"                  "$menu" "Close (q / Esc)"
+# shellcheck disable=SC2088  # the menu shows ~ on purpose
 has "…and where it saves"           "$menu" "~/.config/junban/settings.conf"
 sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-agent-cmd)
 has "bypass is on offer"            "$sub" "claude --dangerously-skip-permissions"
@@ -680,6 +681,7 @@ printf 'set -g @junban-mascot off\nrun-shell %s/junban.tmux\n# set -g @junban-ma
 menu=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")
 eq  "a later tmux.conf line is flagged" "$(grep -c '⚠ tmux.conf' <<<"$menu")" "2"
 sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-mascot)
+# shellcheck disable=SC2088
 has "…naming the line"              "$sub" "~/.tmux.conf line 4 overrides"
 has "…with a way to turn it off"    "$sub" "Turn that line off"
 eq  "…whose command parses"         "$(grep -E '^confirm' <<<"$sub" > "$WORK/c"; tmux source-file -n "$WORK/c" 2>&1)" ""
@@ -734,7 +736,7 @@ eq  "a damaged wait log prints no errors" "$(bash "$S/stats.sh" --line 2>&1 >/de
 tmux set -g @junban-lang ../../etc/x
 eq  "a language is a name, never a path" "$(. "$S/lib.sh"; junban_lang)" "en"
 tmux set -gu @junban-lang
-for i in 1 2 3; do bash "$ROOT/junban.tmux"; done
+for _ in 1 2 3; do bash "$ROOT/junban.tmux"; done
 eq  "reloads add terminal features once" "$(tmux show -s terminal-features | grep -c 'focus:extkeys')" "1"
 mkdir -p "$HOME/.config/junban"
 printf "set -g @junban-mascot 'off'\nset -g @junban-meter 'off\nset -g @junban-position 'bottom'\n" > "$HOME/.config/junban/settings.conf"
