@@ -115,6 +115,8 @@ bind_root "$kj" run -b "$S/jump.sh"
 bind_root "$kf" "${popup_list[@]}"
 bind_root "$kn" "${new_agent[@]}"
 bind_root "$kg" "${popup_scratch[@]}"
+# Alt+g was the default until 0.5.0; a reload must not leave ours behind.
+[ "$kg" != M-g ] && tmux list-keys -T root 2>/dev/null | grep -F ' M-g ' | grep -q 'scratch' && tmux unbind -n M-g
 bind_root "$kh" "${popup_help[@]}"
 bind_root "$kt" "${popup_timeline[@]}"
 bind_root "$ks" run -b "bash $S/settings.sh"

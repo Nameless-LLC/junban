@@ -34,6 +34,11 @@ has "Alt+a bound"                   "$(tmux list-keys -T root | grep -F ' M-a ')
 has "prefix a bound"                "$(tmux list-keys -T prefix | grep -E ' a +run-shell')" "jump.sh"
 has "Alt+, opens the settings"     "$(tmux list-keys -T root | grep -F ' M-, ')" "settings.sh"
 eq  "Alt+g left free by default"    "$(tmux list-keys -T root | grep -cF ' M-g ')" "0"
+tmux bind -n M-g display-popup -E "tmux new -A -s scratch"; bash "$ROOT/junban.tmux"
+eq  "…an old Alt+g is cleared on reload" "$(tmux list-keys -T root | grep -cF ' M-g ')" "0"
+tmux bind -n M-g display-message mine; bash "$ROOT/junban.tmux"
+eq  "…but not one of your own"      "$(tmux list-keys -T root | grep -cF ' M-g ')" "1"
+tmux unbind -n M-g
 has "…prefix g still opens the shell" "$(tmux list-keys -T prefix | grep -E ' g +display-popup')" "scratch"
 has "Alt+w asks before closing"     "$(tmux list-keys -T root | grep -F ' M-w ')" "confirm-before"
 has "…naming the window"            "$(tmux list-keys -T root | grep -F ' M-w ')" "#W"
