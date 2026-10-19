@@ -640,6 +640,7 @@ conf="$HOME/.config/junban/settings.conf"
 menu=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")
 has "menu lists what Alt+n starts"  "$menu" "Alt+n starts"
 has "…with its current value"       "$menu" "claude"
+has "…a way out"                  "$menu" "Close (q / Esc)"
 has "…and where it saves"           "$menu" "~/.config/junban/settings.conf"
 sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-agent-cmd)
 has "bypass is on offer"            "$sub" "claude --dangerously-skip-permissions"

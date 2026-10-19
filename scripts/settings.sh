@@ -48,7 +48,9 @@ esc() { printf '%s' "${1//#/##}"; }
 menu() {
   local args=(-T "#[align=centre] $(esc "$1") " -x C -y C)
   shift
-  args+=("$@")
+  # Esc and q close any tmux menu, but nothing on screen says so.
+  args+=("$@" "" "  $(esc "$SET_CLOSE")" q "")
+  [ -n "${note:-}" ] && args+=("-#[fg=colour244]$(esc "$note")" "" "")
   if [ -n "${JUNBAN_DRY_RUN:-}" ]; then printf '%s\n' "${args[@]}"; return; fi
   tmux display-menu "${args[@]}"
 }
@@ -110,7 +112,7 @@ case "${1:-}" in
       k=$((k + 1))
     done < <(options)
     # A leading "-" makes the row a note, not a choice.
-    items+=("" "-#[fg=colour244]$(esc "$(printf "$SET_FILE" "${file/#$HOME/\~}")")" "" "")
+    note=$(printf "$SET_FILE" "${file/#$HOME/\~}")
     menu "$SET_TITLE" "${items[@]}"
     ;;
 esac

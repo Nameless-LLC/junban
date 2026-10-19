@@ -4,7 +4,7 @@
 
 ### Added
 
-- **Settings on Alt+,.** A menu for what Alt+n starts, the language, where the status line sits and how many rows it has, the wait meter, ✓ in batches and the mascot. A choice applies at once and is saved to `~/.config/junban/settings.conf`, which junban reads on every load, so tmux.conf is never rewritten. The two Alt+n choices that skip permission checks ask first; "Type a command…" takes anything else.
+- **Settings on Alt+,.** A menu for what Alt+n starts, the language, where the status line sits and how many rows it has, the wait meter, ✓ in batches and the mascot. A choice applies at once and is saved to `~/.config/junban/settings.conf`, which junban reads on every load, so tmux.conf is never rewritten. The two Alt+n choices that skip permission checks ask first; "Type a command…" takes anything else. Every menu ends with "Close (q / Esc)".
 
 ### Changed
 
