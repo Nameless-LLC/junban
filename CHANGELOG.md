@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 — 2026-10-19
+
+### Changed
+
+- **The reply trend on the status line is said in words.** "· 前7日比 +32%" after today's wait read as more waiting, and nobody could tell whether up was good. It now sits right after the median and says which way: "返答の中央値 3分10秒（前7日より32%速い）" or "…遅い". A change of 0% is left out.
+
 ## 0.4.1 — 2026-10-18
 
 ### Added

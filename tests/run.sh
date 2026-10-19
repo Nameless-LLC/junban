@@ -272,7 +272,10 @@ has "…and says why"                 "$rep" "a new personal best today! 50% qui
 eq  "trend needs 5 waits before"    "$(bash "$S/stats.sh" --line | cut -f4)" "-"
 for d in 4 5; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180)) "$e" >> "$log"; done
 eq  "trend: today vs last 7 days"   "$(bash "$S/stats.sh" --line | cut -f4)" "-33%"
-has "guide shows the trend"         "$(bash "$S/hints.sh")" "-33% vs the last 7 days"
+has "guide says the trend in words"  "$(bash "$S/hints.sh")" "(33% quicker than the last 7 days)"
+for d in 0 0 0 0 0 0; do printf '%s\t%s\tdone\tu:b\n' $((now - 605)) $((now - 5)) >> "$log"; done
+has "…and when replies got slower"  "$(bash "$S/hints.sh")" "median reply 10m (233% slower than the last 7 days)"
+hasnt "…with no bare sign"          "$(bash "$S/hints.sh")" "+233%"
 tmux set -w -t u:6 @junban waiting
 has "mascot calls when someone waits" "$(bash "$S/summary.sh")" "[▮ ▮]"
 tmux set -w -t u:6 -u @junban

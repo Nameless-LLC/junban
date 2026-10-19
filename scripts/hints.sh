@@ -132,10 +132,14 @@ if [ "$(opt @junban-meter on)" = on ]; then
     # shellcheck disable=SC2059
     info="$info#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
     # Quicker than your own recent days is the one comparison worth making.
+    # Said in words beside the median: a bare "+32%" after today's total read
+    # as more waiting, and nobody could tell whether up was good.
+    p=${mtr%\%}; p=${p#[+-]}
     # shellcheck disable=SC2059
     case "$mtr" in
-      -*) info="$info · #[fg=$cd_]$(printf "$T_TREND" "$mtr")" ;;
-      +*) info="$info · #[fg=$cm]$(printf "$T_TREND" "$mtr")" ;;
+      -0% | +0%) ;;
+      -*) info="$info#[fg=$cd_]$(printf "$T_TREND_FAST" "$p")" ;;
+      +*) info="$info$(printf "$T_TREND_SLOW" "$p")" ;;
     esac
     info="$info  "
   fi
