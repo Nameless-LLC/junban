@@ -264,7 +264,7 @@ for d in 0 0 0 0 0; do printf '%s\t%s\tdone\tu:b\n' $((now - 125)) $((now - 5)) 
 for d in 1 2 3; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180)) "$e" >> "$log"; done
 rep=$(bash "$S/stats.sh" 7)
 has "bar for each day"              "$rep" "████████████████"
-has "this week against last"        "$rep" "median reply 4m00s → 2m00s (-50%)"
+has "this week against last"        "$rep" "median reply 4m00s → 2m00s "$'\033[32m'"▼50% quicker"
 has "personal best"                 "$rep" "Personal best: $(date +%m/%d), median reply 2m00s"
 has "streak within the goal"        "$rep" "days in a row with a median reply under 5 min"
 has "mascot cheers a quicker week"  "$rep" '[◠ ◠]'

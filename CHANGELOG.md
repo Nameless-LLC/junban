@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.5 — 2026-10-19
+
+### Changed
+
+- **This week against last reads the same way.** The Alt+/ report showed "(-50%)" for the median reply and the total wait. Each now has a green ▼ and a word when it went down ("▼50% 速い", "▼50% 減") and an orange ▲ when it went up.
+
 ## 0.4.4 — 2026-10-19
 
 ### Changed

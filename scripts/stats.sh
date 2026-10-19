@@ -55,6 +55,18 @@ span() { awk -F'\t' -v a="$1" -v b="$2" '$1 >= a && $1 <= b { print $2 }' | summ
 # pct NEW OLD → "-32%"
 pct() { awk -v n="$1" -v o="$2" 'BEGIN { p = (n - o) * 100 / o; printf "%+d%%", p + (p < 0 ? -0.5 : 0.5) }'; }
 
+# trend NEW OLD DOWNWORD UPWORD → a green "▼50% quicker" or an orange
+# "▲50% slower". Less waiting is always the good way, so a bare "-50%" made
+# you stop and work out which way was good.
+trend() {
+  local p; p=$(pct "$1" "$2"); p=${p%\%}
+  case "$p" in
+    -0 | +0) printf '%s±0%%%s' "$dim" "$r" ;;
+    -*) printf '\033[32m▼%s%% %s%s' "${p#-}" "$3" "$r" ;;
+    *) printf '\033[38;5;173m▲%s%% %s%s' "${p#+}" "$4" "$r" ;;
+  esac
+}
+
 # table HEADSTYLE — align TSV on stdin by display width (日本語 and ไทย are not
 # one column per byte), right-aligning every column but the first and last.
 table() {
@@ -138,8 +150,8 @@ IFS=$'\t' read -r tt tm tc < <(printf '%s\n' "$all" | span 0 6)
 IFS=$'\t' read -r lt lm lc < <(printf '%s\n' "$all" | span 7 13)
 face="" say=""
 if [ "$tc" -ge "$MIN_N" ] && [ "$lc" -ge "$MIN_N" ] && [ "$lm" -gt 0 ] && [ "$lt" -gt 0 ]; then
-  printf '\n  %s\n' "$(printf "$STATS_WEEK" "$(fmt_dur "$lm")" "$(fmt_dur "$tm")" "$(pct "$tm" "$lm")" \
-    "$(fmt_dur "$lt")" "$(fmt_dur "$tt")" "$(pct "$tt" "$lt")")"
+  printf '\n  %s\n' "$(printf "$STATS_WEEK" "$(fmt_dur "$lm")" "$(fmt_dur "$tm")" "$(trend "$tm" "$lm" "$STATS_QUICKER" "$STATS_SLOWER")" \
+    "$(fmt_dur "$lt")" "$(fmt_dur "$tt")" "$(trend "$tt" "$lt" "$STATS_LESS" "$STATS_MORE")")"
   p=$(pct "$tm" "$lm"); p=${p%\%}; p=${p#+}
   if [ "$p" -le -10 ]; then face='[◠ ◠]'; say=$(printf "$MASCOT_UP" $(( -p )))
   elif [ "$p" -ge 10 ]; then face='[▬ ▬]'; say=$(printf "$MASCOT_DOWN" "$p")
