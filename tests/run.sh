@@ -674,7 +674,26 @@ eq  "saved choices load with junban, quotes and all" "$(tmux show -gv @junban-ag
 bash "$S/settings.sh" set @junban-key-jump M-q; eq "only menu options can be set" "$?" "1"
 eq  "…and nothing was saved"         "$(grep -c key-jump "$conf")" "0"
 has "keys row shows Alt+,"           "$(plain 160 2)" "Alt+, settings"
-rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot
+printf 'set -g @junban-mascot off\nrun-shell %s/junban.tmux\n# set -g @junban-mascot on\nset -g @junban-mascot on\nset -g @junban-meter off\n' "$ROOT" > "$HOME/.tmux.conf"
+menu=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")
+eq  "a later tmux.conf line is flagged" "$(grep -c '⚠ tmux.conf' <<<"$menu")" "2"
+sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-mascot)
+has "…naming the line"              "$sub" "~/.tmux.conf line 4 overrides"
+has "…with a way to turn it off"    "$sub" "Turn that line off"
+eq  "…whose command parses"         "$(grep -E '^confirm' <<<"$sub" > "$WORK/c"; tmux source-file -n "$WORK/c" 2>&1)" ""
+bash "$S/settings.sh" disable "$HOME/.tmux.conf" 3 @junban-mascot; eq "a stale line number is refused" "$?" "1"
+bash "$S/settings.sh" disable "$HOME/.tmux.conf" 4 @junban-meter; eq "…as is the wrong option" "$?" "1"
+eq  "…leaving tmux.conf alone"      "$(sed -n 4p "$HOME/.tmux.conf")" "set -g @junban-mascot on"
+ln -s "$HOME/.tmux.conf" "$WORK/linked.conf"; mv "$HOME/.tmux.conf" "$WORK/real.conf"; ln -s "$WORK/real.conf" "$HOME/.tmux.conf"
+bash "$S/settings.sh" disable "$HOME/.tmux.conf" 4 @junban-mascot
+has "the line becomes a comment"    "$(sed -n 4p "$WORK/real.conf")" "# set -g @junban-mascot on  # turned off by junban"
+eq  "…every other line kept"        "$(sed -n 5p "$WORK/real.conf")" "set -g @junban-meter off"
+eq  "…a symlinked tmux.conf stays a link" "$(test -L "$HOME/.tmux.conf" && echo link)" "link"
+eq  "…with a backup"                "$(sed -n 4p "$WORK/real.conf.junban.bak")" "set -g @junban-mascot on"
+eq  "…and the menu's choice applies" "$(tmux show -gv @junban-mascot)" "on"
+eq  "no longer flagged"             "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" | grep -c '⚠ tmux.conf')" "1"
+rm -f "$HOME/.tmux.conf" "$WORK/real.conf"* "$WORK/linked.conf"
+rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot; tmux set -gu @junban-meter
 
 echo "theme off"
 tmux kill-server; sleep 0.2

@@ -4,6 +4,7 @@
 
 ### Changed
 
+- **Alt+, points out a tmux.conf line that would undo a choice.** A line after the plugin line wins on every start, so a choice made in the menu quietly came back. The menu marks the option "⚠ tmux.conf", names the file and line, and offers to turn that line into a comment (after asking; a backup goes next to it as `.junban.bak`, and a symlinked tmux.conf stays a symlink). Saving such a choice says so too.
 - **Trends stay calm when the change is noise.** A median under 15 s apart (5 min for a week's total) or under 10% says nothing on the status line and "≈ ほぼ同じ" in the report. Double or more reads as a ratio, "▲3.3倍 遅い", instead of "+233%".
 
 ## 0.5.0 — 2026-10-19
