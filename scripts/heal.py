@@ -56,7 +56,8 @@ def main():
     windows = {}
     for row in rows:
         wid, pane, state, ts, cmd, sess, ppid = (row.split("\t") + [""] * 7)[:7]
-        w = windows.setdefault(wid, {"state": state, "ts": int(ts or 0), "panes": [], "cmds": []})
+        # One odd value (hand-set, from an old version) must not stop the rest.
+        w = windows.setdefault(wid, {"state": state, "ts": int(ts) if ts.isdigit() else 0, "panes": [], "cmds": []})
         # Pane ids are only unique per tmux server, so key on the full location
         w["panes"].append((f"{sess}:{wid}.{pane}", ppid))
         w["cmds"].append(cmd)
@@ -67,29 +68,37 @@ def main():
     live = {}
     for f in glob.glob(os.path.expanduser("~/.claude/sessions/*.json")):
         try:
-            d = json.load(open(f))
+            with open(f) as fh:
+                d = json.load(fh)
         except Exception:
             continue
-        loc = d.get("tmux") or ""
-        if ".%" in loc:
+        loc = d.get("tmux") if isinstance(d, dict) else None
+        if isinstance(loc, str) and ".%" in loc:
             live[loc] = d
 
     now = time.time()
     for wid, v in stale.items():
-        sessions = [live[loc] for loc, ppid in v["panes"]
-                    if loc in live and descends(live[loc].get("pid"), ppid)]
-        if not sessions:
-            # Not a Claude Code pane (or it has exited). Only clear it when every
-            # pane is back at a bare shell, so other agents driving state.sh survive.
-            if all(c in SHELLS for c in v["cmds"]) and now - v["ts"] > GRACE:
-                tmux("set", "-w", "-t", wid, "@junban", "idle")
-                # The shell is the pane's directory again, not the agent's worktree.
-                for loc, _ in v["panes"]:
-                    tmux("set", "-pu", "-t", loc.rsplit(".", 1)[1], "@junban_cwd")
+        try:
+            fix(wid, v, live, now)
+        except Exception:
             continue
-        if all(s.get("status") == "idle" and
-               s.get("statusUpdatedAt", 0) / 1000 > v["ts"] + GRACE for s in sessions):
+
+
+def fix(wid, v, live, now):
+    sessions = [live[loc] for loc, ppid in v["panes"]
+                if loc in live and descends(live[loc].get("pid"), ppid)]
+    if not sessions:
+        # Not a Claude Code pane (or it has exited). Only clear it when every
+        # pane is back at a bare shell, so other agents driving state.sh survive.
+        if all(c in SHELLS for c in v["cmds"]) and now - v["ts"] > GRACE:
             tmux("set", "-w", "-t", wid, "@junban", "idle")
+            # The shell is the pane's directory again, not the agent's worktree.
+            for loc, _ in v["panes"]:
+                tmux("set", "-pu", "-t", loc.rsplit(".", 1)[1], "@junban_cwd")
+        return
+    if all(s.get("status") == "idle" and
+           s.get("statusUpdatedAt", 0) / 1000 > v["ts"] + GRACE for s in sessions):
+        tmux("set", "-w", "-t", wid, "@junban", "idle")
 
 
 try:

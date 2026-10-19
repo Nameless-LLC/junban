@@ -695,6 +695,60 @@ eq  "no longer flagged"             "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" | 
 rm -f "$HOME/.tmux.conf" "$WORK/real.conf"* "$WORK/linked.conf"
 rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot; tmux set -gu @junban-meter
 
+echo "stability"
+w31=$(tmux new-window -d -P -F '#{window_id}' -t s: -n 'issue a#[fg=red]b' 'sleep 600')
+ps31=$(tmux display -p -t "$w31" '#{pane_id}')
+st "$ps31" running '{}'
+big=$(head -c 3000000 /dev/zero | tr '\0' x)
+t0=$(date +%s%N); printf '%s' "$big" | TMUX_PANE=$ps31 bash "$S/state.sh" tool; t1=$(date +%s%N)
+eq  "a tool call while running skips its 3 MB payload" "$(( (t1 - t0) / 1000000 < 300 ))" "1"
+st "$ps31" waiting '{}'
+printf '%s' "$big" | TMUX_PANE=$ps31 bash "$S/state.sh" tool
+eq  "…and after a wait marks it running" "$(get "$w31" @junban)" "running"
+st "$ps31" waiting '{}'
+tmux set -w -t "$w31" automatic-rename off \; rename-window -t "$w31" 'issue a#[fg=red]b'
+out=$(bash "$S/hints.sh" 160 1 2>&1)
+hasnt "a # in a window name starts no style" "$out" "a#[fg=red]"
+has   "…it shows as ＃"            "$out" "＃"
+err=""
+for v in 08 00 99999 abc -5 ''; do
+  tmux set -g @junban-done-batch "$v"; tmux set -g @junban-tint "$v"; tmux set -g @junban-tint-waiting "$v"
+  tmux set -g @junban-stale-hours "$v"; tmux set -g @junban-meter-cap "$v"
+  err="$err$(bash "$S/hints.sh" 160 1 2>&1 >/dev/null)$(bash "$S/stats.sh" --line 2>&1 >/dev/null)$(bash "$S/summary.sh" 2>&1 >/dev/null)"
+done
+eq  "odd numbers in options print no errors" "$err" ""
+tmux set -g @junban-tint 999
+has "a tint over 100 stays a colour" "$(bash "$S/hints.sh" 160 1)" "#[bg=#"
+hasnt "…a valid one"                "$(bash "$S/hints.sh" 160 1 | grep -oE 'bg=#[0-9a-f]+' | awk 'length($0) != 10')" "bg"
+tmux set -g @junban-meter-cap "a[\$(touch $WORK/pwned)]"
+bash "$S/stats.sh" --line >/dev/null 2>&1; bash "$S/stats.sh" 7 >/dev/null 2>&1
+eq  "an option is never run as code" "$(test -e "$WORK/pwned" && echo ran)" ""
+for o in @junban-done-batch @junban-tint @junban-tint-waiting @junban-stale-hours @junban-meter-cap; do tmux set -gu "$o"; done
+printf 'junk\n1\t2\n%s\t%s.5\twaiting\tx\n%s\t1e20\tdone\ty\n\n' "$now" "$now" "$now" >> "$log"
+eq  "a damaged wait log prints no errors" "$(bash "$S/stats.sh" --line 2>&1 >/dev/null; bash "$S/stats.sh" 7 2>&1 >/dev/null)" ""
+tmux set -g @junban-lang ../../etc/x
+eq  "a language is a name, never a path" "$(. "$S/lib.sh"; junban_lang)" "en"
+tmux set -gu @junban-lang
+for i in 1 2 3; do bash "$ROOT/junban.tmux"; done
+eq  "reloads add terminal features once" "$(tmux show -s terminal-features | grep -c 'focus:extkeys')" "1"
+mkdir -p "$HOME/.config/junban"
+printf "set -g @junban-mascot 'off'\nset -g @junban-meter 'off\nset -g @junban-position 'bottom'\n" > "$HOME/.config/junban/settings.conf"
+bash "$ROOT/junban.tmux"
+eq  "one bad line in settings.conf costs only itself" "$(tmux show -gv @junban-mascot) $(tmux show -gv @junban-position)" "off bottom"
+rm -f "$HOME/.config/junban/settings.conf"; tmux set -gu @junban-mascot; tmux set -gu @junban-position; bash "$ROOT/junban.tmux"
+tlog="$WORK/trim.tsv"
+awk -v n="$now" 'BEGIN { for (i = 0; i < 90000; i++) printf "%d\tdone\t%s\n", n - 200 * 86400 + i, "a long window name to make the file big enough" ; printf "%d\tdone\trecent\n", n }' > "$tlog"
+(. "$S/lib.sh"; trim_log "$tlog")
+eq  "a big log keeps its last 90 days" "$(wc -l < "$tlog" | tr -d ' ') $(cut -f3 "$tlog")" "1 recent"
+tmux set -w -t "$w31" @junban running \; set -w -t "$w31" @junban_ts abc
+w32=$(tmux new-window -d -P -F '#{window_id}' -t s: -n parked)
+tmux set -w -t "$w32" @junban running \; set -w -t "$w32" @junban_ts 1
+printf '[1,2]' > "$HOME/.claude/sessions/1.json"; printf 'null' > "$HOME/.claude/sessions/2.json"
+python3 "$S/heal.py"
+eq  "one odd window or session file does not stop the repair" "$(get "$w32" @junban)" "idle"
+rm -f "$HOME/.claude/sessions/1.json" "$HOME/.claude/sessions/2.json"
+tmux kill-window -t "$w31"; tmux kill-window -t "$w32"
+
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t

@@ -66,6 +66,8 @@ while IFS=$'\t' read -r s st name ts recap review; do
   fi
   [ "$st" != - ] && z=$((z + 1))
 done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}	#{?@junban_review,#{@junban_review},-}' 2>/dev/null)
+# A window name is free text: a # in it would start a style ("a#[fg=red]").
+next_line=${next_line//#/＃}
 
 bg=$(opt @junban-color-bg "#1e2127")
 cw=$(opt @junban-color-waiting "#e06c75")
@@ -88,8 +90,10 @@ right=""
 # (default @junban-tint, 20; 0 turns the tint off). Only #rrggbb colors mix.
 mix() {
   local a=${1#\#} b=${bg#\#} p i out=""
-  p=${2:-$(opt @junban-tint 20)}
-  case "$a$b$p" in *[!0-9a-fA-F]* | '') echo "$bg"; return ;; esac
+  p=${2:-$(num @junban-tint 20 100)}
+  case "$p" in '' | *[!0-9]*) p=0 ;; esac
+  p=$((10#$p)); [ "$p" -gt 100 ] && p=100
+  case "$a$b" in *[!0-9a-fA-F]* | '') echo "$bg"; return ;; esac
   if [ ${#a} -ne 6 ] || [ ${#b} -ne 6 ] || [ "$p" -le 0 ]; then echo "$bg"; return; fi
   for i in 0 2 4; do
     out=$out$(printf '%02x' $(( 16#${b:i:2} + (16#${a:i:2} - 16#${b:i:2}) * p / 100 )))
@@ -128,7 +132,8 @@ info=""
 # shellcheck disable=SC2059
 [ "$held" -gt 0 ] && info="#[fg=$cd_]✓ $(printf "$T_HELD" "$held" "$(hhmm "$(slot_end "$slot")")")  "
 # How long agents sat on you today. Seeing the number is most of the fix.
-if [ "$(opt @junban-meter on)" = on ]; then
+# Row 2 is the keys; the meter never shows there, so skip reading the log.
+if [ "$row" != 2 ] && [ "$(opt @junban-meter on)" = on ]; then
   IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
   if [ "${mc:-0}" -gt 0 ]; then
     # shellcheck disable=SC2059
@@ -148,7 +153,7 @@ if [ "$(opt @junban-meter on)" = on ]; then
 fi
 # Parked agents can sit for days, so this rides along instead of taking over.
 # shellcheck disable=SC2059
-[ "$z" -gt 0 ] && info="$info#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(opt @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
+[ "$z" -gt 0 ] && info="$info#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(num @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
 
 # With @junban-guide-lines 3 (the default) there are two guide rows ($2 = 1 or 2):
 #   row 1: the banner and its recap, today's wait on the right when it fits;
@@ -162,7 +167,7 @@ left=""
 # shellcheck disable=SC2059
 if [ "$w" -gt 0 ]; then
   # An agent stopped on you is the one thing worth a stronger wash.
-  banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")" "$(opt @junban-tint-waiting "$([ "$(opt @junban-tint 20)" = 0 ] && echo 0 || echo 35)")"
+  banner "$cw" "✋ $(printf "$T_WAITING" "$w") → $(printf "$T_WAITING_GO" "$kj")" "$(num @junban-tint-waiting "$([ "$(num @junban-tint 20)" = 0 ] && echo 0 || echo 35)" 100)"
 elif [ "$d" -gt 0 ]; then
   banner "$cd_" "✓ $(printf "$T_DONE" "$d") → $(printf "$T_DONE_GO" "$kj")"
 fi

@@ -18,7 +18,7 @@
     ],
     "PostToolUse": [
       { "matcher": "*",
-        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" running", "timeout": 5 } ] }
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" tool", "timeout": 5 } ] }
     ],
     "Notification": [
       { "matcher": "permission_prompt|elicitation_dialog",

@@ -16,7 +16,7 @@ case "$day" in '' | *[!0-9]*) day=0 ;; esac
 command -v python3 >/dev/null 2>&1 || { echo "junban: the timeline needs python3" >&2; exit 1; }
 
 cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 100)}
-cap=$(( $(opt @junban-meter-cap 60) * 60 ))
+cap=$(( $(num @junban-meter-cap 60 1440) * 60 ))
 alive=$(tmux list-windows -a -F '#{pid}:#{window_id}' 2>/dev/null | tr '\n' ' ')
 export T_H T_M T_S TL_TITLE TL_EMPTY TL_RUNNING TL_WAITING TL_DONE TL_SPAN TL_RUN TL_WAITED TL_PEAK TL_MORE
 python3 "$JUNBAN_SCRIPTS/timeline.py" "$log" "$day" "$cols" "$cap" "$alive"

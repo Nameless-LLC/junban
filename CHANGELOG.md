@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Fixed
+
+- **A tool call no longer pays for its output.** PostToolUse ran the whole hook on every tool call, parsing the tool's full output: a 2 MB Read cost half a second and a 20 MB one could time the hook out. It now asks tmux one question and returns while the agent is already running (`state.sh tool`; Codex and Gemini too).
+- **A `#` in a window name no longer leaks style text into the status line** ("issue #" or "a#[fg=red]b").
+- **Odd option values can no longer break the status line or run code.** `@junban-done-batch 08`, `@junban-tint 999`, `@junban-meter-cap 60m` and the like fall back to their defaults; `@junban-meter-cap` was evaluated as arithmetic, so a crafted value ran a command. `@junban-lang` takes only en, ja or th.
+- **One bad row stops nothing.** A damaged wait log, an odd `@junban_ts` or a session file that is not an object used to stop the meter or the badge repair for every window.
+- **One bad line in `settings.conf` costs only itself**, instead of tmux dropping the whole file.
+- **Logs stay small.** Past 4 MB, the wait, state and done logs keep their last 90 days; the status line reads them every few seconds.
+- **The status line never waits for badge repair**, which now runs in the background, one at a time. The keys row no longer reads the wait log, and reloading no longer piles up terminal-features entries.
+
 ### Changed
 
 - **Alt+, points out a tmux.conf line that would undo a choice.** A line after the plugin line wins on every start, so a choice made in the menu quietly came back. The menu marks the option "⚠ tmux.conf", names the file and line, and offers to turn that line into a comment (after asking; a backup goes next to it as `.junban.bak`, and a symlinked tmux.conf stays a symlink). Saving such a choice says so too.

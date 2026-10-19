@@ -11,6 +11,17 @@ opt() {
   printf '%s' "${v:-$2}"
 }
 
+# num OPTION DEFAULT [MAX] — a whole-number option. Anything else (60m, -1,
+# 08, a[$(cmd)]) is the default: options go into $(( )), which would run them.
+num() {
+  local v
+  v=$(opt "$1" "$2")
+  case "$v" in '' | *[!0-9]*) v=$2 ;; esac
+  v=$((10#$v))
+  [ -n "${3:-}" ] && [ "$v" -gt "$3" ] && v=$3
+  printf '%s' "$v"
+}
+
 # junban_lang — @junban-lang if set, otherwise guessed from the locale.
 junban_lang() {
   local l
@@ -22,7 +33,8 @@ junban_lang() {
       *)   l=en ;;
     esac
   fi
-  [ -f "$JUNBAN_ROOT/i18n/$l.sh" ] || l=en
+  # A name, never a path: the file is sourced.
+  case "$l" in en | ja | th) ;; *) l=en ;; esac
   printf '%s' "$l"
 }
 
@@ -138,14 +150,23 @@ go_to() {
   tmux switch-client ${c:+-c "$c"} -t "$target"
 }
 
+# batch_minutes — @junban-done-batch as minutes, 0 when off (or not a number).
+batch_minutes() {
+  local n
+  n=$(opt @junban-done-batch off)
+  case "$n" in '' | *[!0-9]*) echo 0; return ;; esac
+  n=$((10#$n)); [ "$n" -gt 1440 ] && n=1440
+  echo "$n"
+}
+
 # slot_start [EPOCH] — with @junban-done-batch N (minutes), the start of the N-minute
 # slot of local time that EPOCH (default now) falls in; 0 when batching is off.
 # ✓ that finish inside the current slot are held until the next one starts, so
 # finished work arrives a few times an hour instead of whenever an agent stops.
 slot_start() {
   local n now z off
-  n=$(opt @junban-done-batch off)
-  case "$n" in '' | *[!0-9]* | 0) echo 0; return ;; esac
+  n=$(batch_minutes)
+  [ "$n" -gt 0 ] || { echo 0; return; }
   now=${1:-$(date +%s)}
   # Slots line up with the wall clock (:00, :30), not with the Unix epoch.
   z=$(date +%z)
@@ -157,8 +178,23 @@ slot_start() {
 slot_end() {
   local s
   s=$(slot_start "$1")
-  [ "$s" -gt 0 ] && echo $(( s + $(opt @junban-done-batch 0) * 60 )) || echo 0
+  [ "$s" -gt 0 ] && echo $(( s + $(batch_minutes) * 60 )) || echo 0
 }
 
 # hhmm EPOCH — local "15:30".
 hhmm() { date -d "@$1" +%H:%M 2>/dev/null || date -r "$1" +%H:%M; }
+
+# trim_log FILE — past 4 MB, keep the last 90 days (rows start with an epoch).
+# The status line reads these logs every few seconds; they must not grow forever.
+trim_log() {
+  local f=$1 tmp cut
+  [ -f "$f" ] || return 0
+  [ "$(wc -c < "$f" 2>/dev/null || echo 0)" -gt 4000000 ] || return 0
+  cut=$(( $(date +%s) - 90 * 86400 ))
+  tmp=$(mktemp "$f.XXXXXX" 2>/dev/null) || return 0
+  if awk -F'\t' -v c="$cut" '$1 ~ /^[0-9]+$/ && $1 >= c' "$f" > "$tmp" 2>/dev/null; then
+    chmod 600 "$tmp" 2>/dev/null; mv "$tmp" "$f" 2>/dev/null || rm -f "$tmp"
+  else
+    rm -f "$tmp"
+  fi
+}

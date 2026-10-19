@@ -20,6 +20,14 @@
 S="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 agent=${1:-}; event=${2:-}
 
+# After every tool call: the payload is the tool's output and changes nothing.
+case "$agent:$event" in
+  codex:PostToolUse | gemini:AfterTool)
+    bash "$S/state.sh" tool </dev/null >/dev/null 2>&1
+    [ "$agent" = gemini ] && printf '{}\n'
+    exit 0 ;;
+esac
+
 input=""
 if [ ! -t 0 ]; then
   if command -v timeout >/dev/null 2>&1; then input=$(timeout 2 cat 2>/dev/null)
@@ -34,7 +42,6 @@ later() { command -v python3 >/dev/null 2>&1 || return 0
 case "$agent:$event" in
   codex:SessionStart | gemini:SessionStart) state idle ;;
   codex:UserPromptSubmit | gemini:BeforeAgent) state running; later name.py; later review.py start ;;
-  codex:PostToolUse | gemini:AfterTool) state running ;;
   codex:PermissionRequest) state waiting; later recap.py notify ;;
   gemini:Notification)
     case "$input" in *'"ToolPermission"'*) state waiting; later recap.py notify ;; esac ;;

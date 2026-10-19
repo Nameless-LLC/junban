@@ -62,7 +62,7 @@ def agent_windows(leftovers=None):
             if leftovers is not None and (shared or stale):
                 leftovers.add(wid)
             continue
-        w = wins.setdefault(wid, {"state": state, "ts": int(ts or 0), "paths": [],
+        w = wins.setdefault(wid, {"state": state, "ts": int(ts) if ts.isdigit() else 0, "paths": [],
                                   "shared": shared, "stale": stale})
         w["paths"].append(path)
     return wins

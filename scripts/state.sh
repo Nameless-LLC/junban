@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-# state.sh running|waiting|done|idle|clear
+# state.sh running|waiting|done|idle|clear|tool
+#
+# tool is "running" for hooks that fire after every tool call (PostToolUse):
+# it ignores the payload, which carries the tool's whole output, and costs
+# one tmux query when the agent is already running.
 #
 # Called from agent hooks (Claude Code, or anything else that can run a command).
 # Records the agent's state on the tmux *window* that owns $TMUX_PANE:
@@ -17,6 +21,13 @@
 pane=${TMUX_PANE:-}
 st=${1:-}
 [ -n "$pane" ] && [ -n "$st" ] && command -v tmux >/dev/null 2>&1 || exit 0
+
+# PostToolUse fires on every tool call with megabytes of output on stdin, and
+# only the first one after a wait changes anything. Decide before reading it.
+if [ "$st" = tool ]; then
+  [ "$(tmux display -p -t "$pane" '#{@junban}' 2>/dev/null)" = running ] && exit 0
+  st=running; exec </dev/null
+fi
 
 # Only "running" needs the hook payload (for the prompt). Never block on stdin:
 # callers other than Claude Code may leave it open.
@@ -61,6 +72,7 @@ timeline() {
   (umask 077; mkdir -p "${log%/*}" 2>/dev/null &&
     printf '%s\t%s\t%s\n' "$(date +%s)" "$1" "$w" >> "$log" 2>/dev/null &&
     chmod go-rwx "${log%/*}" "$log" 2>/dev/null)
+  trim_log "$log"; trim_log "${log%/*}/waits.tsv"; trim_log "${log%/*}/done.tsv"
 }
 
 case "$st" in

@@ -86,7 +86,7 @@ def last_reply(data):
 def permission_line(data):
     """Codex's PermissionRequest carries the tool call, not a message:
     "Bash: psql -c 'drop table…'" says what you are about to approve."""
-    tool = str(data.get("tool_name") or "")
+    tool = " ".join(str(data.get("tool_name") or "").split())
     args = data.get("tool_input") or {}
     detail = ""
     if isinstance(args, dict):
@@ -108,7 +108,7 @@ def gemini_line(data):
     if not isinstance(d, dict):
         return ""
     what = next((str(d[k]) for k in ("command", "filePath", "fileName", "url", "prompt") if d.get(k)), "")
-    label = "Shell" if d.get("type") == "exec" else str(d.get("title") or d.get("type") or "")
+    label = "Shell" if d.get("type") == "exec" else " ".join(str(d.get("title") or d.get("type") or "").split())
     what = " ".join(what.split())
     return f"{label}: {what}" if label and what else what
 

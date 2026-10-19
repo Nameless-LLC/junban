@@ -20,7 +20,7 @@
 load_i18n
 
 log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
-cap=$(( $(opt @junban-meter-cap 60) * 60 ))
+cap=$(( $(num @junban-meter-cap 60 1440) * 60 ))
 goal=$(opt @junban-goal 5)
 case "$goal" in '' | *[!0-9]*) goal=5 ;; esac
 now=$(date +%s)
@@ -33,8 +33,8 @@ FLOOR_MEDIAN=15; FLOOR_TOTAL=300
 # capped SINCE — "day<TAB>seconds<TAB>kind<TAB>window" for each wait ending after SINCE.
 capped() {
   [ -f "$log" ] || return 0
-  awk -F'\t' -v since="$1" -v cap="$cap" -v mid="$midnight" '
-    $2 >= since && $2 >= $1 {
+  awk -F'\t' -v since="$1" -v cap="$cap" -v mid="$midnight" -v now="$now" '
+    $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/ && $2 >= since && $2 >= $1 && $2 <= now + 60 {
       d = $2 - $1; if (cap > 0 && d > cap) d = cap
       day = ($2 >= mid) ? 0 : int((mid - $2 - 1) / 86400) + 1   # 0 = today, 1 = yesterday …
       print day "\t" d "\t" $3 "\t" $4 }' "$log"

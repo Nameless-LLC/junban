@@ -8,7 +8,16 @@ S="$CURRENT_DIR/scripts"
 tmux set -g @junban-dir "$CURRENT_DIR"
 # Choices made in the Alt+, menu, before anything below reads an option.
 settings=${XDG_CONFIG_HOME:-$HOME/.config}/junban/settings.conf
-[ -f "$settings" ] && tmux source-file -q "$settings"
+# One line at a time: tmux lets an unclosed quote run on into the next line,
+# so one hand-edited line could otherwise swallow the rest.
+if [ -f "$settings" ] && one=$(mktemp 2>/dev/null); then
+  while IFS= read -r l || [ -n "$l" ]; do
+    case "$l" in "set -g @junban-"*) ;; *) continue ;; esac
+    printf '%s\n' "$l" > "$one"
+    tmux source-file -n "$one" 2>/dev/null && tmux source-file "$one" 2>/dev/null
+  done < "$settings"
+  rm -f "$one"
+fi
 
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
@@ -92,8 +101,10 @@ tmux set-hook -g 'session-window-changed[42]' "$seen" \; set-hook -g 'client-ses
 tmux set-hook -g 'client-focus-in[42]' "$seen"
 
 # Quality of life that agent TUIs need inside tmux.
-tmux set -g focus-events on \; set -s extended-keys on \; set -s set-clipboard on \; \
-     set -as terminal-features ",xterm*:RGB:clipboard:focus:extkeys"
+tmux set -g focus-events on \; set -s extended-keys on \; set -s set-clipboard on
+# Appending again on every reload (each Alt+, choice reloads) would pile up copies.
+tmux show -s terminal-features 2>/dev/null | grep -qF 'xterm*:RGB:clipboard:focus:extkeys' ||
+  tmux set -as terminal-features ",xterm*:RGB:clipboard:focus:extkeys"
 
 bind_root() { [ -n "$1" ] && tmux bind -n "$1" "${@:2}"; }
 
