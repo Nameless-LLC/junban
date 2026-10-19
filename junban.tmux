@@ -19,6 +19,13 @@ if [ -f "$settings" ] && one=$(mktemp 2>/dev/null); then
   rm -f "$one"
 fi
 
+# Every option below in one tmux call; each opt would otherwise be its own.
+opt_prefetch @junban-lang @junban-color-accent @junban-color-bg @junban-color-bg2 @junban-color-current-bg \
+  @junban-color-dim @junban-color-done @junban-color-fg @junban-color-muted @junban-color-running \
+  @junban-color-waiting @junban-guide @junban-guide-lines @junban-key-help @junban-key-jump \
+  @junban-key-list @junban-key-new @junban-key-scratch @junban-key-settings @junban-key-timeline \
+  @junban-name-width @junban-nav-keys @junban-position @junban-prefix-keys @junban-theme
+
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
 cr=$(opt @junban-color-running "#e5c07b")
