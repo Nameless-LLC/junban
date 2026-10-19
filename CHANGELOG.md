@@ -10,6 +10,7 @@
 - **One bad row stops nothing.** A damaged wait log, an odd `@junban_ts` or a session file that is not an object used to stop the meter or the badge repair for every window.
 - **One bad line in `settings.conf` costs only itself**, instead of tmux dropping the whole file.
 - **Logs stay small.** Past 4 MB, the wait, state and done logs keep their last 90 days; the status line reads them every few seconds.
+- **The status line is about five times faster** (0.85 s → 0.17 s per refresh with a banner, 0.6 s → 0.13 s for the keys row): options come from one tmux call instead of twenty, recaps are fitted without a subshell per character, and today's wait is kept between refreshes until the log grows or the day turns.
 - **The status line never waits for badge repair**, which now runs in the background, one at a time. The keys row no longer reads the wait log, and reloading no longer piles up terminal-features entries.
 
 ### Changed

@@ -159,7 +159,9 @@ case "${1:-}" in
   ask-agent)
     cur=$(opt @junban-agent-cmd claude)
     printf '\n  %s\n\n' "$SET_TYPE_HINT"
-    IFS= read -r -e -i "$cur" -p "  > " v || exit 0
+    # read -i (the current value, ready to edit) is bash 4; macOS ships 3.2.
+    if [ "${BASH_VERSINFO[0]:-3}" -ge 4 ]; then IFS= read -r -e -i "$cur" -p "  > " v || exit 0
+    else printf '  (%s)\n' "$cur"; IFS= read -r -e -p "  > " v || exit 0; fi
     [ -n "$v" ] && [ "$v" != "$cur" ] && $me set @junban-agent-cmd "$v"
     ;;
   menu)

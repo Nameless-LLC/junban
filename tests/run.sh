@@ -725,6 +725,9 @@ bash "$S/stats.sh" --line >/dev/null 2>&1; bash "$S/stats.sh" 7 >/dev/null 2>&1
 eq  "an option is never run as code" "$(test -e "$WORK/pwned" && echo ran)" ""
 for o in @junban-done-batch @junban-tint @junban-tint-waiting @junban-stale-hours @junban-meter-cap; do tmux set -gu "$o"; done
 printf 'junk\n1\t2\n%s\t%s.5\twaiting\tx\n%s\t1e20\tdone\ty\n\n' "$now" "$now" "$now" >> "$log"
+tmux set -g @junban-color-dim "" \; set -g @junban-color-key "a b	c" \; set -gu @junban-color-muted
+eq  "options read in one call, empty and spaced ones too" "$(. "$S/lib.sh"; opt_prefetch @junban-color-dim @junban-color-key @junban-color-muted; printf '%s|%s|%s|%s' "$(opt @junban-color-dim d)" "$(opt @junban-color-key k)" "$(opt @junban-color-muted m)" "${JUNBAN_O__junban_color_key-}")" "d|a b	c|m|a b	c"
+tmux set -gu @junban-color-dim \; set -gu @junban-color-key
 eq  "a damaged wait log prints no errors" "$(bash "$S/stats.sh" --line 2>&1 >/dev/null; bash "$S/stats.sh" 7 2>&1 >/dev/null)" ""
 tmux set -g @junban-lang ../../etc/x
 eq  "a language is a name, never a path" "$(. "$S/lib.sh"; junban_lang)" "en"

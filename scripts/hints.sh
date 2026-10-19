@@ -10,35 +10,53 @@
 # terminal: today's wait beside a banner goes first, then the recap is cut with
 # "…", so the banner itself always shows. Without it nothing is fitted (tmux clips at the edge).
 . "$(dirname "$0")/lib.sh"
+opt_prefetch @junban-lang @junban-color-bg @junban-color-waiting @junban-color-done @junban-color-key \
+  @junban-color-muted @junban-color-slower @junban-color-dim @junban-key-jump @junban-key-list \
+  @junban-key-new @junban-key-settings @junban-key-help @junban-nav-keys @junban-meter @junban-tint \
+  @junban-tint-waiting @junban-stale-hours @junban-done-batch @junban-meter-cap @junban_meter_cache
 load_i18n
 
 cols=${1:-0}
 row=${2:-}
 case "$cols" in '' | *[!0-9]*) cols=0 ;; esac
 # Character counts need a UTF-8 locale; tmux jobs often run under C.
-case "$(locale charmap 2>/dev/null)" in
-  UTF-8 | utf-8) ;;
-  *) for l in C.UTF-8 en_US.UTF-8; do LC_ALL=$l; [ "$(locale charmap 2>/dev/null)" = UTF-8 ] && break; done 2>/dev/null ;;
+case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in
+  *[Uu][Tt][Ff]-8 | *[Uu][Tt][Ff]8) ;;
+  *) case "$(locale charmap 2>/dev/null)" in
+       UTF-8 | utf-8) ;;
+       *) for l in C.UTF-8 en_US.UTF-8; do LC_ALL=$l; [ "$(locale charmap 2>/dev/null)" = UTF-8 ] && break; done 2>/dev/null ;;
+     esac ;;
 esac
 
 # Display width of plain text, erring wide: ASCII is 1, a few symbols this line
 # uses are 1, anything else (CJK, emoji) counts as 2.
-dw() {
+# _dw sets W; no subshell, since fit calls it once per character.
+_dw() {
   local s=${1//[✓·→…]/.} a
   a=${s//[^ -~]/}
-  echo $((${#a} + 2 * (${#s} - ${#a})))
+  W=$((${#a} + 2 * (${#s} - ${#a})))
 }
+dw() { _dw "$1"; echo "$W"; }
 # Width with tmux #[…] styles removed.
-dws() { dw "$(printf '%s' "$1" | sed 's/#\[[^]]*\]//g')"; }
+dws() {
+  local s=$1 pre rest
+  while :; do
+    case "$s" in
+      *'#['*']'*) pre=${s%%'#['*}; rest=${s#*'#['}; s=$pre${rest#*']'} ;;
+      *) break ;;
+    esac
+  done
+  dw "$s"
+}
 # fit TEXT MAX — TEXT cut to MAX columns, ending in "…" when cut.
 fit() {
-  local s=$1 max=$2 out="" i ch
-  [ "$(dw "$s")" -le "$max" ] && { printf '%s' "$s"; return; }
+  local s=$1 max=$2 out="" i used=0
+  _dw "$s"; [ "$W" -le "$max" ] && { printf '%s' "$s"; return; }
   [ "$max" -lt 2 ] && return
   for ((i = 0; i < ${#s}; i++)); do
-    ch=${s:i:1}
-    [ "$(dw "$out$ch")" -gt $((max - 1)) ] && break
-    out=$out$ch
+    _dw "${s:i:1}"
+    [ $((used + W)) -gt $((max - 1)) ] && break
+    used=$((used + W)); out=$out${s:i:1}
   done
   printf '%s…' "${out% }"
 }
@@ -134,7 +152,18 @@ info=""
 # How long agents sat on you today. Seeing the number is most of the fix.
 # Row 2 is the keys; the meter never shows there, so skip reading the log.
 if [ "$row" != 2 ] && [ "$(opt @junban-meter on)" = on ]; then
-  IFS=$'\t' read -r mt mm mc mtr < <(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null)
+  # The numbers change only when the log grows or the day turns, so they are
+  # kept in tmux between refreshes instead of read from the whole log each time.
+  wlog="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
+  mkey="$(date +%Y%m%d):$(opt @junban-meter-cap 60):$([ -f "$wlog" ] && wc -c < "$wlog" | tr -d ' ')"
+  mline=$(opt @junban_meter_cache "")
+  if [ "${mline%%|*}" = "$mkey" ]; then mline=${mline#*|}
+  else
+    mline=$(bash "$JUNBAN_SCRIPTS/stats.sh" --line 2>/dev/null | tr '\t' ' ')
+    tmux set -g @junban_meter_cache "$mkey|$mline" 2>/dev/null
+  fi
+  read -r mt mm mc mtr <<<"$mline"
+  case "$mt$mm$mc" in *[!0-9]*) mc=0 ;; esac
   if [ "${mc:-0}" -gt 0 ]; then
     # shellcheck disable=SC2059
     info="$info#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"

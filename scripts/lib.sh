@@ -6,9 +6,25 @@ JUNBAN_ROOT="$(dirname "$JUNBAN_SCRIPTS")"
 
 # opt NAME DEFAULT — read a global tmux user option, falling back to DEFAULT.
 opt() {
-  local v
-  v=$(tmux show-option -gqv "$1" 2>/dev/null)
+  local v n=JUNBAN_O_${1//[^a-zA-Z0-9_]/_}
+  if [ -n "${!n+x}" ]; then v=${!n}
+  else v=$(tmux show-option -gqv "$1" 2>/dev/null); fi
   printf '%s' "${v:-$2}"
+}
+
+# opt_prefetch NAME… — read many options with one tmux call; opt then answers
+# from memory. The status line runs every few seconds per client, and a tmux
+# round trip each costs more than everything else it does. (bash 3.2: no
+# associative arrays, so one variable per option.)
+opt_prefetch() {
+  local sep='<<junban>>' fmt="" n vals
+  for n in "$@"; do fmt="$fmt#{$n}$sep"; done
+  vals=$(tmux display -p "$fmt" 2>/dev/null) || return 0
+  for n in "$@"; do
+    case "$vals" in *"$sep"*) ;; *) return 0 ;; esac
+    printf -v "JUNBAN_O_${n//[^a-zA-Z0-9_]/_}" '%s' "${vals%%"$sep"*}"
+    vals=${vals#*"$sep"}
+  done
 }
 
 # num OPTION DEFAULT [MAX] — a whole-number option. Anything else (60m, -1,
