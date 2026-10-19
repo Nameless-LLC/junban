@@ -25,6 +25,8 @@ p1=$(tmux display -p -t s:1 '#{pane_id}'); p2=$(tmux display -p -t s:2 '#{pane_i
 st()  { TMUX_PANE=$1 bash "$S/state.sh" "$2" <<<"${3:-}"; }
 get() { tmux display -p -t "$1" "#{$2}"; }
 plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
+# soon TARGET OPTION WANT — the option once it reads WANT (async hooks), or after 5 s.
+soon() { local v i; for i in $(seq 100); do v=$(get "$1" "$2"); [ "$v" = "$3" ] && break; sleep 0.05; done; printf '%s' "$v"; }
 
 echo "plugin"
 bash "$ROOT/junban.tmux"
@@ -468,26 +470,26 @@ eq  "codex SessionStart → idle"     "$(get u:8 @junban)" "idle"
 hk codex UserPromptSubmit '{"prompt":"migrate the billing tables"}' >/dev/null
 eq  "codex prompt → running"        "$(get u:8 @junban)" "running"
 eq  "…and the prompt is kept"       "$(get u:8 @junban_prompt)" "migrate the billing tables"
-hk codex PermissionRequest '{"tool_name":"Bash","tool_input":{"command":"psql -c \"drop table t\""}}' >/dev/null; sleep 0.5
+hk codex PermissionRequest '{"tool_name":"Bash","tool_input":{"command":"psql -c \"drop table t\""}}' >/dev/null
 eq  "codex approval → waiting"      "$(get u:8 @junban)" "waiting"
-eq  "…recap names the command"      "$(get u:8 @junban_recap)" 'Bash: psql -c "drop table t"'
+eq  "…recap names the command"      "$(soon u:8 @junban_recap 'Bash: psql -c "drop table t"')" 'Bash: psql -c "drop table t"'
 hk codex PostToolUse '{"tool_name":"Bash"}' >/dev/null
 eq  "approved → running again"      "$(get u:8 @junban)" "running"
 hk codex Interrupt '{}' >/dev/null
 eq  "Esc (Interrupt) → idle"        "$(get u:8 @junban)" "idle"
-hk codex Stop '{"last_assistant_message":"Migration applied, 3 tables"}' >/dev/null; sleep 0.5
+hk codex Stop '{"last_assistant_message":"Migration applied, 3 tables"}' >/dev/null
 eq  "codex Stop → done"             "$(get u:8 @junban)" "done"
-eq  "…with its recap"               "$(get u:8 @junban_recap)" "Migration applied, 3 tables"
+eq  "…with its recap"               "$(soon u:8 @junban_recap "Migration applied, 3 tables")" "Migration applied, 3 tables"
 hk codex SessionEnd '{}' >/dev/null
 eq  "codex exit clears the badge"   "$(get u:8 @junban)" ""
 eq  "gemini: hooks print JSON"      "$(hk gemini SessionStart '{"source":"startup"}')" "{}"
 hk gemini BeforeAgent '{"prompt":"fix the flaky test"}' >/dev/null
 eq  "gemini prompt → running"       "$(get u:8 @junban)" "running"
-hk gemini Notification '{"notification_type":"ToolPermission","message":"Allow shell: rm -rf build?"}' >/dev/null; sleep 0.5
+hk gemini Notification '{"notification_type":"ToolPermission","message":"Allow shell: rm -rf build?"}' >/dev/null
 eq  "gemini permission → waiting"   "$(get u:8 @junban)" "waiting"
-eq  "…recap is its message"         "$(get u:8 @junban_recap)" "Allow shell: rm -rf build?"
-hk gemini Notification '{"notification_type":"ToolPermission","message":"Tool Confirm Shell Command requires execution","details":{"type":"exec","title":"Confirm Shell Command","command":"mkdir -p build/out","rootCommand":"mkdir"}}' >/dev/null; sleep 0.5
-eq  "…or the command it will run"   "$(get u:8 @junban_recap)" "Shell: mkdir -p build/out"
+eq  "…recap is its message"         "$(soon u:8 @junban_recap "Allow shell: rm -rf build?")" "Allow shell: rm -rf build?"
+hk gemini Notification '{"notification_type":"ToolPermission","message":"Tool Confirm Shell Command requires execution","details":{"type":"exec","title":"Confirm Shell Command","command":"mkdir -p build/out","rootCommand":"mkdir"}}' >/dev/null
+eq  "…or the command it will run"   "$(soon u:8 @junban_recap "Shell: mkdir -p build/out")" "Shell: mkdir -p build/out"
 hk gemini AfterAgent '{"prompt_response":"[no response text]"}' >/dev/null; sleep 0.5
 eq  "gemini AfterAgent → done"      "$(get u:8 @junban)" "done"
 eq  "no recap from an empty reply"  "$(get u:8 @junban_recap)" "Shell: mkdir -p build/out"
@@ -696,7 +698,7 @@ rm -f "$HOME/.tmux.conf" "$WORK/real.conf"* "$WORK/linked.conf"
 rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot; tmux set -gu @junban-meter
 
 echo "stability"
-w31=$(tmux new-window -d -P -F '#{window_id}' -t s: -n 'issue a#[fg=red]b' 'sleep 600')
+w31=$(tmux new-window -d -P -F '#{window_id}' -t u: -n 'issue a#[fg=red]b' 'sleep 600')
 ps31=$(tmux display -p -t "$w31" '#{pane_id}')
 st "$ps31" running '{}'
 big=$(head -c 3000000 /dev/zero | tr '\0' x)
@@ -744,7 +746,7 @@ awk -v n="$now" 'BEGIN { for (i = 0; i < 90000; i++) printf "%d\tdone\t%s\n", n 
 (. "$S/lib.sh"; trim_log "$tlog")
 eq  "a big log keeps its last 90 days" "$(wc -l < "$tlog" | tr -d ' ') $(cut -f3 "$tlog")" "1 recent"
 tmux set -w -t "$w31" @junban running \; set -w -t "$w31" @junban_ts abc
-w32=$(tmux new-window -d -P -F '#{window_id}' -t s: -n parked)
+w32=$(tmux new-window -d -P -F '#{window_id}' -t u: -n parked)
 tmux set -w -t "$w32" @junban running \; set -w -t "$w32" @junban_ts 1
 printf '[1,2]' > "$HOME/.claude/sessions/1.json"; printf 'null' > "$HOME/.claude/sessions/2.json"
 python3 "$S/heal.py"
