@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3 — 2026-10-19
+
+### Changed
+
+- **The reply trend reads at a glance.** A green ▼ when you reply quicker than the last 7 days, a red ▲ when slower, then the word: "返答の中央値 3分10秒 ▼32% 速い（前7日比）".
+
 ## 0.4.2 — 2026-10-19
 
 ### Changed

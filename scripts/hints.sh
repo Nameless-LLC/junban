@@ -133,13 +133,14 @@ if [ "$(opt @junban-meter on)" = on ]; then
     info="$info#[fg=$cm]$(printf "$T_METER" "$(fmt_dur "$mt")" "$(fmt_dur "$mm")")"
     # Quicker than your own recent days is the one comparison worth making.
     # Said in words beside the median: a bare "+32%" after today's total read
-    # as more waiting, and nobody could tell whether up was good.
+    # as more waiting, and nobody could tell whether up was good. A green ▼ or
+    # a red ▲ says it at a glance, the word for anyone who reads on.
     p=${mtr%\%}; p=${p#[+-]}
     # shellcheck disable=SC2059
     case "$mtr" in
       -0% | +0%) ;;
       -*) info="$info#[fg=$cd_]$(printf "$T_TREND_FAST" "$p")" ;;
-      +*) info="$info$(printf "$T_TREND_SLOW" "$p")" ;;
+      +*) info="$info#[fg=$cw]$(printf "$T_TREND_SLOW" "$p")" ;;
     esac
     info="$info  "
   fi
