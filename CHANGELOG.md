@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- **Trends stay calm when the change is noise.** A median under 15 s apart (5 min for a week's total) or under 10% says nothing on the status line and "≈ ほぼ同じ" in the report. Double or more reads as a ratio, "▲3.3倍 遅い", instead of "+233%".
+
 ## 0.5.0 — 2026-10-19
 
 ### Added

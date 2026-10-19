@@ -264,6 +264,18 @@ eq  "wait log is private"           "$(ls -ld "$log" | cut -c1-10)" "-rw-------"
 # shellcheck disable=SC2012
 eq  "…and so is its folder"         "$(ls -ld "${log%/*}" | cut -c1-10)" "drwx------"
 
+echo "change"
+ch() { (. "$S/lib.sh"; change "$@"); }
+eq  "a halving is -50%"             "$(ch 60 120 15)" "-50%"
+eq  "+40% stays a percentage"       "$(ch 140 100 15)" "+40%"
+eq  "double or more is a ratio"     "$(ch 330 100 15)" "x3.3"
+eq  "…whole above ten"              "$(ch 1500 100 15)" "x15"
+eq  "under the floor is noise"      "$(ch 20 10 15)" "="
+eq  "under 10% is noise"            "$(ch 1050 1000 15)" "="
+eq  "nothing to compare with"       "$(ch 50 0 15)" "="
+eq  "garbage in, calm out"          "$(ch abc '' x)" "="
+eq  "decimal point in any locale"   "$(LC_ALL=de_DE.UTF-8 ch 230 100 0)" "x2.3"
+
 echo "graphs and mascot"
 # Last week: 6 waits of 4 min. This week: 3 min on days 1-3, 2 min five times today.
 : > "$log"
@@ -282,8 +294,8 @@ for d in 4 5; do e=$((now - d * 86400)); printf '%s\t%s\tdone\tu:b\n' $((e - 180
 eq  "trend: today vs last 7 days"   "$(bash "$S/stats.sh" --line | cut -f4)" "-33%"
 has "guide says the trend in words"  "$(bash "$S/hints.sh")" "▼33% quicker than the last 7 days"
 for d in 0 0 0 0 0 0; do printf '%s\t%s\tdone\tu:b\n' $((now - 605)) $((now - 5)) >> "$log"; done
-has "…and when replies got slower"  "$(bash "$S/hints.sh")" "median reply 10m#[fg=#d19a66] ▲233% slower than the last 7 days"
-hasnt "…with no bare sign"          "$(bash "$S/hints.sh")" "+233%"
+has "…and when replies got slower"  "$(bash "$S/hints.sh")" "median reply 10m#[fg=#d19a66] ▲3.3× slower than the last 7 days"
+hasnt "…with no bare sign"          "$(bash "$S/hints.sh")" "233%"
 tmux set -w -t u:6 @junban waiting
 has "mascot calls when someone waits" "$(bash "$S/summary.sh")" "[▮ ▮]"
 tmux set -w -t u:6 -u @junban

@@ -137,12 +137,11 @@ if [ "$(opt @junban-meter on)" = on ]; then
     # Said in words beside the median: a bare "+32%" after today's total read
     # as more waiting, and nobody could tell whether up was good. A green ▼ or
     # an orange ▲ says it at a glance, the word for anyone who reads on.
-    p=${mtr%\%}; p=${p#[+-]}
+    # A change too small to mean anything ("=") says nothing at all.
     # shellcheck disable=SC2059
     case "$mtr" in
-      -0% | +0%) ;;
-      -*) info="$info#[fg=$cd_]$(printf "$T_TREND_FAST" "$p")" ;;
-      +*) info="$info#[fg=$co]$(printf "$T_TREND_SLOW" "$p")" ;;
+      -[0-9]*) info="$info#[fg=$cd_]$(printf "$T_TREND_FAST" "$(amount "$mtr")")" ;;
+      +[0-9]* | x[0-9]*) info="$info#[fg=$co]$(printf "$T_TREND_SLOW" "$(amount "$mtr")")" ;;
     esac
     info="$info  "
   fi

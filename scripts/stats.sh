@@ -7,7 +7,8 @@
 #   stats.sh 30       last 30 days
 #   stats.sh --line   today's "total<TAB>median<TAB>count<TAB>trend" (the guide
 #                     line uses it; trend is today's median against the 7 days
-#                     before, like "-32%", or "-" when there is too little data)
+#                     before: "-32%", "+40%", "x2.3", "=" when the change is
+#                     noise, or "-" when there is too little data)
 #
 # A wait runs from the moment an agent asks you something (✋) or finishes (✓)
 # until you answer or look. Finishing while you watch is no wait at all.
@@ -26,6 +27,8 @@ now=$(date +%s)
 midnight=$(( now - (10#$(date +%H) * 3600 + 10#$(date +%M) * 60 + 10#$(date +%S)) ))
 # Fewer waits than this and a median says more about luck than about you.
 MIN_N=5
+# Changes smaller than this are noise, however large the percentage.
+FLOOR_MEDIAN=15; FLOOR_TOTAL=300
 
 # capped SINCE — "day<TAB>seconds<TAB>kind<TAB>window" for each wait ending after SINCE.
 capped() {
@@ -55,15 +58,15 @@ span() { awk -F'\t' -v a="$1" -v b="$2" '$1 >= a && $1 <= b { print $2 }' | summ
 # pct NEW OLD → "-32%"
 pct() { awk -v n="$1" -v o="$2" 'BEGIN { p = (n - o) * 100 / o; printf "%+d%%", p + (p < 0 ? -0.5 : 0.5) }'; }
 
-# trend NEW OLD DOWNWORD UPWORD → a green "▼50% quicker" or an orange
-# "▲50% slower". Less waiting is always the good way, so a bare "-50%" made
-# you stop and work out which way was good.
+# trend NEW OLD FLOOR DOWNWORD UPWORD — a green "▼50% quicker", an orange
+# "▲2.3× slower", or a dim "≈ same". Less waiting is always the good way, so a
+# bare "-50%" made you stop and work out which way was good.
 trend() {
-  local p; p=$(pct "$1" "$2"); p=${p%\%}
-  case "$p" in
-    -0 | +0) printf '%s±0%%%s' "$dim" "$r" ;;
-    -*) printf '\033[32m▼%s%% %s%s' "${p#-}" "$3" "$r" ;;
-    *) printf '\033[38;5;173m▲%s%% %s%s' "${p#+}" "$4" "$r" ;;
+  local c; c=$(change "$1" "$2" "$3")
+  case "$c" in
+    =) printf '%s%s%s' "$dim" "$STATS_SAME" "$r" ;;
+    -*) printf '\033[32m▼%s %s%s' "$(amount "$c")" "$4" "$r" ;;
+    *) printf '\033[38;5;173m▲%s %s%s' "$(amount "$c")" "$5" "$r" ;;
   esac
 }
 
@@ -117,7 +120,7 @@ if [ "${1:-}" = --line ]; then
   IFS=$'\t' read -r t m c < <(printf '%s\n' "$rows" | span 0 0)
   IFS=$'\t' read -r _ pm pc < <(printf '%s\n' "$rows" | span 1 7)
   trend=-
-  [ "$c" -ge 3 ] && [ "$pc" -ge "$MIN_N" ] && [ "$pm" -gt 0 ] && trend=$(pct "$m" "$pm")
+  [ "$c" -ge 3 ] && [ "$pc" -ge "$MIN_N" ] && [ "$pm" -gt 0 ] && trend=$(change "$m" "$pm" "$FLOOR_MEDIAN")
   printf '%s\t%s\t%s\t%s\n' "$t" "$m" "$c" "$trend"
   exit 0
 fi
@@ -150,9 +153,10 @@ IFS=$'\t' read -r tt tm tc < <(printf '%s\n' "$all" | span 0 6)
 IFS=$'\t' read -r lt lm lc < <(printf '%s\n' "$all" | span 7 13)
 face="" say=""
 if [ "$tc" -ge "$MIN_N" ] && [ "$lc" -ge "$MIN_N" ] && [ "$lm" -gt 0 ] && [ "$lt" -gt 0 ]; then
-  printf '\n  %s\n' "$(printf "$STATS_WEEK" "$(fmt_dur "$lm")" "$(fmt_dur "$tm")" "$(trend "$tm" "$lm" "$STATS_QUICKER" "$STATS_SLOWER")" \
-    "$(fmt_dur "$lt")" "$(fmt_dur "$tt")" "$(trend "$tt" "$lt" "$STATS_LESS" "$STATS_MORE")")"
+  printf '\n  %s\n' "$(printf "$STATS_WEEK" "$(fmt_dur "$lm")" "$(fmt_dur "$tm")" "$(trend "$tm" "$lm" "$FLOOR_MEDIAN" "$STATS_QUICKER" "$STATS_SLOWER")" \
+    "$(fmt_dur "$lt")" "$(fmt_dur "$tt")" "$(trend "$tt" "$lt" "$FLOOR_TOTAL" "$STATS_LESS" "$STATS_MORE")")"
   p=$(pct "$tm" "$lm"); p=${p%\%}; p=${p#+}
+  [ "$(change "$tm" "$lm" "$FLOOR_MEDIAN")" = "=" ] && p=0
   if [ "$p" -le -10 ]; then face='[◠ ◠]'; say=$(printf "$MASCOT_UP" $(( -p )))
   elif [ "$p" -ge 10 ]; then face='[▬ ▬]'; say=$(printf "$MASCOT_DOWN" "$p")
   else face='[▮ ▮]'; say=$MASCOT_SAME

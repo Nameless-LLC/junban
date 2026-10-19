@@ -53,6 +53,29 @@ key_for() {
   printf 'prefix %s' "$3"
 }
 
+# change NEW OLD FLOOR — how NEW compares with OLD, as one token:
+#   "="      too small to mean anything: under FLOOR seconds apart or under 10%
+#   "-32%"   less; "+32%" more, up to double
+#   "x2.3"   double or more, where a percentage ("+233%") reads as noise
+# Small samples swing wildly, and a calm line beats a dramatic one that is wrong.
+change() {
+  LC_ALL=C awk -v n="${1:-0}" -v o="${2:-0}" -v f="${3:-0}" 'BEGIN {
+    n += 0; o += 0; f += 0; d = n - o
+    if (o <= 0 || (d < 0 ? -d : d) < f) { print "="; exit }
+    p = d * 100 / o; r = int(p + (p < 0 ? -0.5 : 0.5))
+    if (r > -10 && r < 10) { print "="; exit }
+    if (n >= 2 * o) { x = n / o; if (x >= 10) printf "x%d\n", x; else printf "x%.1f\n", x; exit }
+    printf "%+d%%\n", r }'
+}
+
+# amount TOKEN — a change token as people read it: "32%" or "2.3×" (T_TIMES).
+amount() {
+  case "$1" in
+    x*) printf "$T_TIMES" "${1#x}" ;;
+    *) local a=${1#[+-]}; printf '%s' "$a" ;;
+  esac
+}
+
 # fmt_dur SECONDS → "42s", "3m10s", "1h20m" in the user's language (T_H/T_M/T_S).
 fmt_dur() {
   local s=${1:-0}
