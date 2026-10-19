@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.4 — 2026-10-19
+
+### Changed
+
+- **Slower replies are orange, not red.** Red already means an agent is waiting on you. `@junban-color-slower` sets the colour.
+
 ## 0.4.3 — 2026-10-19
 
 ### Changed
