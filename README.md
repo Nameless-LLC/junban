@@ -100,7 +100,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 ## Configuration
 
-Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The common ones are also on **Alt+,**, which saves to `~/.config/junban/settings.conf`; a choice made there wins over the same line in tmux.conf.
+Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The common ones are also on **Alt+,**, which saves to `~/.config/junban/settings.conf`; a choice made there wins over the same line before the plugin line, and the menu points out (and offers to turn off) one after it, which would undo the choice on the next start.
 
 ```tmux
 # Look
