@@ -5,6 +5,11 @@
 ### Changed
 
 - **Alt+n no longer looks frozen while the agent starts.** Claude Code can take several seconds to draw anything; the new pane now spins "Starting claude…" at once (gone just before Claude draws), and the tab shows a dim ◌ until the agent's first hook reports in (or a minute passes, for agents without junban's hooks).
+- **The window opens at once** (0.27 s → 0.08 s): the check for another agent in the same tree now runs inside the new window, under the spinner.
+
+### Fixed
+
+- **Two settings saved at once both stick.** Picking in Alt+, from two clients at the same moment could drop one choice.
 
 ## 0.6.1 — 2026-10-20
 
