@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Turn real tmux screen captures (ANSI) into one animated SVG.
 
-    ansi2svg.py out.svg frame1.ans [frame2.ans ...] [--hold 2.6]
+    ansi2svg.py out.svg frame1.ans [frame2.ans ...] [--hold 2.6] [--rows 34]
+
+--rows keeps the picture that many rows tall even when the bottom rows are
+blank, so the frames of a video all come out the same size.
 
 Each character is placed on its own grid cell (CJK and emoji take two), so the
 picture matches the terminal exactly whatever font the viewer has. Frames cross-
@@ -144,14 +147,19 @@ def main():
         i = args.index("--hold")
         hold = float(args[i + 1])
         del args[i:i + 2]
+    rows = 0
+    if "--rows" in args:
+        i = args.index("--rows")
+        rows = int(args[i + 1])
+        del args[i:i + 2]
     out, frames = args[0], [parse(open(f, encoding="utf-8").read()) for f in args[1:]]
     cols = max(max((c[0] + c[6] for c in r), default=0) for f in frames for r in f)
-    nrows = max(len(f) for f in frames)
+    nrows = max([len(f) for f in frames] + [rows])
     pad, bar = 16, 30
     W, H = cols * CW + pad * 2, nrows * CH + pad * 2 + bar
     n = len(frames)
     total = hold * n
-    css = [f"text{{font:{FS}px ui-monospace,'SF Mono',Menlo,'Cascadia Mono','Noto Sans Mono CJK JP',monospace;"
+    css = [f"text{{font:{FS}px ui-monospace,'SF Mono',Menlo,'Cascadia Mono','JetBrains Mono','Noto Sans Mono CJK JP',monospace;"
            "white-space:pre}"]
     if n > 1:
         for i in range(n):

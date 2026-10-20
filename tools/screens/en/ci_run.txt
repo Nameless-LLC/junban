@@ -1,0 +1,17 @@
+[38;5;173m❯[0m The e2e suite fails about 1 in 5 runs on CI. Find out why
+
+[38;5;173m●[0m The test clicks Pay before the Stripe iframe finishes loading.
+
+[38;5;173m❯[0m 1
+
+[38;5;173m●[0m Waiting for the iframe's ready event instead of a fixed timeout.
+  [32mUpdate[0m([2me2e/checkout.spec.ts[0m)
+  [90m⎿  Added 6 lines, removed 1[0m
+  [32mBash[0m([2mpnpm e2e checkout --repeat-each 20[0m)
+  [90m⎿  Running…[0m
+
+[38;5;173m✻ Testing…[0m [90m(18s · ↓ 0.9k tokens · esc to interrupt)[0m
+
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[38;5;173m❯[0m 
+[90m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m

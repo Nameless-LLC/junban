@@ -8,6 +8,8 @@ LANG_=${1:-en}
 D="tmux -L junban-demo"
 O="tmux -L junban-outer"
 OUT=$(mktemp -d)
+# A throwaway HOME: your settings and wait log stay out of the picture.
+HOME="$OUT/home"; mkdir -p "$HOME"; export HOME XDG_CONFIG_HOME="$HOME/.config" XDG_STATE_HOME="$HOME/.state"
 trap '$O kill-server 2>/dev/null; $D kill-server 2>/dev/null; rm -rf "$OUT"' EXIT
 
 bash "$ROOT/tools/demo.sh" "$LANG_" >/dev/null
