@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.1 — 2026-10-20
+
+### Changed
+
+- **Thai reads more naturally.** "Median" is มัธยฐาน (ค่ากลาง also covers the mean), the trend compares with "the last 7 days" rather than "the day 7 days ago", and the settings menu labels read as whole phrases.
+- Tests run in two halves side by side (64 s → 55 s).
+
 ## 0.6.0 — 2026-10-19
 
 ### Fixed
