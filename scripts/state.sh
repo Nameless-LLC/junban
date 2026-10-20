@@ -40,6 +40,8 @@ fi
 . "$(dirname "$0")/lib.sh"
 t() { tmux "$@" 2>/dev/null; }
 cur=$(t display -p -t "$pane" '#{@junban}')
+# Any hook means the agent is up: Alt+n's ◌ has done its job.
+t set -wu -t "$pane" @junban_starting
 
 # Where the agent really works, for Alt+n's "is this tree taken" check. tmux's
 # pane_current_path reads the foreground process group's leader, and a pane

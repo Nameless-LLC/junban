@@ -20,4 +20,14 @@ if [ "$(opt @junban-new-worktree auto)" = auto ] && [ "${cmd%% *}" = claude ] &&
 fi
 
 [ -n "${JUNBAN_DRY_RUN:-}" ] && { echo "$cmd"; exit 0; }
-tmux new-window -c "$dir" "$cmd; exec \$SHELL"
+# An agent can take several seconds to draw anything (Claude Code connects its
+# MCP servers first), and an empty pane reads as a hang. Say so in the pane, and
+# put ◌ on the tab until the agent's SessionStart hook reports in.
+load_i18n
+# shellcheck disable=SC2059
+msg=$(printf "$T_STARTING" "${cmd%% *}"); msg=${msg//\'/}
+w=$(tmux new-window -P -F '#{window_id}' -c "$dir" \
+  "printf '\\033[2m  %s\\033[0m\\n\\n' '$msg'; $cmd; exec \$SHELL") || exit 0
+tmux set -w -t "$w" @junban_starting 1
+# An agent without junban's hooks never reports in: drop ◌ after a minute.
+(sleep 60; tmux set -wu -t "$w" @junban_starting) >/dev/null 2>&1 &

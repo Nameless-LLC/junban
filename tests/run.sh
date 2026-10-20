@@ -542,6 +542,12 @@ qd="$WORK/a'; touch $WORK/PWNED; ' b"; mkdir -p "$qd"
 tmux new-window -d -t u:9 -c "$qd"; tmux set -g @junban-agent-cmd true
 tmux run -t u:9 "$(tmux list-keys -T root M-n | sed 's/.*run-shell -b "//; s/"$//')"; sleep 1
 eq  "Alt+n: a quote in a path runs nothing" "$([ -e "$WORK/PWNED" ] && echo yes || echo no)" "no"
+nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
+eq  "Alt+n: ◌ while the agent starts" "$(tmux display -p -t "$nw" '#{E:@junban-badge}' | sed 's/#\[[^]]*\]//g')" "◌ "
+has "Alt+n: the pane says it is starting" "$(tmux capture-pane -p -t "$nw")" "true"
+TMUX_PANE=$(tmux display -p -t "$nw" '#{pane_id}') bash "$S/state.sh" idle </dev/null
+eq  "Alt+n: the first hook ends ◌"  "$(tmux show -wv -t "$nw" @junban_starting 2>/dev/null)" ""
+tmux kill-window -t "$nw"
 tmux set -gu @junban-agent-cmd
 
 echo "VS Code windows"
