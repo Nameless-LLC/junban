@@ -3,6 +3,20 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 S="$ROOT/scripts"
+# Two halves, side by side: each gets its own tmux server and HOME, and both
+# start from a fresh server anyway. JUNBAN_TEST_PART=A, B or all runs one way.
+if [ -z "${JUNBAN_TEST_PART:-}" ]; then
+  out=$(mktemp -d)
+  JUNBAN_TEST_PART=A bash "$0" > "$out/A" 2>&1 & a=$!
+  JUNBAN_TEST_PART=B bash "$0" > "$out/B" 2>&1 & b=$!
+  wait "$a"; wait "$b"
+  grep -hv '^[0-9]* passed, [0-9]* failed$' "$out/A" "$out/B"
+  cat "$out/A" "$out/B" | awk '/^[0-9]+ passed, [0-9]+ failed$/ { p += $1; f += $3; n++ }
+    END { if (n != 2) { print "a test half did not finish"; exit 1 }
+          printf "%d passed, %d failed\n", p, f; exit f > 0 }'
+  r=$?; rm -rf "$out"; exit "$r"
+fi
+half() { [ "$JUNBAN_TEST_PART" = "$1" ] || [ "$JUNBAN_TEST_PART" = all ]; }
 WORK=$(mktemp -d)
 trap 'tmux kill-server 2>/dev/null; rm -rf "$WORK"' EXIT
 unset TMUX TMUX_PANE XDG_CONFIG_HOME XDG_STATE_HOME
@@ -28,6 +42,7 @@ plain() { bash "$S/hints.sh" "$@" | sed 's/#\[[^]]*\]//g'; }
 # soon TARGET OPTION WANT — the option once it reads WANT (async hooks), or after 5 s.
 soon() { local v _; for _ in $(seq 100); do v=$(get "$1" "$2"); [ "$v" = "$3" ] && break; sleep 0.05; done; printf '%s' "$v"; }
 
+if half A; then
 echo "plugin"
 bash "$ROOT/junban.tmux"
 eq  "three status rows by default"  "$(tmux show -gv status)" "3"
@@ -152,6 +167,8 @@ python3 "$S/heal.py"
 eq  "agent exited to shell → cleared" "$(get s:2 @junban)" "idle"
 eq  "…and its dir forgotten"        "$(tmux display -p -t "$p2" '#{@junban_cwd}')" ""
 
+fi
+if half B; then
 echo "Alt+n worktrees and parked agents"
 tmux kill-server; sleep 0.2
 repo="$WORK/repo"; git init -q "$repo"; mkdir -p "$repo/sub"
@@ -756,6 +773,8 @@ eq  "one odd window or session file does not stop the repair" "$(get "$w32" @jun
 rm -f "$HOME/.claude/sessions/1.json" "$HOME/.claude/sessions/2.json"
 tmux kill-window -t "$w31"; tmux kill-window -t "$w32"
 
+fi
+if half A; then
 echo "theme off"
 tmux kill-server; sleep 0.2
 tmux -f "$WORK/tmux.conf" new -d -s t
@@ -765,6 +784,8 @@ bash "$ROOT/junban.tmux"; bash "$ROOT/junban.tmux"
 f=$(tmux show -gv window-status-format)
 has "user format kept"              "$f" "MINE #W"
 eq  "badge spliced exactly once"    "$(grep -o junban-badge <<<"$f" | wc -l | tr -d ' ')" "1"
+
+fi
 
 printf '\n%d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]
