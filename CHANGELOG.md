@@ -9,6 +9,7 @@
 
 ### Fixed
 
+- **The weekly report no longer slips a day at a minute's turn.** The clock was read in pieces, so a report made at 03:29:59 could count today as yesterday.
 - **Two settings saved at once both stick.** Picking in Alt+, from two clients at the same moment could drop one choice.
 
 ## 0.6.1 — 2026-10-20

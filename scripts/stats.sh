@@ -23,8 +23,10 @@ log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
 cap=$(( $(num @junban-meter-cap 60 1440) * 60 ))
 goal=$(opt @junban-goal 5)
 case "$goal" in '' | *[!0-9]*) goal=5 ;; esac
-now=$(date +%s)
-midnight=$(( now - (10#$(date +%H) * 3600 + 10#$(date +%M) * 60 + 10#$(date +%S)) ))
+# One reading of the clock: separate calls straddling a second put midnight on
+# the day before (now 03:29:59, then 03:30:00 for the minutes).
+read -r now h m s <<<"$(date '+%s %H %M %S')"
+midnight=$(( now - (10#$h * 3600 + 10#$m * 60 + 10#$s) ))
 # Fewer waits than this and a median says more about luck than about you.
 MIN_N=5
 # Changes smaller than this are noise, however large the percentage.
