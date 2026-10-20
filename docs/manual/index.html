@@ -214,7 +214,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">いちばん待たせているウィンドウへ移動。✋ が ✓ より先、待った時間の長い順。</span></td></tr>
             <tr><td><kbd>Alt+f</kbd></td><td><kbd>f</kbd></td><td><span lang="en">Every agent in one list, neediest first, with a live preview.</span><span lang="ja">全エージェントの一覧。待たせている順で、中身のプレビュー付き。</span></td></tr>
             <tr><td><kbd>Alt+n</kbd></td><td><kbd>C</kbd></td><td><span lang="en">Start a new agent in this directory.</span><span lang="ja">このディレクトリで新しいエージェントを起動する。</span></td></tr>
-            <tr><td><kbd>Alt+,</kbd></td><td class="m">—</td><td><span lang="en">Settings: what <kbd>Alt+n</kbd> starts, language, status rows, the wait meter, ✓ in batches, the mascot. A choice applies at once and is saved to <code>~/.config/junban/settings.conf</code>, so tmux.conf stays yours.</span><span lang="ja">設定。<kbd>Alt+n</kbd> で起動するもの、言語、ステータス行、待ち時間の表示、✓ をまとめて表示、マスコットを選べます。選んだ値はすぐに反映され、<code>~/.config/junban/settings.conf</code> に保存されます（tmux.conf は書き換えません）。</span></td></tr>
+            <tr><td><kbd>Alt+,</kbd></td><td class="m">—</td><td><span lang="en">Settings: what <kbd>Alt+n</kbd> starts, language, status rows, the wait meter, ✓ in batches, the mascot. A choice applies at once and is saved to <code>~/.config/junban/settings.conf</code>, so tmux.conf stays yours. A line in tmux.conf after the plugin line would undo a choice on the next start; the menu marks that option "⚠ tmux.conf", names the line, and offers to turn it into a comment (asking first, with a backup).</span><span lang="ja">設定。<kbd>Alt+n</kbd> で起動するもの、言語、ステータス行、待ち時間の表示、✓ をまとめて表示、マスコットを選べます。選んだ値はすぐに反映され、<code>~/.config/junban/settings.conf</code> に保存されます（tmux.conf は書き換えません）。tmux.conf のプラグインの行より後に同じ設定があると、次の起動でメニューの選択が上書きされます。その場合はメニューに「⚠ tmux.conf」と何行目かが出て、その行をコメントにすることもできます（確認あり・元のファイルは残します）。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time. No Alt key by default; set <code>@junban-key-scratch M-g</code> to add one.</span><span lang="ja">ポップアップのシェル。閉じても中身は残り、次に開くと続きから使えます。Alt キーは標準では割り当てていません。<code>@junban-key-scratch M-g</code> で追加できます。</span></td></tr>
             <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>T</kbd></td><td><span lang="en">Today's <a href="#timeline">timeline</a>. No Alt key by default (Alt+t toggles thinking in Claude Code); set <code>@junban-key-timeline</code> to add one.</span><span lang="ja">今日の<a href="#timeline">タイムライン</a>。Alt キーは標準では割り当てていません（Claude Code では Alt+t が思考の切り替えのため）。<code>@junban-key-timeline</code> で追加できます。</span></td></tr>
@@ -290,10 +290,10 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
         <p lang="en">A wait runs from the moment an agent asks you something (✋) or finishes (✓) until you answer or look. If it finishes while you are watching, that is no wait at all. One wait counts for at most <code>@junban-meter-cap</code> minutes (60), so a night away doesn't swamp the numbers.</p>
         <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）瞬間から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（60分）で打ち切るので、一晩放置しても数字が崩れません。</p>
         <ul>
-          <li lang="en">The status line shows today's total and your median reply, against the seven days before.</li>
-          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が、直近7日との比較付きで出ます。</li>
-          <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last, your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
-          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較、自己ベストの日、今日いちばん待たせたウィンドウ、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
+          <li lang="en">The status line shows today's total and your median reply. Beside the median, a green ▼ says you reply quicker than the seven days before and an orange ▲ slower, with the word: <code>median reply 3m10s ▼32% quicker than the last 7 days</code>. A change under 15 seconds or under 10% says nothing, and double or more reads as a ratio (<code>▲3.3× slower</code>), since a thin week can turn three minutes into "+233%".</li>
+          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が出ます。中央値の横には、直近7日より速ければ緑の ▼、遅ければオレンジの ▲ が言葉付きで出ます（<code>返答の中央値 3分10秒 ▼32% 速い（前7日比）</code>）。差が15秒未満か10%未満なら何も出さず、2倍以上は「▲3.3倍 遅い」のように倍数で出します。比べる日のデータが少ないと、3分の差が「+233%」のような数字になるためです。</li>
+          <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last (the same ▼ / ▲, or "≈ same" when the change is noise), your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
+          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較（同じ ▼ / ▲。差が小さいときは「≈ ほぼ同じ」）、自己ベストの日、今日いちばん待たせたウィンドウ、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが1週間の様子にひとこと添えます。</li>
           <li lang="en"><code>scripts/stats.sh 30</code> goes back 30 days.</li>
           <li lang="ja"><code>scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
         </ul>
@@ -302,6 +302,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
   day          waited   count   median   ✋    ✓
   10/16      10h12m      139      55s     0  139   ████████████████
   10/18 today  2h53m      22    4m23s     0   22   ████▌
+  This week vs last: median reply 4m00s → 2m10s ▼46% quicker · waited 3h10m → 3h02m ≈ same
   Best day: 10/16, median reply 55s
   2 days in a row with a median reply within 5m</pre>
         <pre class="out" lang="ja">  エージェントがあなたを待った時間 — 直近7日
@@ -309,6 +310,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
   日付         待ち時間   回数    中央値   ✋     ✓
   10/16        10時間12分    139      55秒    0   139   ████████████████
   10/18 今日    2時間53分     22   4分23秒    0    22   ████▌
+  今週と先週: 返答の中央値 4分00秒 → 2分10秒 ▼46% 速い · 待ち時間 3時間10分 → 3時間02分 ≈ ほぼ同じ
   自己ベスト: 10/16 返答の中央値 55秒
   2日連続で返答の中央値が5分以内</pre>
       </section>

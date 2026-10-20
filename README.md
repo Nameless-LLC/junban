@@ -96,7 +96,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Speaks your language.** English, 日本語 and ไทย built in, chosen from your system language. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash**, plus python3 for some features. Nothing runs in the background. CI runs the tests on Linux and macOS.
+**Plain tmux and bash**, plus python3 for some features. Nothing stays running: work rides on tmux's own status refresh. CI runs the tests on Linux and macOS.
 
 ## Configuration
 
