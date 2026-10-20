@@ -705,6 +705,14 @@ bash "$S/settings.sh" set @junban-agent-cmd "claude --model \"x\" 'it'"
 tmux set -gu @junban-agent-cmd; bash "$ROOT/junban.tmux"
 eq  "saved choices load with junban, quotes and all" "$(tmux show -gv @junban-agent-cmd)" "claude --model \"x\" 'it'"
 bash "$S/settings.sh" set @junban-key-jump M-q; eq "only menu options can be set" "$?" "1"
+bash "$S/settings.sh" set @junban-position bottom & bash "$S/settings.sh" set @junban-meter off & wait
+has "two saves at once keep both (1)" "$(cat "$conf")" "@junban-position 'bottom'"
+has "two saves at once keep both (2)" "$(cat "$conf")" "@junban-meter 'off'"
+mkdir "${conf%/*}/.settings.lock"
+bash "$S/settings.sh" set @junban-meter on
+has "a lock left by a killed save is taken over" "$(cat "$conf")" "@junban-meter 'on'"
+eq  "and released after" "$([ -d "${conf%/*}/.settings.lock" ] && echo held || echo free)" "free"
+bash "$S/settings.sh" set @junban-position top
 eq  "…and nothing was saved"         "$(grep -c key-jump "$conf")" "0"
 has "keys row shows Alt+,"           "$(plain 160 2)" "Alt+, settings"
 printf 'set -g @junban-mascot off\nrun-shell %s/junban.tmux\n# set -g @junban-mascot on\nset -g @junban-mascot on\nset -g @junban-meter off\n' "$ROOT" > "$HOME/.tmux.conf"

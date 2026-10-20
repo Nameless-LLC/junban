@@ -117,6 +117,12 @@ case "${1:-}" in
     # Only options this menu offers, so a crafted call cannot rebind keys.
     [ -n "$(field "$o" 1)" ] || exit 1
     mkdir -p "${file%/*}"
+    # Two saves at once (two clients, a quick double pick) would each rewrite the
+    # file from the same old copy, and one choice would vanish. mkdir is the lock
+    # that works on macOS too. One left by a killed save is taken over after 3 s.
+    lock="${file%/*}/.settings.lock"
+    for _ in $(seq 30); do mkdir "$lock" 2>/dev/null && break; sleep 0.1; done
+    mkdir -p "$lock"; trap 'rmdir "$lock" 2>/dev/null' EXIT
     tmp=$(mktemp "${file%/*}/.settings.XXXXXX")
     { [ -f "$file" ] && grep -v "^set -g $o " "$file"
       # Single quotes keep " as typed; a ' closes, goes in "'" and reopens.
