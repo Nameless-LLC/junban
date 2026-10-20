@@ -544,10 +544,17 @@ tmux run -t u:9 "$(tmux list-keys -T root M-n | sed 's/.*run-shell -b "//; s/"$/
 eq  "Alt+n: a quote in a path runs nothing" "$([ -e "$WORK/PWNED" ] && echo yes || echo no)" "no"
 nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
 eq  "Alt+n: ◌ while the agent starts" "$(tmux display -p -t "$nw" '#{E:@junban-badge}' | sed 's/#\[[^]]*\]//g')" "◌ "
-has "Alt+n: the pane says it is starting" "$(tmux capture-pane -p -t "$nw")" "true"
+tmux kill-window -t "$nw"
+tmux set -g @junban-agent-cmd "sleep 5"
+TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
+nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
+spun() { for _ in $(seq 40); do tmux capture-pane -p -t "$nw" | grep -q "$1" && { echo yes; return; }; sleep 0.05; done; echo no; }
+eq  "Alt+n: the pane spins while it starts" "$(spun 'Starting sleep')" "yes"
 TMUX_PANE=$(tmux display -p -t "$nw" '#{pane_id}') bash "$S/state.sh" idle </dev/null
 eq  "Alt+n: the first hook ends ◌"  "$(tmux show -wv -t "$nw" @junban_starting 2>/dev/null)" ""
-tmux kill-window -t "$nw"
+sleep 0.3
+eq  "Alt+n: and leaves the pane blank for the agent" "$(tmux capture-pane -p -t "$nw" | tr -d ' \n')" ""
+tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
 tmux set -gu @junban-agent-cmd
 
 echo "VS Code windows"

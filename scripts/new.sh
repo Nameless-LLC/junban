@@ -21,13 +21,15 @@ fi
 
 [ -n "${JUNBAN_DRY_RUN:-}" ] && { echo "$cmd"; exit 0; }
 # An agent can take several seconds to draw anything (Claude Code connects its
-# MCP servers first), and an empty pane reads as a hang. Say so in the pane, and
-# put ◌ on the tab until the agent's SessionStart hook reports in.
+# MCP servers first), and an empty pane reads as a hang. Spin in the pane (see
+# starting.sh) and put ◌ on the tab until the agent's first hook reports in.
 load_i18n
 # shellcheck disable=SC2059
 msg=$(printf "$T_STARTING" "${cmd%% *}"); msg=${msg//\'/}
-w=$(tmux new-window -P -F '#{window_id}' -c "$dir" \
-  "printf '\\033[2m  %s\\033[0m\\n\\n' '$msg'; $cmd; exec \$SHELL") || exit 0
-tmux set -w -t "$w" @junban_starting 1
+spin="bash '$JUNBAN_SCRIPTS/starting.sh' '$msg' &"
+case "$JUNBAN_SCRIPTS" in *"'"*) spin="printf '  %s\\n' '$msg';" ;; esac
+# Marked in the same command, so the spinner never sees the window unmarked.
+w=$(tmux new-window -P -F '#{window_id}' -c "$dir" "$spin $cmd; exec \$SHELL" \; \
+  set -w @junban_starting 1) || exit 0
 # An agent without junban's hooks never reports in: drop ◌ after a minute.
 (sleep 60; tmux set -wu -t "$w" @junban_starting) >/dev/null 2>&1 &

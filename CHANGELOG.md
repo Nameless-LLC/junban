@@ -4,7 +4,7 @@
 
 ### Changed
 
-- **Alt+n no longer looks frozen while the agent starts.** Claude Code can take several seconds to draw anything; the new pane now says "Starting claude…" at once, and the tab shows a dim ◌ until the agent's first hook reports in (or a minute passes, for agents without junban's hooks).
+- **Alt+n no longer looks frozen while the agent starts.** Claude Code can take several seconds to draw anything; the new pane now spins "Starting claude…" at once (gone just before Claude draws), and the tab shows a dim ◌ until the agent's first hook reports in (or a minute passes, for agents without junban's hooks).
 
 ## 0.6.1 — 2026-10-20
 

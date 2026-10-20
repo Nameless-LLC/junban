@@ -82,7 +82,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Windows are named after the task.** By default a window takes the first line of your prompt. Set a model and it summarises your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
-**Alt+n never looks frozen.** The new pane says it is starting the agent, and the tab shows a dim ◌ until the agent is up.
+**Alt+n never looks frozen.** The new pane spins while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
 **Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
