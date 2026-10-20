@@ -140,6 +140,8 @@ html:not([lang="ja"]) [lang="ja"], html[lang="ja"] [lang="en"] { display: none !
 .pal.away { transform: translateY(140%); opacity: 0; pointer-events: none; }
 .pal .jbm { width: clamp(60px, 4vw + 40px, 80px); height: auto; filter: drop-shadow(0 10px 18px rgba(0,0,0,.7)) drop-shadow(0 0 1px rgba(255,255,255,.3)); }
 .pal .say { margin-bottom: 26px; font-size: .84rem; }
+/* On a phone the bubble would sit on the text being read; the face alone stays. */
+@media (max-width: 640px) { .pal .say { display: none; } .pal .jbm { width: 48px; } }
 .pal:hover .jbm { transform: translateY(-3px); }
 @media (prefers-reduced-motion: reduce) { .jbm *, .jbm .look, .pal { animation: none !important; transition: none !important; } }
 
@@ -289,7 +291,7 @@ h2 { font: 600 clamp(1.45rem, 1.15rem + 1.2vw, 2rem)/1.15 var(--f-display); lett
 .end-card p { color: var(--muted); margin: 0 auto; max-width: 30em; }
 .end-card .ctas { justify-content: center; margin-top: 28px; }
 
-footer { margin-top: clamp(64px, 9vw, 112px); padding-block: 26px 40px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: .84rem; color: var(--dim); }
+footer { margin-top: clamp(64px, 9vw, 112px); padding-block: 26px 112px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: .84rem; color: var(--dim); }
 footer a { color: var(--muted); }
 footer .flinks { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 footer .zz { display: inline-flex; align-items: center; gap: 8px; }
@@ -335,7 +337,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   <main id="top">
     <div class="hero">
       <div>
-        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.3.4</b><span lang="en">New: a timeline of your day, and a full manual</span><span lang="ja">1日のタイムラインとマニュアルを追加</span></a>
+        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.6</b><span lang="en">New: settings on Alt+, and a faster status line</span><span lang="ja">Alt+, の設定メニューを追加・動作を軽く</span></a>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
         <p class="lede" lang="en">Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a <code>psql</code> command. <b>junban</b> shows on your tmux tabs which agents are waiting for you, and tells you the one key to press.</p>
@@ -456,8 +458,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">Measures how long they waited</h3><h3 lang="ja">待ち時間を測る</h3>
-          <p lang="en">The status line shows how long agents waited on you today. Alt+/ adds a daily graph and today's timeline.</p>
-          <p lang="ja">今日エージェントを待たせた時間を表示します。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
+          <p lang="en">Today's wait and your median reply, with a green <span style="color: var(--done)">▼</span> when you answer quicker than the last 7 days. Alt+/ adds a daily graph and today's timeline.</p>
+          <p lang="ja">今日待たせた時間と返答の中央値を表示し、直近7日より速ければ緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
@@ -470,9 +472,9 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">混ぜて使っても、同じ一覧に並びます。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">English, 日本語, ไทย</h3><h3 lang="ja">英語・日本語・タイ語</h3>
-          <p lang="en">Follows your system language.</p>
-          <p lang="ja">OS の言語設定に合わせて切り替わります。</p>
+          <h3 lang="en">Settings on Alt+,</h3><h3 lang="ja">設定は Alt+, から</h3>
+          <p lang="en">What Alt+n starts, language (English, 日本語, ไทย), status rows and more, from a menu. tmux.conf stays yours.</p>
+          <p lang="ja">Alt+n で起動するもの、言語（英語・日本語・タイ語）、表示する行数などをメニューで変えられます。tmux.conf は書き換えません。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
