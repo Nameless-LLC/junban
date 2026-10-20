@@ -31,6 +31,9 @@ eq()   { if [ "$2" = "$3" ]; then ok "$1"; else bad "$1" "'$2' (want '$3')"; fi;
 has()  { case "$2" in *"$3"*) ok "$1" ;; *) bad "$1" "$2" ;; esac; }
 hasnt(){ case "$2" in *"$3"*) bad "$1" "$2" ;; *) ok "$1" ;; esac; }
 
+# No test may update the checkout it runs from: the updates section points
+# update.sh at a throwaway clone instead.
+export JUNBAN_NO_UPDATE=1
 printf "set -g base-index 1\n" > "$WORK/tmux.conf"
 tmux -f "$WORK/tmux.conf" new -d -s s -n one -x 160 -y 40
 tmux new-window -d -t s:2 -n two
@@ -736,6 +739,43 @@ eq  "…and the menu's choice applies" "$(tmux show -gv @junban-mascot)" "on"
 eq  "no longer flagged"             "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" | grep -c '⚠ tmux.conf')" "1"
 rm -f "$HOME/.tmux.conf" "$WORK/real.conf"* "$WORK/linked.conf"
 rm -f "$conf"; tmux set -gu @junban-agent-cmd; tmux set -gu @junban-mascot; tmux set -gu @junban-meter
+
+echo "updates"
+up="$WORK/up"; inst="$WORK/inst"
+gq() { git -c user.name=t -c user.email=t@t -c init.defaultBranch=main "$@" >/dev/null 2>&1; }
+gq init --bare "$up.git"; gq clone "$up.git" "$up"; mkdir -p "$up/.claude-plugin"
+rel() { printf '{\n  "version": "%s"\n}\n' "$1" > "$up/.claude-plugin/plugin.json"
+        gq -C "$up" add -A; gq -C "$up" commit -m "$1"; [ -z "${2:-}" ] || gq -C "$up" tag "v$1"; gq -C "$up" push origin HEAD:main --tags; }
+rel 1.0.0 tag; rel 1.1.0 tag; rel 1.2.0-dev
+gq clone "$up.git" "$inst"
+ver() { sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$inst/.claude-plugin/plugin.json"; }
+back() { gq -C "$inst" checkout main; gq -C "$inst" reset --hard v1.0.0; }
+upd() { JUNBAN_UPDATE_DIR=$inst bash "$S/update.sh" "$@"; }
+back; tmux set -gu @junban-update
+upd; eq "updates follow the newest release" "$(ver)" "1.1.0"
+eq  "…on the branch, not a pinned commit" "$(git -C "$inst" symbolic-ref -q --short HEAD)" "main"
+upd; eq "…and stop there"              "$(ver)" "1.1.0"
+back; tmux set -g @junban-update main
+upd; eq "main follows every change"    "$(ver)" "1.2.0-dev"
+back; tmux set -g @junban-update off
+upd; eq "off updates nothing"          "$(ver)" "1.0.0"
+upd now; eq "…unless you ask (Update now)" "$(ver)" "1.1.0"
+tmux set -gu @junban-update
+back; echo x >> "$inst/.claude-plugin/plugin.json"
+upd; eq "local changes are left alone" "$(git -C "$inst" rev-parse --short HEAD)" "$(git -C "$inst" rev-parse --short v1.0.0)"
+gq -C "$inst" checkout -- .
+gq -C "$inst" checkout --detach v1.0.0
+upd; eq "a pinned checkout stays pinned" "$(ver)" "1.0.0"
+back; gq -C "$inst" reset --hard v1.1.0; gq -C "$inst" commit --allow-empty -m mine
+upd; eq "a branch ahead of the release stays" "$(git -C "$inst" log -1 --format=%s)" "mine"
+back; mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/junban/update.lock"
+upd; eq "one update at a time"         "$(ver)" "1.0.0"
+rmdir "${XDG_STATE_HOME:-$HOME/.local/state}/junban/update.lock"
+JUNBAN_UPDATE_DIR="$WORK/nowhere" bash "$S/update.sh"; eq "no checkout, no error" "$?" "0"
+eq  "the suite never updates itself"  "$(JUNBAN_NO_UPDATE=1 bash "$S/update.sh"; echo $?)" "0"
+tmux set -gu @junban_update_day; bash "$S/hints.sh" >/dev/null
+eq  "the status line checks once a day" "$(tmux show -gv @junban_update_day)" "$(date +%Y%m%d)"
+has "Alt+, offers Update now"         "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")" "Update now"
 
 echo "stability"
 w31=$(tmux new-window -d -P -F '#{window_id}' -t u: -n 'issue a#[fg=red]b' 'sleep 600')

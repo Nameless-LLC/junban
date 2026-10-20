@@ -52,6 +52,10 @@ Codex CLI と Gemini CLI は `~/.tmux/plugins/junban/scripts/setup.sh codex`（�
 
 tmux 3.2 以上と bash が必要です。python3 と fzf があれば、ウィンドウ名の自動設定・タイムライン・一覧の検索も使えます。
 
+### アップデート
+
+junban は自動で更新されます。1日に1回、最新のリリース（Linux と macOS のテストを通った版）があれば更新して読み込み直し、Claude Code のプラグインも更新します。新しく開いた Claude から新しい版で動きます。手元で変更したコピーや版を固定したコピーには触れません。すぐ更新したいときは Alt+, →「今すぐアップデート」。Alt+, →「アップデート」で、main のすべての変更を追うか、更新しないかを選べます（`@junban-update stable | main | off`）。0.7.0 より前の版だけは、最後に1回だけ手で更新してください: `git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban`
+
 ### うまく動かないとき
 
 `~/.tmux/plugins/junban/scripts/doctor.sh` を実行してください（Claude Code なら `/junban:doctor`）。よくある問題なら直し方まで表示します。直らなければ、その出力を[バグ報告](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml)に貼ってください。ウィンドウの名前や依頼の内容は出力に含まれません。質問は [Discussions](https://github.com/Nameless-LLC/junban/discussions) へ。セキュリティの問題は公開せずに報告してください（[SECURITY.md](SECURITY.md)）。

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0 — 2026-10-20
+
+### Added
+
+- **junban updates itself.** Once a day it fast-forwards to the newest release, reloads, and updates the Claude Code plugin. Releases are cut by CI: a version bump that passes on Linux and macOS becomes tag vX.Y.Z with these notes. Alt+, → Update now does it at once; Alt+, → Updates picks releases (default), every change on main, or off (`@junban-update`). A checkout with local changes or a pinned commit is never touched. `doctor.sh` shows the channel and the last update.
+
 ## 0.6.2 — 2026-10-20
 
 ### Changed

@@ -13,8 +13,17 @@
 opt_prefetch @junban-lang @junban-color-bg @junban-color-waiting @junban-color-done @junban-color-key \
   @junban-color-muted @junban-color-slower @junban-color-dim @junban-key-jump @junban-key-list \
   @junban-key-new @junban-key-settings @junban-key-help @junban-nav-keys @junban-meter @junban-tint \
-  @junban-tint-waiting @junban-stale-hours @junban-done-batch @junban-meter-cap @junban_meter_cache
+  @junban-tint-waiting @junban-stale-hours @junban-done-batch @junban-meter-cap @junban_meter_cache \
+  @junban_update_day
 load_i18n
+
+# Once a day, look for a newer junban (update.sh). The day is marked first, so
+# the other rows and clients refreshing at the same moment start nothing.
+today=$(date +%Y%m%d)
+if [ "$(opt @junban_update_day "")" != "$today" ]; then
+  tmux set -g @junban_update_day "$today" 2>/dev/null
+  (bash "$JUNBAN_SCRIPTS/update.sh" </dev/null >/dev/null 2>&1 &)
+fi
 
 cols=${1:-0}
 row=${2:-}
@@ -155,7 +164,7 @@ if [ "$row" != 2 ] && [ "$(opt @junban-meter on)" = on ]; then
   # The numbers change only when the log grows or the day turns, so they are
   # kept in tmux between refreshes instead of read from the whole log each time.
   wlog="${XDG_STATE_HOME:-$HOME/.local/state}/junban/waits.tsv"
-  mkey="$(date +%Y%m%d):$(opt @junban-meter-cap 60):$([ -f "$wlog" ] && wc -c < "$wlog" | tr -d ' ')"
+  mkey="$today:$(opt @junban-meter-cap 60):$([ -f "$wlog" ] && wc -c < "$wlog" | tr -d ' ')"
   mline=$(opt @junban_meter_cache "")
   if [ "${mline%%|*}" = "$mkey" ]; then mline=${mline#*|}
   else

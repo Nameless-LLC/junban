@@ -52,6 +52,10 @@ Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `ge
 
 Requires tmux ≥ 3.2 and bash. python3 and fzf are optional; they add window naming, the timeline and list search.
 
+### Updates
+
+junban updates itself. Once a day it moves to the newest release (a version that passed CI on Linux and macOS), reloads, and updates the Claude Code plugin; new Claude sessions use the new hooks. It never touches a checkout with local changes or one you pinned. Alt+, → Update now updates at once; Alt+, → Updates switches to every change on main, or off (`@junban-update stable | main | off`). Installs older than 0.7.0 need one last manual update: `git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban`.
+
 ### Something wrong?
 
 Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Code). It names the fix for the usual problems; if it doesn't, paste its output into a [bug report](https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml). It leaves out window names and prompts. Questions go to [Discussions](https://github.com/Nameless-LLC/junban/discussions). Security issues: please report privately, see [SECURITY.md](SECURITY.md).

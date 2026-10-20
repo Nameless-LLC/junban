@@ -1,0 +1,29 @@
+name: release
+# Once ci passes on main, a version in plugin.json that has no tag yet becomes a
+# release: tag vX.Y.Z plus the CHANGELOG section as notes. Installs on the
+# default "stable" channel (scripts/update.sh) move to it within a day.
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+      - name: Release a new version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          v=$(python3 -c 'import json; print(json.load(open(".claude-plugin/plugin.json"))["version"])')
+          if git rev-parse -q --verify "refs/tags/v$v" >/dev/null; then echo "v$v already released"; exit 0; fi
+          awk -v v="$v" '/^## / { p = index($0, "## " v " ") == 1; next } p' CHANGELOG.md > notes.md
+          gh release create "v$v" --target "$SHA" --title "junban $v" --notes-file notes.md

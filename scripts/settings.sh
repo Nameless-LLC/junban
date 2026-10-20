@@ -7,6 +7,7 @@
 #   settings.sh set OPTION V  save V, apply it now and reload junban
 #   settings.sh ask-agent     type a command for Alt+n (runs in a popup)
 #   settings.sh disable F N O comment out line N of tmux.conf F, if it still sets O
+# The top menu also runs update.sh now ("Update now").
 #
 # Choices are saved to $XDG_CONFIG_HOME/junban/settings.conf, which junban.tmux
 # reads on every load, so tmux.conf stays yours. A choice made here wins over
@@ -30,7 +31,8 @@ options() {
     "@junban-guide-lines|3|$SET_LINES|3=$SET_LINES_3 2=$SET_LINES_2" \
     "@junban-meter|on|$SET_METER|on=$SET_ON off=$SET_OFF" \
     "@junban-done-batch|off|$SET_BATCH|off=$SET_OFF 30=$(printf "$SET_EVERY" 30) 60=$(printf "$SET_EVERY" 60)" \
-    "@junban-mascot|on|$SET_MASCOT|on=$SET_ON off=$SET_OFF"
+    "@junban-mascot|on|$SET_MASCOT|on=$SET_ON off=$SET_OFF" \
+    "@junban-update|stable|$SET_UPDATE|stable=$SET_UPDATE_STABLE main=$SET_UPDATE_MAIN off=$SET_OFF"
 }
 
 field() { options | awk -F'|' -v o="$1" -v n="$2" '$1 == o { print $n }'; }
@@ -188,6 +190,7 @@ case "${1:-}" in
       items+=("$(esc "$label")  #[fg=colour244]$(esc "$(shown "$o")")$mark" "$k" "run -b \"$me menu $o\"")
       k=$((k + 1))
     done < <(options)
+    items+=("" "  $(esc "$SET_UPDATE_NOW")" u "run -b \"bash $JUNBAN_SCRIPTS/update.sh now\"")
     # A leading "-" makes the row a note, not a choice.
     note=$(printf "$SET_FILE" "${file/#$HOME/\~}")
     menu "$SET_TITLE" "${items[@]}"

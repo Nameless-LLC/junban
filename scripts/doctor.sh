@@ -35,6 +35,8 @@ echo "junban doctor"
 echo
 echo "versions"
 printf '  junban   %s%s\n' "${version:-?}" "${sha:+ ($sha)}"
+upd=$(tmux show -gqv @junban-update 2>/dev/null); last=$(tail -n 1 "${XDG_STATE_HOME:-$HOME/.local/state}/junban/update.log" 2>/dev/null | cut -f3)
+printf '  updates  %s%s\n' "${upd:-stable}" "${last:+, last to $last}"
 printf '  os       %s\n' "$(uname -srm)"
 printf '  tmux     %s\n' "$(ver tmux -V || echo missing)"
 printf '  bash     %s\n' "$BASH_VERSION"
