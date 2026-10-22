@@ -3,7 +3,7 @@
 # junban
 
 **Whose turn is it?**<br>
-A tmux plugin that shows which of your AI coding agents is waiting on you.
+A tmux plugin that shows which of your AI coding agents (Claude Code, Codex CLI, Gemini CLI) is waiting on you.
 
 [English](README.md) · [日本語](README.ja.md) · [▶ 25-second demo](https://junban.namelessjp.com/)
 
@@ -13,7 +13,7 @@ A tmux plugin that shows which of your AI coding agents is waiting on you.
 
 Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a `psql` command. You only find out by opening every window.
 
-**junban** (順番, Japanese for *"whose turn"*) fixes that, and tells you what to press next.
+**junban** (順番, Japanese for *"turn,"* as in *"whose turn is it?"*) fixes that, and tells you what to press next.
 
 - **✋ red**: an agent is waiting on you (permission or question)
 - **✓ green**: it finished and you haven't looked yet
@@ -80,17 +80,19 @@ The full manual, with every option: [junban.namelessjp.com/manual](https://junba
 
 ## What makes it different
 
-Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait ([gs/tmux-agent-status](https://github.com/gs/tmux-agent-status)) or measure waiting ([muxa](https://github.com/Open330/muxa)); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one tmux plugin with no daemon, and adds two things we didn't find elsewhere: a status line that shows your next key, and idle windows that move out of the way.
+Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait ([tmux-agent-status (gs)](https://github.com/gs/tmux-agent-status)) or measure waiting ([muxa](https://github.com/Open330/muxa)); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one tmux plugin with no daemon, and adds two things we didn't find elsewhere: a status line that shows your next key, and idle windows that move out of the way.
 
-**Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to make sure it has the right pane.
+**Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to match each session to its pane.
 
-**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm` and point `@junban-namer-url` and `@junban-namer-model` at a model, and it summarizes your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
+**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm` and point `@junban-namer-url` and `@junban-namer-model` at a model, and junban names the window from your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
 **Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
-**It says in one line what each agent needs.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). For finished work, a model writes that line if you set one; otherwise it is the first real line of the reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR. Turn the line off with `set -g @junban-recap off`.
+**One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, it writes that line for finished work; otherwise it is the first real line of the reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line.
+
+Finished work also shows what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat, and Ctrl+o opens the PR. Turn the line off with `set -g @junban-recap off`.
 
 **Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished agents (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
 
@@ -98,13 +100,13 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
 
-**A timeline of your day.** prefix T (also in Alt+/) draws a row per window: yellow █ working, red ▓ waiting on you, green ▒ done and not looked at. Below that: when you were active, how long agents worked and waited on you, and the most that ran at once. `scripts/timeline.sh 1` shows yesterday. It stays on your machine. Set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
+**A timeline of your day.** prefix T (also in Alt+/) draws a row per window: yellow █ working, red ▓ waiting on you, green ▒ done and not looked at. Below that: when you were active, how long agents worked and waited on you, and the most that ran at once. `scripts/timeline.sh 1` shows yesterday. It stays on your machine. Set `@junban-key-timeline M-y` for an Alt key (there is none by default: Alt+t, the obvious choice, toggles thinking in Claude Code).
 
 **A small mascot.** A face on the status line reacts to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
 
-**Speaks your language.** English, 日本語, and ไทย built in, chosen from your locale (`LC_ALL`, `LC_MESSAGES`, or `LANG`); `@junban-lang` fixes one. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
+**Speaks your language.** English, 日本語, and ไทย built in, chosen from your locale (`LC_ALL`, `LC_MESSAGES`, or `LANG`); `@junban-lang` sets one. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash**, plus Python 3 for some features. Nothing stays running: work rides on tmux's own status refresh. CI runs the tests on Linux and macOS.
+**Plain tmux and bash**, plus Python 3 for some features. Nothing stays running: junban's checks run on tmux's own status refresh. CI runs the tests on Linux and macOS.
 
 ## Configuration
 
@@ -144,13 +146,13 @@ set -g @junban-mascot on           # off = hide the face on the status line
 set -g @junban-rename prompt       # off | prompt | llm
 # No model by default. Setting both lines below also lets a model write the ✓ recap.
 set -g @junban-namer-url http://localhost:11434   # e.g. Ollama, or an OpenAI-compatible …/v1
-set -g @junban-namer-model qwen3:8b               # e.g.
+set -g @junban-namer-model qwen3:8b               # any model the server has
 set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only)
 
 # Notifications when an agent starts waiting or finishes (message on stdin). Pick one:
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # ✓ messages include the recap line; a public ntfy.sh topic is readable by anyone who knows its name
-set -g @junban-done-batch off      # 30 = ✓ arrive together every 30 minutes
+set -g @junban-done-batch off      # 30 = ✓ notifications arrive together every 30 minutes
 ```
 
 Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.
@@ -197,7 +199,7 @@ Credit where it's due. These do overlapping things and some may suit you better:
 [tmux-handlr](https://github.com/CRThaze/tmux-handlr) ·
 [claude-code-tmux-status](https://github.com/XavierYounan/claude-code-tmux-status) ·
 [tmux-window-notifier](https://github.com/mrf/tmux-window-notifier) ·
-[gs/tmux-agent-status](https://github.com/gs/tmux-agent-status) ·
+[tmux-agent-status (gs)](https://github.com/gs/tmux-agent-status) ·
 [muxa](https://github.com/Open330/muxa)
 
 ## Develop
