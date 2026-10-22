@@ -48,7 +48,7 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 </details>
 
-Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Supported agents](#supported-agents).
+Codex CLI or Gemini CLI: run `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`); Codex then asks you to trust the hooks once with `/hooks`. See [Supported agents](#supported-agents).
 
 Requires tmux 3.2 or newer, bash, and git. Optional:
 
@@ -87,7 +87,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to match each session to its pane.
 
-**Windows are named after the task.** By default a window takes the first line of your latest prompt. Set `@junban-rename llm`, `@junban-namer-url` to a model server and `@junban-namer-model` to a model on it, and junban names the window from your last few prompts instead (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
+**Windows are named after the task.** By default a window takes the first line of your latest prompt. To have a model name windows from your last few prompts instead, set `@junban-rename llm`, point `@junban-namer-url` at a model server, and set `@junban-namer-model` to one of its models (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
@@ -118,7 +118,7 @@ Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The
 ```tmux
 # Look
 set -g @junban-theme on            # off = keep your own theme; junban only adds the badges, the ✋ ✓ ● counts and mascot, and the guide rows
-set -g @junban-position top        # top | bottom
+set -g @junban-position top        # top | bottom (with @junban-theme on)
 set -g @junban-guide on            # the banner and keys rows under the tabs
 set -g @junban-guide-lines 3       # 2 = no keys row; the keys show after you press the prefix
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
@@ -140,7 +140,7 @@ set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --wor
 
 # Wait meter, idle windows, mascot
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
-set -g @junban-meter on            # today's wait total on the status line
+set -g @junban-meter on            # today's wait total and median reply on the status line
 set -g @junban-meter-cap 60        # minutes one wait can count for
 set -g @junban-goal 5              # streak: days with a median reply within this many minutes
 set -g @junban-mascot on           # off = hide the face on the status line
