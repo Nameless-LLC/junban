@@ -97,9 +97,9 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 For finished work, the banner and the Alt+f list also show what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat, and Ctrl+o opens the PR.
 
-**Finished work can come in batches.** With `set -g @junban-done-batch 30`, the ✓ banner and notification for finished turns wait for the next :00 or :30 and arrive together; until then the status line says how many are held and when they will show (tabs get their ✓ right away). A ✋ still interrupts right away.
+**Finished work can come in batches.** With `set -g @junban-done-batch 30`, the ✓ banner and notification for finished turns wait for the next :00 or :30 and arrive together; until then the status line says how many are held and when they will show (tabs get their ✓ at once). A ✋ still interrupts right away.
 
-**Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a raises the VS Code window already showing that agent (or opens its project folder) instead of switching the terminal you're in. This works when VS Code connects remotely (Remote-SSH, Dev Containers, WSL) to the Linux host running tmux. Set `@junban-vscode-raise off` to switch in place instead.
+**Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a (and Alt+f) raises the VS Code window already showing that agent (or opens its project folder) instead of switching the terminal you're in. This works when VS Code connects remotely (Remote-SSH, Dev Containers, WSL) to the Linux host running tmux. Set `@junban-vscode-raise off` to switch in place instead.
 
 **It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply within your goal (`@junban-goal`, 5 minutes by default), and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
 
@@ -174,7 +174,7 @@ Colors: `@junban-color-{waiting,done,running,slower,bg,bg2,fg,accent,muted,dim,k
 ~/.tmux/plugins/junban/scripts/setup.sh gemini   # writes ~/.gemini/settings.json
 ```
 
-Both keep your existing hooks, replace only junban's own entries (safe to re-run), and leave the file as it was before this run in `.bak` (overwritten each run); `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
+Both keep your existing hooks, replace only junban's own entries (safe to re-run), and save the previous file as `.bak` (overwritten each run); `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
 
 Any other agent can drive junban if it can run a command from inside its tmux pane:
 
