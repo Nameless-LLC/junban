@@ -159,7 +159,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <h1 lang="en">Everything junban does, and how to tune it.</h1>
         <h1 lang="ja">junban の機能と設定</h1>
         <p lang="en">junban badges each tmux tab with its agent's state and takes you to the one that needs you. You only need <kbd>Alt+a</kbd>; the rest is here for when you want it. Everything below matches the current release.</p>
-        <p lang="ja">junban は tmux の各タブにエージェントの状態の印を付け、<kbd>Alt+a</kbd> で次に対応すべきウィンドウへ移動します。覚えるのは <kbd>Alt+a</kbd> だけで十分です。ほかの機能は、必要になったときにここで調べてください。内容は最新版に合わせています。</p>
+        <p lang="ja">junban は tmux の各タブにエージェントの状態の印を付けます。<kbd>Alt+a</kbd> を押すと、次に対応すべきウィンドウへ移動します。覚えるのは <kbd>Alt+a</kbd> だけで十分です。ほかの機能は、必要になったときにここで調べてください。内容は最新版に合わせています。</p>
       </div>
 
       <details class="toc-m"><summary><span lang="en">Contents</span><span lang="ja">目次</span></summary><ol id="toc-m"></ol></details>
@@ -216,7 +216,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td><kbd>Alt+a</kbd></td><td><kbd>a</kbd></td><td><span lang="en">Go to the agent that needs you most: ✋ before ✓, longest wait first.</span><span lang="ja">次に対応すべきウィンドウへ移動。✋ が ✓ より先で、同じ印の中では待った時間の長い順。</span></td></tr>
             <tr><td><kbd>Alt+f</kbd></td><td><kbd>f</kbd></td><td><span lang="en">Every agent in one list, neediest first, with a live preview.</span><span lang="ja">全エージェントの一覧。対応が必要な順で、中身のプレビュー付き。</span></td></tr>
             <tr><td><kbd>Alt+n</kbd></td><td><kbd>C</kbd></td><td><span lang="en">Start a new agent in this directory.</span><span lang="ja">このディレクトリで新しいエージェントを起動する。</span></td></tr>
-            <tr><td><kbd>Alt+,</kbd></td><td class="m">—</td><td><span lang="en">Settings: what <kbd>Alt+n</kbd> starts, language, status line position and rows, the wait meter, ✓ in batches, the mascot and updates. A choice applies at once and is saved to <code>~/.config/junban/settings.conf</code>, and junban never edits tmux.conf unless you ask it to. If tmux.conf sets the same option after the plugin line, that line wins the next time tmux starts; the menu marks that option "⚠ tmux.conf", names the line, and offers to turn it into a comment (asking first, with a backup).</span><span lang="ja">設定。「Alt+n で起動するもの」「言語」「ステータス行の位置」「ステータス行の数」「待ち時間の表示」「✓ をまとめて表示」「マスコット」「アップデート」を選べます。選んだ値はすぐに反映され、<code>~/.config/junban/settings.conf</code> に保存されます（tmux.conf は書き換えません）。tmux.conf のプラグインの行より後に同じ設定があると、次の起動でメニューの選択が上書きされます。その場合はメニューに「⚠ tmux.conf」と何行目かが出て、その行をコメントにすることもできます（実行前に確認し、変更前のファイルを <code>.junban.bak</code> として残します）。</span></td></tr>
+            <tr><td><kbd>Alt+,</kbd></td><td class="m">—</td><td><span lang="en">Settings: what <kbd>Alt+n</kbd> starts, language, status line position and rows, the wait meter, ✓ in batches, the mascot and updates. A choice applies at once and is saved to <code>~/.config/junban/settings.conf</code>, and junban never edits tmux.conf unless you ask it to. If tmux.conf sets the same option after the plugin line, that line wins the next time tmux starts; the menu marks that option "⚠ tmux.conf", names the line, and offers to turn it into a comment (asking first, with a backup).</span><span lang="ja">設定。「Alt+n で起動するもの」「言語」「ステータス行の位置」「ステータス行の数」「待ち時間の表示」「✓ をまとめて表示」「マスコット」「アップデート」を選べます。選んだ値はすぐに反映され、<code>~/.config/junban/settings.conf</code> に保存されます（頼まない限り tmux.conf は書き換えません）。tmux.conf のプラグインの行より後に同じ設定があると、次の起動でメニューの選択が上書きされます。その場合はメニューに「⚠ tmux.conf」と何行目かが出て、その行をコメントにすることもできます（実行前に確認し、変更前のファイルを <code>.junban.bak</code> として残します）。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>g</kbd></td><td><span lang="en">Scratch shell in a popup. Close it; what you ran is still there next time. No Alt key by default; set <code>@junban-key-scratch M-g</code> to add one.</span><span lang="ja">ポップアップのシェル。閉じても中身は残り、次に開くと続きから使えます。Alt キーは既定では割り当てていません。<code>@junban-key-scratch M-g</code> で追加できます。</span></td></tr>
             <tr><td><kbd>Alt+/</kbd></td><td><kbd>/</kbd></td><td><span lang="en">All keys, today's timeline and the wait report.</span><span lang="ja">キーの一覧、今日のタイムライン、待ち時間のレポート。</span></td></tr>
             <tr><td class="m">—</td><td><kbd>T</kbd></td><td><span lang="en">Today's <a href="#timeline">timeline</a>. No Alt key by default (Alt+t toggles thinking in Claude Code); set <code>@junban-key-timeline M-y</code> to add one.</span><span lang="ja">今日の<a href="#timeline">タイムライン</a>。Alt キーは既定では割り当てていません（Claude Code が Alt+t を思考の切り替えに使っているため）。<code>@junban-key-timeline M-y</code> で追加できます。</span></td></tr>
@@ -227,13 +227,13 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td><kbd>Alt+z</kbd></td><td class="m">—</td><td><span lang="en">Zoom the pane, or unzoom it.</span><span lang="ja">ペインを最大化／元に戻す。</span></td></tr>
           </tbody>
         </table></div>
-        <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は 設定 → プロファイル → キーボード →「メタキーとして Option キーを使用」をオンにします。</p></div>
+        <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は設定 → プロファイル → キーボード →「メタキーとして Option キーを使用」をオンにします。</p></div>
         <p lang="en">The <kbd>Alt+/</kbd> and timeline popups scroll with the arrows, PgUp/PgDn, <kbd>Space</kbd> or the mouse wheel; any other key, or a click inside, closes them.</p>
         <p lang="ja"><kbd>Alt+/</kbd> とタイムラインのポップアップは、矢印キー・PgUp/PgDn・<kbd>Space</kbd>・マウスホイールでスクロールし、ほかのキーを押すかポップアップの中をクリックすると閉じます。</p>
         <h3 id="list" lang="en">The Alt+f list</h3><h3 lang="ja">Alt+f の一覧</h3>
-        <p lang="en">Agents that need you come first, each with its badge, how long it has waited, its name and its recap (or what you last asked it). Type to filter by any of it; the preview shows the window live. <kbd>Enter</kbd> goes there, <kbd>Esc</kbd> closes. Without fzf you get tmux's own window chooser, with badges but sorted by name.</p>
+        <p lang="en">Agents that need you come first, each with its badge, how long it has been in that state, its name and its recap (or what you last asked it). Type to filter by any of it; the preview shows the window live. <kbd>Enter</kbd> goes there, <kbd>Esc</kbd> closes. Without fzf you get tmux's own window chooser, with badges but sorted by name.</p>
         <p lang="en">A finished agent's row also says what the work changed (<code>3 files +41 −88 · 2 commits · PR #12</code>), and its preview starts with the diff stat, so you can pick what to review first. <kbd>Ctrl+o</kbd> opens the PR.</p>
-        <p lang="ja">返事待ちのウィンドウから順に、印・待った時間・ウィンドウの名前・1行要約（なければ最後に頼んだ内容）が並びます。文字を打つと、これらの項目で絞り込めます。プレビューには、そのウィンドウの今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は tmux 標準の選択画面になります。印は付きますが、並びは名前順です。</p>
+        <p lang="ja">返事待ちのウィンドウから順に、印・その状態になってからの時間・ウィンドウの名前・1行要約（なければ最後に頼んだ内容）が並びます。文字を打つと、これらの項目で絞り込めます。プレビューには、そのウィンドウの今の画面が出ます。<kbd>Enter</kbd> で移動、<kbd>Esc</kbd> で閉じます。fzf がない場合は tmux 標準の選択画面になります。印は付きますが、並びは名前順です。</p>
         <p lang="ja">作業を終えたエージェントの行には、その作業で変わったもの（<code>3ファイル +41 −88 · 2コミット · PR #12</code>）も出ます。プレビューの先頭には変更したファイルの一覧が出るので、どれから確認するかを決められます。<kbd>Ctrl+o</kbd> で PR を開きます。</p>
         <h3 id="new" lang="en">Alt+n and worktrees</h3><h3 lang="ja">Alt+n と worktree</h3>
         <p lang="en"><kbd>Alt+n</kbd> opens a window in the current directory and starts your agent (<code>@junban-agent-cmd</code>, default <code>claude</code>). If another agent already works in that git tree and <kbd>Alt+n</kbd> starts Claude Code, the new one starts in its own worktree (<code>claude --worktree</code>), so the two never edit the same files. <code>@junban-new-worktree off</code> always starts in the current directory.</p>
@@ -247,7 +247,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="en">junban adds two status lines under the window tabs. The second line says what needs you, or today's wait when nothing does; the third lists the keys.</p>
         <p lang="ja">junban はウィンドウのタブの下に2行を足します。2行目には対応が必要なものを、なければ今日の待ち時間を出します。3行目にはキーの一覧を出すので、キーを覚えていなくても操作できます。</p>
         <p lang="en"><span class="b">Nothing needs you.</span> Today's wait on the second line, the keys worth knowing on the third. Right after you press the prefix (Ctrl+b by default), the third line lists what can follow it instead.</p>
-        <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間が、3行目に覚えておくと便利なキーが出ます。prefix（Ctrl+b）を押した後は、3行目が続けて押せるキーに変わります。</p>
+        <p lang="ja"><span class="b">平常時。</span>2行目に今日の待ち時間が、3行目に覚えておくと便利なキーが出ます。prefix（既定は Ctrl+b）を押した後は、3行目が続けて押せるキーに変わります。</p>
         <div class="tl rows" lang="en"><div><span>kept waiting 42m today · median reply 3m10s</span></div><div><span><b>Alt+a</b> next</span><span><b>Alt+f</b> all agents</span><span><b>Alt+[ ]</b> prev / next</span><span><b>Alt+w</b> close</span><span><b>Alt+n</b> new agent</span><span><b>Alt+,</b> settings</span><span><b>Alt+/</b> keys</span></div></div>
         <div class="tl rows" lang="ja"><div><span>今日の待ち時間 42分 · 返答の中央値 3分10秒</span></div><div><span><b>Alt+a</b> 次へ</span><span><b>Alt+f</b> 一覧</span><span><b>Alt+[ ]</b> 前／次</span><span><b>Alt+w</b> 閉じる</span><span><b>Alt+n</b> 新しいエージェント</span><span><b>Alt+,</b> 設定</span><span><b>Alt+/</b> キー一覧</span></div></div>
         <p lang="en"><span class="b w">An agent is waiting.</span> A red banner with the key, and one line on what the next agent wants.</p>
@@ -261,7 +261,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="en">The banner sits on the second line; today's wait moves to its right end when there is room. On a narrow terminal, today's wait drops out first, then the recap is shortened, so the banner always fits.</p>
         <p lang="ja">この赤・緑の表示は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。ターミナルの幅が狭いときは、今日の待ち時間を外し、次に1行要約の末尾を切り詰めるので、押すキーの表示は必ず残ります。</p>
         <p lang="en"><code>@junban-guide-lines 2</code> drops the keys row once you know the keys; they then show only after you press the prefix. <code>@junban-tint 20</code> sets how much of the banner's color (in %) tints its row (0 = off); <code>@junban-tint-waiting</code> does the same for ✋.</p>
-        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行がなくなります。prefix（Ctrl+b）を押した後は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> は赤・緑の色を行全体に薄く広げます（✋ のときの濃さは <code>@junban-tint-waiting</code>）。</p>
+        <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行がなくなります。prefix（既定は Ctrl+b）を押した後は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> で、赤・緑の色を行全体に敷く濃さを % で変えられます（既定 20、0 で敷かない）。✋ のときの濃さは <code>@junban-tint-waiting</code>（既定 35）です。</p>
       </section>
 
       <section id="recap">
@@ -290,12 +290,12 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
       <section id="report">
         <h2><span lang="en">The wait report</span><span lang="ja">待ち時間のレポート</span></h2>
         <p lang="en">A wait runs from the moment an agent asks you something (✋) or finishes (✓) until you answer or look. If it finishes while you are watching, that is no wait at all. One wait counts for at most <code>@junban-meter-cap</code> minutes (60), so a night away doesn't swamp the numbers.</p>
-        <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）時点から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（60分）で打ち切るので、一晩放置しても、その1回で合計が大きく膨らむことはありません。</p>
+        <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）時点から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（既定 60分）で打ち切るので、一晩放置しても、その1回で合計が大きく膨らむことはありません。</p>
         <ul>
           <li lang="en">The status line shows today's total and your median reply. Next to the median, an arrow compares today with the 7 days before: a green ▼ when you're replying quicker, an orange ▲ when slower, with the word spelled out: <code>median reply 3m10s ▼32% quicker than the last 7 days</code>. Nothing shows for a change under 15 seconds or 10%, or until there are 3 waits today and 5 in the week before. A change of 2× or more shows as a ratio: <code>▲3.3× slower</code>.</li>
-          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が出ます。中央値の横には、前の7日間より速ければ緑の ▼ と「速い」、遅ければオレンジの ▲ と「遅い」が出ます（<code>返答の中央値 3分10秒 ▼32% 速い（前7日比）</code>）。差が15秒未満か10%未満のとき、または今日の待ちが3回、前の7日間が5回に満たないうちは何も出しません。2倍以上は「▲3.3倍 遅い」のように倍数で出します。</li>
+          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が出ます。中央値の横には、前の7日間より速ければ緑の ▼ と「速い」、遅ければオレンジの ▲ と「遅い」が出ます（<code>返答の中央値 3分10秒 ▼32% 速い（前7日比）</code>）。差が15秒未満か10%未満のとき、今日の待ちが3回未満、または前の7日間の待ちが5回未満のときも何も出しません。2倍以上は「▲3.3倍 遅い」のように倍数で出します。</li>
           <li lang="en"><kbd>Alt+/</kbd> shows the full report: a bar per day, this week against last (the same ▼ / ▲, or "≈ same" when the change is noise), your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
-          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較（ステータスバーと同じ ▼ / ▲ で示し、差が小さいときは「≈ ほぼ同じ」）、自己ベストの日、今日のウィンドウ別の待ち時間（長い順に最大8件）、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが、返事の速さを先週と比べてひとこと言います。</li>
+          <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較（ステータスバーと同じ ▼ / ▲ で示し、差が小さいときは「≈ ほぼ同じ」）、自己ベストの日、今日のウィンドウ別の待ち時間（長い順に最大8件）、返答の中央値が <code>@junban-goal</code> 分（既定 5分）以内だった日の連続記録が見られます。マスコットが、返事の速さを先週と比べてひとこと言います。</li>
           <li lang="en"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> goes back 30 days.</li>
           <li lang="ja"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
         </ul>
@@ -347,15 +347,15 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
         <div class="tw"><table>
           <thead><tr><th lang="en">Agent</th><th lang="ja">エージェント</th><th lang="en">Setup</th><th lang="ja">設定</th><th lang="en">You get</th><th lang="ja">できること</th></tr></thead>
           <tbody>
-            <tr><td>Claude Code</td><td><span lang="en">the plugin (the install command adds it)</span><span lang="ja">プラグイン（インストールのコマンドで入る）</span></td><td><span lang="en">✋ ✓ ●, recaps, change summaries, window names; badges fix themselves after Esc</span><span lang="ja">✋ ✓ ●、1行要約、ウィンドウの名前。Esc 後の印の自動修復</span></td></tr>
+            <tr><td>Claude Code</td><td><span lang="en">the plugin (the install command adds it)</span><span lang="ja">プラグイン（インストールのコマンドで入る）</span></td><td><span lang="en">✋ ✓ ●, recaps, change summaries, window names; badges fix themselves after Esc</span><span lang="ja">✋ ✓ ●、1行要約、変更内容、ウィンドウの名前。Esc 後の印の自動修復</span></td></tr>
             <tr><td>Codex CLI</td><td><code>setup.sh codex</code></td><td><span lang="en">✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names; Esc clears the badge</span><span lang="ja">✋ ✓ ●、1行要約（実行したいコマンドも含む）、変更内容、ウィンドウの名前。Esc で印が消える</span></td></tr>
             <tr><td>Gemini CLI</td><td><code>setup.sh gemini</code></td><td><span lang="en">✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names</span><span lang="ja">✋ ✓ ●、1行要約（実行したいコマンドも含む）、変更内容、ウィンドウの名前</span></td></tr>
           </tbody>
         </table></div>
         <pre>~/.tmux/plugins/junban/scripts/setup.sh codex    <span class="c"># writes ~/.codex/hooks.json</span>
 ~/.tmux/plugins/junban/scripts/setup.sh gemini   <span class="c"># writes ~/.gemini/settings.json</span></pre>
-        <p lang="en">Both keep your own hooks, replace only junban's entries (safe to run again) and leave a <code>.bak</code>. Add <code>--print</code> to see what would be written. Codex asks you to trust new hooks once: open <code>/hooks</code> in Codex. To make <kbd>Alt+n</kbd> start Codex, <code>set -g @junban-agent-cmd codex</code>.</p>
-        <p lang="ja">どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。元のファイルは <code>.bak</code> に残ります。<code>--print</code> を付けると、書き込む内容を表示するだけで終わります。Codex は新しいフックを一度だけ承認する必要があるので、Codex で <code>/hooks</code> を開いてください。<kbd>Alt+n</kbd> で Codex を起動したい場合は <code>set -g @junban-agent-cmd codex</code> にします。</p>
+        <p lang="en">Both keep your own hooks, replace only junban's entries (safe to run again) and leave the file as it was before this run in <code>.bak</code> (overwritten each run). Add <code>--print</code> to see what would be written. Codex asks you to trust new hooks once: open <code>/hooks</code> in Codex. To make <kbd>Alt+n</kbd> start Codex, <code>set -g @junban-agent-cmd codex</code>.</p>
+        <p lang="ja">どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。書き換える前のファイルは <code>.bak</code> に残ります（実行するたびに上書きされます）。<code>--print</code> を付けると、書き込む内容を表示するだけで終わります。Codex は新しいフックを一度だけ承認する必要があるので、Codex で <code>/hooks</code> を開いてください。<kbd>Alt+n</kbd> で Codex を起動したい場合は <code>set -g @junban-agent-cmd codex</code> にします。</p>
         <p lang="en">Any other agent that can run a command when it needs you or finishes can drive junban, as long as the command runs inside the agent's tmux pane:</p>
         <p lang="ja">ほかのエージェントでも、返事待ちや完了のときにコマンドを実行できるものなら、下の <code>state.sh</code> を呼ぶように設定すれば junban で状態を表示できます。そのコマンドは、エージェントと同じ tmux のペインの中で実行される必要があります。</p>
         <pre>~/.tmux/plugins/junban/scripts/state.sh running   <span class="c"># or waiting | done | idle | clear</span></pre>
@@ -457,7 +457,7 @@ set -g @junban-notify-cmd '…'</pre>
       <section id="update">
         <h2><span lang="en">Updates</span><span lang="ja">アップデート</span></h2>
         <p lang="en">junban updates itself. Once a day it moves to the newest release (a version that passed CI on Linux and macOS), reloads, and updates the Claude Code plugin; new Claude Code sessions use the new hooks. A copy with local changes, or one you pinned to a commit, is left alone. After an update, the status line says "junban updated to X" once.</p>
-        <p lang="ja">junban は自動で更新されます。1日に1回、最新のリリース（Linux と macOS のテストを通った版）があれば更新して読み込み直し、Claude Code のプラグインも更新します。新しく起動した Claude Code のセッションから新しい版で動きます。手元で変更を加えている場合や、版を固定している場合は更新しません。更新した後は、ステータスバーに「junban を X に更新しました」と1回だけ出ます。</p>
+        <p lang="ja">junban は自動で更新されます。1日に1回、最新のリリース（Linux と macOS のテストを通った版）があれば更新して読み込み直し、Claude Code のプラグインも更新します。Claude Code のフックは、新しく起動したセッションから新しい版になります。手元で変更を加えている場合や、版を固定している場合は更新しません。更新した後は、ステータスバーに「junban を X に更新しました」と1回だけ出ます。</p>
         <ul>
           <li lang="en"><kbd>Alt+,</kbd> → <b>Update now</b> updates at once and says what it did. The installed version is shown next to it, and next to the title in <kbd>Alt+/</kbd>.</li>
           <li lang="ja"><kbd>Alt+,</kbd> →「今すぐアップデート」で、その場で更新して結果を表示します。今の版はこの項目の横と、<kbd>Alt+/</kbd> のタイトルの横に出ます。</li>
@@ -475,8 +475,8 @@ set -g @junban-notify-cmd '…'</pre>
           <li lang="ja">tmux の設定ファイル（<code>~/.tmux.conf</code> または <code>~/.config/tmux/tmux.conf</code>）から junban の行（<code>run-shell …/junban.tmux</code>、または <code>@plugin</code> の行）を消します。</li>
           <li lang="en">Delete <code>~/.tmux/plugins/junban</code> and, if you like, <code>~/.local/state/junban</code> and <code>~/.config/junban</code> (your <kbd>Alt+,</kbd> choices).</li>
           <li lang="ja"><code>~/.tmux/plugins/junban</code> を削除します。必要なら <code>~/.local/state/junban</code> と <code>~/.config/junban</code>（Alt+, で選んだ設定）も消します。</li>
-          <li lang="en">In a terminal: <code>claude plugin uninstall junban@junban</code>. For Codex or Gemini, restore the <code>.bak</code> that setup left.</li>
-          <li lang="ja">ターミナルで <code>claude plugin uninstall junban@junban</code> を実行します。Codex・Gemini は、<code>setup.sh</code> が残した <code>.bak</code> を元のファイルに戻します。</li>
+          <li lang="en">In a terminal: <code>claude plugin uninstall junban@junban</code>. For Codex or Gemini, delete the entries that call junban's <code>hook.sh</code> from <code>~/.codex/hooks.json</code> or <code>~/.gemini/settings.json</code>.</li>
+          <li lang="ja">ターミナルで <code>claude plugin uninstall junban@junban</code> を実行します。Codex・Gemini は、<code>~/.codex/hooks.json</code>・<code>~/.gemini/settings.json</code> から junban の <code>hook.sh</code> を呼んでいる項目を消します。</li>
           <li lang="en">Restart tmux (<code>tmux kill-server</code>) to clear the keys and status lines. This ends every tmux session, including any agents still running.</li>
           <li lang="ja">tmux を再起動します。tmux のセッションはすべて終了し、動いているエージェントも止まるので、作業を終えてから実行してください（<code>tmux kill-server</code>）。キーとステータスバーが元に戻ります。</li>
         </ol>

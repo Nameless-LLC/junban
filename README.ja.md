@@ -152,7 +152,7 @@ set -g @junban-namer-model qwen3:8b
 ~/.tmux/plugins/junban/scripts/setup.sh gemini   # ~/.gemini/settings.json に書く
 ```
 
-どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。元のファイルは `.bak` に残ります。`--print` を付けると、書き込まずに内容だけ表示します。`set -g @junban-agent-cmd codex` にすると Alt+n で Codex が起動します。
+どちらも既存のフックは残し、junban の分だけを入れ替えます（何度実行しても大丈夫です）。書き換える前のファイルは `.bak` に残ります（実行するたびに上書きされます）。`--print` を付けると、書き込まずに内容だけ表示します。`set -g @junban-agent-cmd codex` にすると Alt+n で Codex が起動します。
 
 ほかのツールも、そのツールが動いている tmux のペインの中からコマンドを実行できれば、junban につなげられます。次の1行で状態を知らせるだけです。
 

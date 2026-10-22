@@ -174,7 +174,7 @@ Colors: `@junban-color-{waiting,done,running,slower,bg,bg2,fg,accent,muted,dim,k
 ~/.tmux/plugins/junban/scripts/setup.sh gemini   # writes ~/.gemini/settings.json
 ```
 
-Both keep your existing hooks, replace only junban's own entries (safe to re-run), and leave a `.bak`; `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
+Both keep your existing hooks, replace only junban's own entries (safe to re-run), and leave the file as it was before this run in `.bak` (overwritten each run); `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
 
 Any other agent can drive junban if it can run a command from inside its tmux pane:
 
