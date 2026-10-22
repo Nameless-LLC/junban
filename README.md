@@ -50,7 +50,7 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Other agents](#other-agents).
 
-Requires tmux ≥ 3.2 and bash. python3 and fzf are optional; they add window naming, the timeline and list search.
+Requires tmux ≥ 3.2, bash and git. python3 and fzf are optional; they add window naming, the timeline and list search.
 
 ### Updates
 
@@ -94,7 +94,9 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Finished work can come in batches.** With `set -g @junban-done-batch 30`, ✓ wait for the next :00 or :30 and arrive as one notification; until then the status line only counts them. ✋ still interrupts at once.
 
-**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`). Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
+**Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a brings the window that shows the target forward (or opens that project's folder) instead of swapping the terminal you are in. `@junban-vscode-raise off` switches in place.
+
+**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when you answer quicker than the last 7 days. Alt+/ adds a bar per day for the last week, this week against last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's worst windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; finishing while you watch is no wait, and one agent left overnight counts for at most an hour. Everything stays in a local TSV file.
 
 **A timeline of your day.** prefix T (and the top of Alt+/) draws a row per window: yellow █ working, red ▓ waiting for you, green ▒ done and not looked at, then when you were active, how long agents worked and waited on you, and how many ran at once. `scripts/timeline.sh 1` shows yesterday. It is a view for you, and it stays on your machine; set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
 
