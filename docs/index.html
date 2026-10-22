@@ -485,7 +485,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">Alt+n で起動するもの、言語（英語・日本語・タイ語）、ステータスバーの行数などをメニューで変えられます。選んだ内容は junban 専用のファイルに保存します。選んだ値を上書きする行が tmux.conf にあると、設定画面にその行が表示され、無効にする（コメントにする）かを選べます。tmux.conf を書き換えるのは、そこで無効にすることを選んだときだけです。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Your VS Code windows stay put</h3><h3 lang="ja">VS Code では移動先のウィンドウが前面に出る</h3>
+          <h3 lang="en">Your VS Code windows stay put</h3><h3 lang="ja">VS Code では、移動先を表示している VS Code のウィンドウが前面に出る</h3>
           <p lang="en">Alt+a brings the VS Code window showing that agent to the front (or opens its folder) instead of swapping the terminal you're in. This works when each VS Code window runs its own tmux session over a remote connection (Remote-SSH, Dev Containers, WSL) to a Linux host.</p>
           <p lang="ja">Alt+a を押すと、移動先のエージェントを表示している VS Code のウィンドウが前面に出ます。そのウィンドウがなければ、junban がそのプロジェクトのフォルダを開きます。今使っているターミナルの表示は切り替えません。VS Code から Linux にリモート接続（SSH・Dev Containers・WSL など）し、VS Code のウィンドウごとに別の tmux セッションを使っている場合に使えます。</p>
         </div>
@@ -593,7 +593,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
           <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to <code>~/.tmux.conf</code>, before the plugin line, to keep yours; junban then adds only its badges, the ✋ ✓ ● counts and mascot, and the guide rows (<code>set -g @junban-guide off</code> drops those rows).</p>
-          <p lang="ja">標準では junban のステータスバーに変わります。今の見た目のままにしたい場合は、<code>~/.tmux.conf</code> のプラグインを読み込む行より前に <code>set -g @junban-theme off</code> を書きます。その場合、junban が加えるのはタブの印、状態ごとの件数とマスコット、ステータスバーの案内の行です（案内の行は <code>set -g @junban-guide off</code> で消せます）。</p>
+          <p lang="ja">標準では、ステータスバーが junban のものになって画面の上に移り、ペインの枠の色も変わります。今の見た目のままにしたい場合は、<code>~/.tmux.conf</code> のプラグインを読み込む行より前に <code>set -g @junban-theme off</code> を書きます。その場合、junban が加えるのはタブの印、状態ごとの件数とマスコット、ステータスバーの案内の行です（案内の行は <code>set -g @junban-guide off</code> で消せます）。</p>
         </details>
         <details>
           <summary><span lang="en">Why tmux, and not an app or a VS Code extension?</span><span lang="ja">なぜ tmux？　アプリや VS Code 拡張ではないの？</span></summary>
