@@ -28,6 +28,8 @@ opt_prefetch @junban-lang @junban-color-accent @junban-color-bg @junban-color-bg
   @junban-key-list @junban-key-new @junban-key-scratch @junban-key-settings @junban-key-timeline \
   @junban-name-width @junban-nav-keys @junban-position @junban-prefix-keys @junban-theme
 
+# Strings for prompts below (Alt+w) as well as the guide rows.
+load_i18n
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
 cr=$(opt @junban-color-running "#e5c07b")
@@ -79,7 +81,6 @@ if [ "$(opt @junban-guide on)" = on ]; then
   # While the prefix is pending, the last guide row lists what can follow it. Built
   # here rather than in hints.sh: a #() job would show its old output for a moment,
   # and the hint is only worth anything the instant the prefix goes down.
-  load_i18n
   digits=0-9; [ "$(opt @junban-nav-keys on)" = on ] && digits=1-9
   pk="#[fg=$cr]$digits#[fg=$mut] $T_PK_WIN  #[fg=$cr]n/p#[fg=$mut] $T_PK_NP"
   if [ "$(opt @junban-prefix-keys on)" = on ]; then

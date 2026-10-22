@@ -192,8 +192,8 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていないウィンドウ（時間は <code>@junban-stale-hours</code> で変えられます）。<kbd>Alt+f</kbd> の一覧ではいちばん下に並びます。</span></td></tr>
           </tbody>
         </table></div>
-        <p lang="en">The right end of the status line counts agents across all sessions: ✋ waiting, ✓ finished, ● running. Next to it sits a small mascot whose face follows your agents:</p>
-        <p lang="ja">ステータスバーの右端には、全セッションの件数（✋ 返事待ち・✓ 完了・● 作業中）が出ます。その隣には、状況に合わせて表情が変わるマスコットがいます。</p>
+        <p lang="en">The right side of the status line counts agents across all sessions: ✋ waiting, ✓ finished, ● running. Next to it sits a small mascot whose face follows your agents:</p>
+        <p lang="ja">ステータスバーの右側には、全セッションの件数（✋ 返事待ち・✓ 完了・● 作業中）が出ます。その隣には、状況に合わせて表情が変わるマスコットがいます。</p>
         <div class="tw"><table><tbody>
           <tr><td><code>[▮ ▮]!</code></td><td><span lang="en">an agent is waiting on you</span><span lang="ja">エージェントがあなたを待っている</span></td></tr>
           <tr><td><code>[◠ ◠]</code></td><td><span lang="en">an agent finished</span><span lang="ja">作業が終わった</span></td></tr>
@@ -209,7 +209,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       <section id="keys">
         <h2><span lang="en">Keys</span><span lang="ja">キー</span></h2>
         <p lang="en">If your terminal doesn't send Alt, use the prefix keys in the second column. For <kbd>Alt+1</kbd>…<kbd>9</kbd>, <kbd>Alt+[ ]</kbd>, <kbd>Alt+Tab</kbd>, <kbd>Alt+z</kbd> and <kbd>Alt+w</kbd>, tmux's own prefix 1–9, p / n, l, z and &amp; do the same.</p>
-        <p lang="ja">Alt キーが使えないターミナルでは、表の「prefix」列のキーを prefix の後に押します。prefix 列が「—」の行のうち、ウィンドウの移動と操作（Alt+1〜9・Alt+[ ]・Alt+Tab・Alt+z・Alt+w）は、tmux 標準の prefix 1〜9・p／n・l・z・&amp; で同じことができます。prefix で開けないのは設定（Alt+,）だけです。</p>
+        <p lang="ja">Alt キーが使えないターミナルでは、表の「prefix」列のキーを prefix の後に押します。prefix 列が「—」の行のうち、ウィンドウの移動と操作（Alt+1…9・Alt+[ ]・Alt+Tab・Alt+z・Alt+w）は、tmux 標準の prefix 1…9・p／n・l・z・&amp; で同じことができます。prefix で開けないのは設定（Alt+,）だけです。</p>
         <div class="tw"><table>
           <thead><tr><th lang="en">Key</th><th lang="ja">キー</th><th lang="en">Prefix +</th><th lang="ja">prefix</th><th lang="en">What it does</th><th lang="ja">動作</th></tr></thead>
           <tbody>
@@ -269,13 +269,14 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="en">When an agent asks you something, wants permission or finishes, junban writes one line about it: the question, what it wants permission for, or how the work turned out ("tests pass, PR #12 opened"). It shows in the banner, in the <kbd>Alt+f</kbd> list and in notifications for finished work, so you know where each one stands before you switch.</p>
         <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。ステータスバー、<kbd>Alt+f</kbd> の一覧、完了の通知（設定している場合）に出るので、ウィンドウを切り替える前に、それぞれが何を求めているか、作業がどう終わったかが分かります。</p>
         <p lang="en">With a namer model set (<a href="#names">below</a>), the model writes the line for finished work; otherwise it is the first meaningful line of the agent's last reply. <code>@junban-recap off</code> turns it off.</p>
-        <p lang="ja">作業を終えたときの1行は、命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければ返答の最初の意味のある1行を使います。<code>@junban-recap off</code> で止められます。</p>
+        <p lang="ja">作業を終えたときの1行は、命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければエージェントの最後の返答から、最初の意味のある1文を使います。<code>@junban-recap off</code> で止められます。</p>
       </section>
 
       <section id="names">
         <h2><span lang="en">Window names</span><span lang="ja">ウィンドウの名前</span></h2>
         <p lang="en">Windows are named after what you asked. Short replies ("ok", "yes", "進めて", "ครับ"), slash commands, <code>!</code> shell commands and pasted blocks never rename anything. A window you rename yourself (prefix <kbd>,</kbd>) is left alone for good.</p>
         <p lang="ja">ウィンドウには、あなたが頼んだ内容から名前が付きます。「OK」「はい」「進めて」のような短い返事、スラッシュコマンド、<code>!</code> で始まるシェルコマンド、貼り付けた長文では変わりません。自分で名前を付けたウィンドウ（prefix <kbd>,</kbd>）は、それ以降ずっとそのままです。</p>
+        <p lang="ja">モデルに名前を付けさせる場合は、下のように <code>@junban-rename llm</code> と、接続先（<code>@junban-namer-url</code>）・モデル名（<code>@junban-namer-model</code>）を設定します。</p>
         <pre><span class="c"># default: the first meaningful line of your latest prompt</span>
 set -g @junban-rename prompt
 <span class="c"># or let a model summarize your last few prompts</span>
@@ -297,7 +298,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
           <li lang="en"><kbd>Alt+/</kbd> shows the full report: a bar per day, this week against last (the same ▼ / ▲, or "≈ same" when the change is too small to matter), your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
           <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較（ステータスバーと同じ ▼ / ▲ で示し、差が小さいときは「≈ ほぼ同じ」）、自己ベストの日、今日のウィンドウ別の待ち時間（長い順に最大8件）、返答の中央値が <code>@junban-goal</code> 分（既定 5分）以内だった日の連続記録が見られます。マスコットが、返事の速さを先週と比べてひとこと言います。</li>
           <li lang="en"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> goes back 30 days.</li>
-          <li lang="ja"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
+          <li lang="ja"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> で直近30日分を表示します。</li>
         </ul>
         <pre class="out" lang="en">  How long your agents waited on you — last 7 days
 
@@ -374,7 +375,7 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
       <section id="vscode">
         <h2><span lang="en">VS Code terminals</span><span lang="ja">VS Code のターミナル</span></h2>
         <p lang="en">This applies when tmux runs on Linux and VS Code connects to it remotely (Remote-SSH, Dev Containers, WSL), with one VS Code window per project and each terminal attached to its own tmux session. <kbd>Alt+a</kbd> and the <kbd>Alt+f</kbd> list then raise the VS Code window that already shows the target, instead of swapping this terminal to another project. If no terminal shows the target (you closed the terminal in that project's window), they open that project's folder in VS Code. Everywhere else, and with <code>@junban-vscode-raise off</code>, the terminal switches in place.</p>
-        <p lang="ja">この節の動作は、tmux が Linux で動いていて、VS Code がリモート接続（Remote-SSH・Dev Containers・WSL など）でそこにつないでいるときだけです（それ以外のターミナルでは、その場で切り替えます）。プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> と <kbd>Alt+f</kbd> の一覧は、行き先をすでに表示している VS Code のウィンドウを前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。行き先を表示しているターミナルがないとき（その VS Code のウィンドウでターミナルを閉じているとき）は、そのプロジェクトのフォルダを VS Code で開きます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
+        <p lang="ja">プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> や <kbd>Alt+f</kbd> の一覧で移動すると、行き先をすでに表示している VS Code のウィンドウが前面に出ます。今のターミナルの中身を別プロジェクトに入れ替えることはしません。行き先を表示しているターミナルがないとき（そのウィンドウでターミナルを閉じているときや、ウィンドウ自体を閉じているとき）は、そのプロジェクトのフォルダを VS Code で開きます。この動作は、tmux が Linux で動いていて、VS Code がリモート接続（Remote-SSH・Dev Containers・WSL など）でそこにつないでいるときだけです。それ以外のターミナルと、<code>@junban-vscode-raise off</code> にしたときは、その場で切り替えます。</p>
       </section>
 
       <section id="options">

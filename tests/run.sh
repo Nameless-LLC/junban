@@ -62,6 +62,9 @@ tmux unbind -n M-g
 has "…prefix g still opens the shell" "$(tmux list-keys -T prefix | grep -E ' g +display-popup')" "scratch"
 has "Alt+w asks before closing"     "$(tmux list-keys -T root | grep -F ' M-w ')" "confirm-before"
 has "…naming the window"            "$(tmux list-keys -T root | grep -F ' M-w ')" "#W"
+tmux set -g @junban-guide off; bash "$ROOT/junban.tmux"
+has "…with the guide rows off too"   "$(tmux list-keys -T root | grep -F ' M-w ')" "#W"
+tmux set -gu @junban-guide; bash "$ROOT/junban.tmux"
 has "badge in window format"        "$(tmux show -gv window-status-format)" "@junban-badge"
 # Alt+1 is the first tab: a session whose tabs start at 0 is renumbered from 1.
 tmux set -g base-index 0 \; set -g renumber-windows off

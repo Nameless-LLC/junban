@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.4 — 2026-10-22
+
+### Fixed
+
+- **Alt+w asks properly with the guide rows off.** With `@junban-guide off` the close prompt was empty.
+- **The installer no longer says open Claude Code sessions pick up junban by themselves.** It now says to run `/reload-plugins` in them.
+- **junban's state files are written readable only by you**, the version and update log included.
+
+### Changed
+
+- **The site, manual and READMEs were reviewed line by line against the code**, in English and Japanese. Several descriptions were corrected: the Alt+a order, what needs Python 3 and fzf, when the VS Code window switch applies (VS Code connected remotely to Linux), what `@junban-done-batch` holds back, and what is logged.
+
 ## 0.7.3 — 2026-10-22
 
 ### Changed
