@@ -173,7 +173,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <p lang="ja">tmux のプラグイン管理ツール <a href="https://github.com/tmux-plugins/tpm">TPM</a> を使う場合は、<code>~/.tmux.conf</code> に <code>set -g @plugin 'Nameless-LLC/junban'</code> を足して prefix <kbd>I</kbd> を押してから、次のコマンドで Claude Code に junban のプラグインを入れます。</p>
         <pre>claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
         <p lang="en">Needs tmux 3.2 or newer, bash and git. python3 and fzf are optional but recommended: python3 adds the badge fix after Esc, window names, recaps and change summaries, the z mark for untouched windows, the timeline, Codex and Gemini setup, and the <kbd>Alt+n</kbd> worktree check; fzf sorts the <kbd>Alt+f</kbd> list by need and makes it searchable. Works on Linux and macOS.</p>
-        <p lang="ja">必要なのは tmux 3.2 以上、bash、git です。python3 と fzf は任意ですが、入れておくのがおすすめです。python3 は、Esc 後の印の自動修復、ウィンドウの名前付け、1行要約と変更内容の表示、タイムライン、放置ウィンドウの z、Codex・Gemini の設定、Alt+n の worktree の判定に使います。fzf があると、<kbd>Alt+f</kbd> の一覧が対応の必要な順に並び、文字を打って絞り込めます。Linux と macOS で動きます。</p>
+        <p lang="ja">必要なのは tmux 3.2 以上、bash、git です。python3 と fzf は任意ですが、入れておくのがおすすめです。python3 は、Esc 後の印の自動修復、ウィンドウの名前付け、1行要約と変更内容の表示、タイムライン、放置ウィンドウの z、Codex・Gemini の設定、<kbd>Alt+n</kbd> の worktree の判定に使います。fzf があると、<kbd>Alt+f</kbd> の一覧が対応の必要な順に並び、文字を打って絞り込めます。Linux と macOS で動きます。</p>
         <p lang="en">New Claude Code sessions report their state from the first prompt; in a session already open, run <code>/reload-plugins</code>. Press <kbd>Alt+/</kbd> any time for the keys.</p>
         <p lang="ja">インストール後に新しく始めた Claude Code のセッションでは、最初の依頼から印が付きます。すでに開いているセッションでは <code>/reload-plugins</code> を実行してください。キーを忘れたら、いつでも <kbd>Alt+/</kbd> を押してください。</p>
       </section>
@@ -227,7 +227,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td><kbd>Alt+z</kbd></td><td class="m">—</td><td><span lang="en">Zoom the pane, or unzoom it.</span><span lang="ja">ペインを最大化／元に戻す。</span></td></tr>
           </tbody>
         </table></div>
-        <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は設定 → プロファイル → キーボード →「メタキーとして Option キーを使用」をオンにします。</p></div>
+        <div class="note"><p lang="en">On macOS, let Option act as Alt: in iTerm2, Profiles → Keys → Left Option key: Esc+; in Terminal.app, Settings → Profiles → Keyboard → Use Option as Meta key.</p><p lang="ja">macOS では Option を Alt として使えるように設定します。iTerm2 は Profiles → Keys → Left Option key を Esc+ に、ターミナル.app は設定 → プロファイル → キーボード で、Option キーをメタキーとして使う項目をオンにします（macOS の版によって表記が少し違います）。</p></div>
         <p lang="en">The <kbd>Alt+/</kbd> and timeline popups scroll with the arrows, PgUp/PgDn, <kbd>Space</kbd> or the mouse wheel; any other key, or a click inside, closes them.</p>
         <p lang="ja"><kbd>Alt+/</kbd> とタイムラインのポップアップは、矢印キー・PgUp/PgDn・<kbd>Space</kbd>・マウスホイールでスクロールし、ほかのキーを押すかポップアップの中をクリックすると閉じます。</p>
         <h3 id="list" lang="en">The Alt+f list</h3><h3 lang="ja">Alt+f の一覧</h3>
@@ -267,7 +267,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
       <section id="recap">
         <h2><span lang="en">One-line recaps</span><span lang="ja">1行要約</span></h2>
         <p lang="en">When an agent asks you something, wants permission or finishes, junban writes one line about it: the question, what it wants permission for, or how the work turned out ("tests pass, PR #12 opened"). It shows in the banner, in the <kbd>Alt+f</kbd> list and in notifications for finished work, so you know where each one stands before you switch.</p>
-        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、実行したいコマンド、作業の結果（「テスト成功、PR #12 を作成」など）です。ステータスバー、<kbd>Alt+f</kbd> の一覧、完了の通知（設定している場合）に出るので、ウィンドウを切り替える前に、それぞれが何を求めているか、作業がどう終わったかが分かります。</p>
+        <p lang="ja">エージェントが質問したとき、許可を求めたとき、作業を終えたときに、その内容を1行にまとめます。質問の中身、許可を求めている操作、作業の結果（「テスト成功、PR #12 を作成」など）です。ステータスバー、<kbd>Alt+f</kbd> の一覧、完了の通知（設定している場合）に出るので、ウィンドウを切り替える前に、それぞれが何を求めているか、作業がどう終わったかが分かります。</p>
         <p lang="en">With a namer model set (<a href="#names">below</a>), the model writes the line for finished work; otherwise it is the first meaningful line of the agent's last reply. <code>@junban-recap off</code> turns it off.</p>
         <p lang="ja">作業を終えたときの1行は、命名用のモデルを設定していれば（<a href="#names">次の項目</a>）モデルが書き、なければエージェントの最後の返答から、最初の意味のある1文を使います。<code>@junban-recap off</code> で止められます。</p>
       </section>
@@ -375,7 +375,7 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
       <section id="vscode">
         <h2><span lang="en">VS Code terminals</span><span lang="ja">VS Code のターミナル</span></h2>
         <p lang="en">This applies when tmux runs on Linux and VS Code connects to it remotely (Remote-SSH, Dev Containers, WSL), with one VS Code window per project and each terminal attached to its own tmux session. <kbd>Alt+a</kbd> and the <kbd>Alt+f</kbd> list then raise the VS Code window that already shows the target, instead of swapping this terminal to another project. If no terminal shows the target (you closed the terminal in that project's window), they open that project's folder in VS Code. Everywhere else, and with <code>@junban-vscode-raise off</code>, the terminal switches in place.</p>
-        <p lang="ja">プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> や <kbd>Alt+f</kbd> の一覧で移動すると、行き先をすでに表示している VS Code のウィンドウが前面に出ます。今のターミナルの中身を別プロジェクトに入れ替えることはしません。行き先を表示しているターミナルがないとき（そのウィンドウでターミナルを閉じているときや、ウィンドウ自体を閉じているとき）は、そのプロジェクトのフォルダを VS Code で開きます。この動作をするのは、tmux が Linux で動いていて、VS Code がリモート接続（Remote-SSH・Dev Containers・WSL など）でそこにつないでいるときだけです。それ以外のターミナルと、<code>@junban-vscode-raise off</code> にしたときは、その場で切り替えます。</p>
+        <p lang="ja">この節は、tmux が Linux で動いていて、VS Code がリモート接続（Remote-SSH・Dev Containers・WSL など）でそこにつないでいる場合の話です。プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> や <kbd>Alt+f</kbd> の一覧で移動すると、行き先をすでに表示している VS Code のウィンドウが前面に出ます。今のターミナルの中身を別プロジェクトに入れ替えることはしません。行き先を表示しているターミナルがないとき（そのウィンドウでターミナルを閉じているときや、ウィンドウ自体を閉じているとき）は、そのプロジェクトのフォルダを VS Code で開きます。それ以外のターミナルと、<code>@junban-vscode-raise off</code> にしたときは、その場で切り替えます。</p>
       </section>
 
       <section id="options">
@@ -452,7 +452,7 @@ set -g @junban-notify-cmd '…'</pre>
         <h2><span lang="en">Troubleshooting</span><span lang="ja">うまく動かないとき</span></h2>
         <pre>~/.tmux/plugins/junban/scripts/doctor.sh</pre>
         <p lang="en">Or <code>/junban:doctor</code> in Claude Code. It checks tmux, the plugin and each agent's hooks, prints ok / warn / FAIL with what to do, and leaves out window names, prompts and secrets so you can paste it into a <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">bug report</a>.</p>
-        <p lang="ja">上のコマンドで設定を診断できます（Claude Code では <code>/junban:doctor</code> でも同じです）。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。診断結果にはウィンドウの名前・依頼の内容・秘密の値が含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
+        <p lang="ja">上のコマンドで設定を診断できます（Claude Code では <code>/junban:doctor</code> でも同じです）。tmux・プラグイン・各エージェントのフックを確認し、ok / warn / FAIL と直し方を表示します。診断結果にはウィンドウの名前・依頼の内容・API キーなどの秘密情報が含まれないので、そのまま<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">バグ報告</a>に貼れます。</p>
         <ul>
           <li lang="en"><span class="b">Alt keys do nothing.</span> Your terminal isn't sending Alt. Use the prefix keys, or see the macOS note under <a href="#keys">Keys</a>.</li>
           <li lang="ja"><span class="b">Alt キーが使えない。</span>ターミナルが Alt を送っていません。prefix のキーを使うか、「<a href="#keys">キー</a>」の節にある macOS の設定を見てください。</li>
