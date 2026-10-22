@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>junban manual</title>
-<meta name="description" content="Everything junban does: badges, keys, the status lines, recaps, the wait report, the timeline, other agents and every option.">
+<meta name="description" content="The junban manual: tmux tab badges for Claude Code, Codex and Gemini agents, the keys, status lines, recaps, wait report, timeline and every option.">
 <meta property="og:title" content="junban manual">
-<meta property="og:description" content="Badges, keys, the status lines, recaps, the wait report, the timeline, other agents and every option.">
+<meta property="og:description" content="The junban manual: tmux tab badges for Claude Code, Codex and Gemini agents, the keys, status lines, recaps, wait report, timeline and every option.">
 <meta property="og:image" content="https://junban.namelessjp.com/social/og.png">
 <meta property="og:url" content="https://junban.namelessjp.com/manual/">
 <meta name="twitter:card" content="summary_large_image">
@@ -208,7 +208,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
 
       <section id="keys">
         <h2><span lang="en">Keys</span><span lang="ja">キー</span></h2>
-        <p lang="en">If your terminal doesn't send Alt, use the prefix keys in the second column. For the window keys, tmux's own prefix 1–9, n / p, l, z and &amp; do the same.</p>
+        <p lang="en">If your terminal doesn't send Alt, use the prefix keys in the second column. For <kbd>Alt+1</kbd>…<kbd>9</kbd>, <kbd>Alt+[ ]</kbd>, <kbd>Alt+Tab</kbd>, <kbd>Alt+z</kbd> and <kbd>Alt+w</kbd>, tmux's own prefix 1–9, p / n, l, z and &amp; do the same.</p>
         <p lang="ja">Alt キーが使えないターミナルでは、表の「prefix」列のキーを prefix の後に押します。prefix 列が「—」の行のうち、ウィンドウの移動と操作（Alt+1…9・Alt+[ ]・Alt+Tab・Alt+z・Alt+w）は、tmux 標準の prefix 1〜9・p／n・l・z・&amp; で同じことができます。prefix で開けないのは設定（Alt+,）だけです。</p>
         <div class="tw"><table>
           <thead><tr><th lang="en">Key</th><th lang="ja">キー</th><th lang="en">Prefix +</th><th lang="ja">prefix</th><th lang="en">What it does</th><th lang="ja">動作</th></tr></thead>
@@ -260,7 +260,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
         <div class="tl" lang="ja"><span class="bn g">✓ 1件の作業が完了 → Alt+a で確認</span><span class="rc">料金ページの文言: テスト成功 · 3ファイル +41 −88</span></div>
         <p lang="en">The banner sits on the second line; today's wait moves to its right end when there is room. On a narrow terminal, today's wait drops out first, then the recap is shortened, so the banner always fits.</p>
         <p lang="ja">この赤・緑の表示は2行目に出ます。幅に余裕があれば、今日の待ち時間はその右端に移ります。ターミナルの幅が狭いときは、今日の待ち時間を外し、次に1行要約の末尾を切り詰めるので、押すキーの表示は必ず残ります。</p>
-        <p lang="en"><code>@junban-guide-lines 2</code> drops the keys row once you know the keys; they then show only after you press the prefix. <code>@junban-tint 20</code> sets how strongly (in %) the banner's color washes over its row; <code>@junban-tint-waiting</code> does the same for ✋.</p>
+        <p lang="en"><code>@junban-guide-lines 2</code> drops the keys row once you know the keys; they then show only after you press the prefix. <code>@junban-tint 20</code> sets how much of the banner's color (in %) tints its row (0 = off); <code>@junban-tint-waiting</code> does the same for ✋.</p>
         <p lang="ja"><code>@junban-guide-lines 2</code> にすると、キーの行がなくなります。prefix（Ctrl+b）を押した後は、残った行に続けて押せるキーが出ます。<code>@junban-tint</code> は赤・緑の色を行全体に薄く広げます（✋ のときの濃さは <code>@junban-tint-waiting</code>）。</p>
       </section>
 
@@ -292,9 +292,9 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
         <p lang="en">A wait runs from the moment an agent asks you something (✋) or finishes (✓) until you answer or look. If it finishes while you are watching, that is no wait at all. One wait counts for at most <code>@junban-meter-cap</code> minutes (60), so a night away doesn't swamp the numbers.</p>
         <p lang="ja">待ち時間は、エージェントが質問した（✋）か作業を終えた（✓）時点から、あなたが返事をするか見に行くまでです。見ている最中に終わった分は数えません。1回あたり最大 <code>@junban-meter-cap</code> 分（60分）で打ち切るので、一晩放置しても、その1回で合計が大きく膨らむことはありません。</p>
         <ul>
-          <li lang="en">The status line shows today's total and your median reply. Next to the median, a green ▼ means you're replying faster than over the last 7 days and an orange ▲ means slower, with a word to say which: <code>median reply 3m10s ▼32% quicker than the last 7 days</code>. Nothing shows for a change under 15 seconds or 10%, or until there are 3 waits today and 5 in the week before. Double or more shows as a ratio (<code>▲3.3× slower</code>), which reads more easily than "+233%".</li>
-          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が出ます。中央値の横には、前の7日間より速ければ緑の ▼ と「速い」、遅ければオレンジの ▲ と「遅い」が出ます（<code>返答の中央値 3分10秒 ▼32% 速い（前7日比）</code>）。差が15秒未満か10%未満のとき、または今日の待ちが3回、前の7日間が5回に満たないうちは何も出しません。2倍以上は「▲3.3倍 遅い」のように倍数で出します。「+233%」と書くより読みやすいためです。</li>
-          <li lang="en"><kbd>Alt+/</kbd> adds a bar per day, this week against last (the same ▼ / ▲, or "≈ same" when the change is noise), your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
+          <li lang="en">The status line shows today's total and your median reply. Next to the median, an arrow compares today with the 7 days before: a green ▼ when you're replying quicker, an orange ▲ when slower, with the word spelled out: <code>median reply 3m10s ▼32% quicker than the last 7 days</code>. Nothing shows for a change under 15 seconds or 10%, or until there are 3 waits today and 5 in the week before. A change of 2× or more shows as a ratio: <code>▲3.3× slower</code>.</li>
+          <li lang="ja">ステータスバーに、今日の合計と返答の中央値が出ます。中央値の横には、前の7日間より速ければ緑の ▼ と「速い」、遅ければオレンジの ▲ と「遅い」が出ます（<code>返答の中央値 3分10秒 ▼32% 速い（前7日比）</code>）。差が15秒未満か10%未満のとき、または今日の待ちが3回、前の7日間が5回に満たないうちは何も出しません。2倍以上は「▲3.3倍 遅い」のように倍数で出します。</li>
+          <li lang="en"><kbd>Alt+/</kbd> shows the full report: a bar per day, this week against last (the same ▼ / ▲, or "≈ same" when the change is noise), your best day, today's slowest windows, and a streak of days with a median reply within <code>@junban-goal</code> minutes (5). The mascot comments on your week.</li>
           <li lang="ja"><kbd>Alt+/</kbd> では、日ごとの棒グラフ、今週と先週の比較（ステータスバーと同じ ▼ / ▲ で示し、差が小さいときは「≈ ほぼ同じ」）、自己ベストの日、今日のウィンドウ別の待ち時間（長い順に最大8件）、返答の中央値が <code>@junban-goal</code> 分（5分）以内だった日の連続記録が見られます。マスコットが、返事の速さを先週と比べてひとこと言います。</li>
           <li lang="en"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> goes back 30 days.</li>
           <li lang="ja"><code>~/.tmux/plugins/junban/scripts/stats.sh 30</code> で30日前までさかのぼれます。</li>
@@ -303,18 +303,22 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
 
   day           waited   times   median   ✋     ✓
   10/16         10h12m     139      55s    0   139   ████████████████
+  10/17          1h05m      18    3m02s    2    16   █▋
   10/18 today    2h53m      22    4m23s    0    22   ████▌
-  This week vs last: median reply 1m40s → 1m05s ▼35% quicker · waited 13h40m → 13h05m ≈ same
+
+  This week vs last: median reply 1m40s → 1m05s ▼35% quicker · waited 13h40m → 14h10m ≈ same
   Personal best: 10/16, median reply 55s
-  2 days in a row with a median reply within 5 min</pre>
+  3 days in a row with a median reply within 5 min</pre>
         <pre class="out" lang="ja">  エージェントがあなたを待った時間 — 直近7日
 
   日付         待ち時間   回数    中央値   ✋     ✓
   10/16        10時間12分    139      55秒    0   139   ████████████████
+  10/17         1時間05分     18   3分02秒    2    16   █▋
   10/18 今日    2時間53分     22   4分23秒    0    22   ████▌
-  今週と先週: 返答の中央値 1分40秒 → 1分05秒 ▼35% 速い · 待ち時間 13時間40分 → 13時間05分 ≈ ほぼ同じ
+
+  今週と先週: 返答の中央値 1分40秒 → 1分05秒 ▼35% 速い · 待ち時間 13時間40分 → 14時間10分 ≈ ほぼ同じ
   自己ベスト: 10/16（返答の中央値 55秒）
-  2日連続で返答の中央値が5分以内</pre>
+  3日連続で返答の中央値が5分以内</pre>
       </section>
 
       <section id="timeline">
@@ -332,7 +336,7 @@ set -g @junban-namer-key OPENAI_API_KEY             <span class="c"># env var ho
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 <span class="c"># phone, via ntfy</span>
 set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
-        <p lang="en">With many agents, finished work arrives all the time. <code>@junban-done-batch 30</code> holds ✓ until the next :00 or :30 and sends them as one notification; until then the status line only counts them. ✋ still comes at once, and <kbd>Alt+a</kbd> still takes you to a held ✓ if you want it.</p>
+        <p lang="en">With many agents, finished work arrives all the time. <code>@junban-done-batch 30</code> holds ✓ until the next :00 or :30 and sends them as one notification; until then the status line shows how many are held and when they will appear. ✋ still comes at once, and <kbd>Alt+a</kbd> still takes you to a held ✓ if you want it.</p>
         <p lang="ja">エージェントが多いと、完了の知らせが頻繁に届きます。<code>@junban-done-batch 30</code> にすると、完了（✓）は毎時0分と30分にまとめて1通で届き、それまではステータスバーに件数だけが出ます。返事待ち（✋）はすぐに届きます。まとめて通知される前の ✓ にも、<kbd>Alt+a</kbd> で移動できます。</p>
         <p lang="en">A public ntfy.sh topic can be read by anyone who knows its name. Pick a long random one, or run your own server.</p>
         <p lang="ja">ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。長くてランダムな名前にするか、自前のサーバーを使ってください。</p>
@@ -375,7 +379,7 @@ set -g @junban-guide-lines 3       <span class="c"># 2 = no keys row; the keys s
 set -g @junban-tint 20             <span class="c"># % of the banner color washed over its row (0 = off)</span>
 set -g @junban-tint-waiting 35     <span class="c"># the same for ✋</span>
 set -g @junban-mascot on           <span class="c"># off = hide the face</span>
-set -g @junban-name-width 12       <span class="c"># characters of a window name on a tab</span>
+set -g @junban-name-width 12       <span class="c"># characters of a window name on the other tabs (the current tab shows up to 32)</span>
 # set -g @junban-lang en           <span class="c"># en | ja | th (default: from $LANG)</span>
 set -g @junban-update stable       <span class="c"># stable = newest release | main = every change | off (checked daily)</span>
 
