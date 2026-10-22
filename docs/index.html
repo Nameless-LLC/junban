@@ -392,7 +392,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <figure class="shot rv" data-pal="run:video">
       <video class="wide" lang="en" data-src="media/junban-demo-en.mp4" poster="hero-en.svg" width="1920" height="1080" muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that has waited longest, you approve, Alt+a again, then Alt+f searches every agent"></video>
-      <video class="wide" lang="ja" data-src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、次へ。最後に Alt+f で全エージェントを検索"></video>
+      <video class="wide" lang="ja" data-src="media/junban-demo-ja.mp4" poster="hero-ja.svg" width="1920" height="1080" muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、もう一度 Alt+a で次へ移動します。最後に Alt+f で全エージェントを検索します。"></video>
       <video class="tall" lang="en" data-src="media/junban-demo-mobile-en.mp4" poster="hero-en.svg" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
       <video class="tall" lang="ja" data-src="media/junban-demo-mobile-ja.mp4" poster="hero-ja.svg" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds.</figcaption>
@@ -502,7 +502,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
           <p lang="en">Runs on tmux and bash (python3 for some features). Nothing stays running: work rides on tmux's own status refresh.</p>
-          <p lang="ja">tmux と bash で動きます。一部の機能は python3 を使います。常駐プログラムはなく、tmux のステータスバーの更新に合わせて動きます。</p>
+          <p lang="ja">tmux と bash だけで動き、一部の機能は python3 を使います。処理は tmux のステータスバーの更新に合わせて実行します。</p>
         </div>
       </div>
     </section>
@@ -529,7 +529,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       </div>
       <div class="cmp-note">
         <p lang="en">— means we didn't find it in the project's README or docs on Oct 18, 2026; the feature may still exist. Some tools do things junban doesn't: muxa has a Mac app and an MCP server, and workmux merges and cleans up worktrees. Spotted a mistake? <a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">Tell us</a>.</p>
-        <p lang="ja">「—」は、2026年10月18日時点で公式の説明に記載が見つからなかったものです。機能がないとは限りません。muxa の Mac アプリや、workmux の worktree の片付けのように、ほかのツールにしかない機能もあります。誤りがあれば<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
+        <p lang="ja">「—」は、2026年10月18日時点で公式の説明に記載が見つからなかったものです。機能がないとは限りません。muxa の Mac アプリと MCP サーバー、workmux の worktree のマージと片付けのように、ほかのツールにしかない機能もあります。誤りがあれば<a href="https://github.com/Nameless-LLC/junban/issues/new?template=bug.yml">教えてください</a>。</p>
       </div>
     </section>
 
@@ -546,7 +546,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、Alt+n の worktree での起動も使えます（Codex・Gemini の設定にも必要です）。fzf があれば、Alt+f の一覧を文字で絞り込めます。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">With TPM, or for other agents</p>
-      <p class="more" lang="ja">TPM で入れる場合と、Claude Code 以外のエージェント</p>
+      <p class="more" lang="ja">TPM で入れる場合と、Claude Code 以外のエージェントを使う場合</p>
       <div class="steps">
         <div class="step">
           <div class="bar"><span class="t"><span lang="en">tmux (TPM)</span><span lang="ja">tmux（TPM）</span></span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
@@ -558,13 +558,13 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <div class="bar"><span class="t">Claude Code</span><button class="copy" type="button" data-copy="cmd-claude"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-claude">claude plugin marketplace add Nameless-LLC/junban && claude plugin install junban@junban</pre>
           <p lang="en">Only needed after a TPM install. The one-line installer does this for you.</p>
-          <p lang="ja">TPM で入れた場合だけ必要です。上の1行で入れた場合は自動で設定されます。</p>
+          <p lang="ja">TPM で入れた場合だけ必要です。<code>curl</code> の1行で導入した場合は、自動で設定されます。</p>
         </div>
         <div class="step">
           <div class="bar"><span class="t">Codex CLI</span><button class="copy" type="button" data-copy="cmd-codex"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-codex">~/.tmux/plugins/junban/scripts/setup.sh codex</pre>
           <p lang="en">Then open <code>/hooks</code> in Codex once and approve the hooks.</p>
-          <p lang="ja">そのあと Codex で一度 <code>/hooks</code> を開き、承認します。</p>
+          <p lang="ja">そのあと Codex で一度 <code>/hooks</code> を開き、表示されたフックを承認します。</p>
         </div>
         <div class="step">
           <div class="bar"><span class="t">Gemini CLI</span><button class="copy" type="button" data-copy="cmd-gemini"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
