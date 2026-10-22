@@ -369,8 +369,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <ol class="queue" id="b-queue">
           <li><span class="t">2</span><span class="st-wait">✋</span><span lang="en">fix flaky CI · Asks which fix you want</span><span lang="ja">CI テストの修正 · 直し方を質問中</span><span class="t">2m</span></li>
           <li><span class="t">3</span><span class="st-done">✓</span><span lang="en">pricing page copy · Done: 3 files, +41 −88</span><span lang="ja">料金ページの文言 · 完了</span><span class="t">3m</span></li>
-          <li><span class="t">1</span><span class="st-run">●</span><span lang="en">billing refactor · running tests</span><span lang="ja">請求モジュールの分割 · テスト中</span><span class="t">1m</span></li>
-          <li><span class="t">5</span><span class="st-run">●</span><span lang="en">k8s 1.31 upgrade · draining</span><span lang="ja">k8s 1.31 への更新 · ノード退避中</span><span class="t">5m</span></li>
+          <li><span class="t">1</span><span class="st-run">●</span><span lang="en">billing refactor · Running tests</span><span lang="ja">請求モジュールの分割 · テスト中</span><span class="t">1m</span></li>
+          <li><span class="t">5</span><span class="st-run">●</span><span lang="en">k8s 1.31 upgrade · Draining</span><span lang="ja">k8s 1.31 への更新 · ノード退避中</span><span class="t">5m</span></li>
         </ol>
         <div class="board-foot" lang="en">Waiting before finished, longest wait first. Press <kbd>Alt+a</kbd> and you're there.</div>
         <div class="board-foot" lang="ja">返事待ち、完了の順に、長く待たせているものから並びます。<kbd>Alt+a</kbd> で先頭へ移動します。</div>
@@ -458,12 +458,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">Measures how long agents wait on you</h3><h3 lang="ja">待ち時間を測る</h3>
-          <p lang="en">The status line shows how long agents sat waiting on you today and your median reply time, with a green <span style="color: var(--done)">▼</span> when today's median beats your last 7 days. Alt+/ adds a daily graph and today's timeline.</p>
+          <p lang="en">The status line shows how long agents sat waiting on you today and your median reply time, with a green <span style="color: var(--done)">▼</span> when today's median is quicker than your last 7 days. Alt+/ adds a daily graph and today's timeline.</p>
           <p lang="ja">今日待たせた時間と返事までの時間の中央値をステータスバーに出します。今日の中央値が直近7日より短ければ、緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
-          <p lang="en">Each window takes the first line of your prompt, or a model you pick sums up your last few. Short replies like "ok" never rename it, and a name you set yourself stays.</p>
+          <p lang="en">Each window takes the first line of your prompt, or a model you pick sums up your last few prompts. Short replies like "ok" never rename it, and a name you set yourself stays.</p>
           <p lang="ja">作業内容から名前を付けます。「OK」「進めて」のような返事では変わりません。</p>
         </div>
         <div class="why-row">
@@ -515,7 +515,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
             <tr><th scope="row"><span lang="en">Keeps a second agent out of a busy folder</span><span lang="ja">同じフォルダで<wbr>2つ動かしたとき</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+n starts Claude Code in a worktree when the folder is taken</span><span lang="ja">使用中なら Alt+n が Claude Code を別の worktree で起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">作業ごとに先に worktree を作る</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドのセッションは別の worktree</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">次に押すキーを<wbr>表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">from your prompt, or a model you pick; "ok" never renames</span><span lang="ja">依頼の1行目か、指定した LLM で付ける。短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude Code's session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
-            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini, plus anything that can run a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude・Codex・opencode・pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini and 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
+            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + anything that can run a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude・Codex・opencode・pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini + 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -543,7 +543,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="step">
           <div class="bar"><span class="t"><span lang="en">tmux (TPM)</span><span lang="ja">tmux（TPM）</span></span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</pre>
-          <p lang="en">If you use TPM, the tmux plugin manager: add this to <code>~/.tmux.conf</code>, then press prefix + I.</p>
+          <p lang="en">Using TPM (the tmux plugin manager)? Add this to <code>~/.tmux.conf</code>, then press prefix + I.</p>
           <p lang="ja">tmux のプラグイン管理ツール（TPM）を使っている場合です。<code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
         </div>
         <div class="step">
@@ -733,11 +733,11 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
   // live call board: press "a" (or the button) to answer the agent being called
   var Q = [
-    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'migrating', ja: '移行中' } },
-    { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI テストの修正' }, why: { en: 'Asks which fix you want', ja: '直し方を質問中' }, back: { en: 'running e2e ×20', ja: 'e2e を20回実行中' } },
-    { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル変更' }, back: { en: 'applying your edits', ja: '修正を反映中' } },
-    { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュールの分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'running tests', ja: 'テスト中' } },
-    { n: 5, st: 'run', t: 5, name: { en: 'k8s 1.31 upgrade', ja: 'k8s 1.31 への更新' }, why: { en: 'Done: all nodes on 1.31', ja: '完了: 全ノード 1.31' }, back: { en: 'draining', ja: 'ノード退避中' } }
+    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'Migrating', ja: '移行中' } },
+    { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI テストの修正' }, why: { en: 'Asks which fix you want', ja: '直し方を質問中' }, back: { en: 'Running e2e ×20', ja: 'e2e を20回実行中' } },
+    { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル変更' }, back: { en: 'Applying your edits', ja: '修正を反映中' } },
+    { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュールの分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'Running tests', ja: 'テスト中' } },
+    { n: 5, st: 'run', t: 5, name: { en: 'k8s 1.31 upgrade', ja: 'k8s 1.31 への更新' }, why: { en: 'Done: all nodes on 1.31', ja: '完了: 全ノード 1.31' }, back: { en: 'Draining', ja: 'ノード退避中' } }
   ];
   var ICON = { wait: '✋', done: '✓', run: '●', ok: '●' };
   var CLS = { wait: 'st-wait', done: 'st-done', run: 'st-run', ok: 'st-run' };
