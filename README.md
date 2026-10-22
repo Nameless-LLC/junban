@@ -34,7 +34,7 @@ It installs junban into tmux and connects Claude Code if you have it.
 <details>
 <summary>With TPM (the tmux plugin manager) instead</summary>
 
-Add to `~/.tmux.conf` and press prefix + I:
+Add to `~/.tmux.conf` and press prefix I:
 
 ```tmux
 set -g @plugin 'Nameless-LLC/junban'
@@ -48,9 +48,9 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 </details>
 
-Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Other agents](#other-agents).
+Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Supported agents](#supported-agents).
 
-Requires tmux 3.2 or newer, bash and git. Optional: Python 3 (badge repair after Esc, window names, one-line recaps, the timeline) and fzf (search in the Alt+f list).
+Requires tmux 3.2 or newer, bash, and git. Optional: Python 3 (badge repair after Esc, window names, one-line recaps, the timeline, Codex/Gemini setup, and the Alt+n worktree check) and fzf (search in the Alt+f list).
 
 ### Updates
 
@@ -62,13 +62,13 @@ Run `~/.tmux/plugins/junban/scripts/doctor.sh` (or `/junban:doctor` in Claude Co
 
 ## The only key you need
 
-**Alt+a.** The last row of the status bar always lists the keys worth knowing. When an agent is waiting, the row above it shows a banner pointing at Alt+a.
+**Alt+a.** By default, the last row of the status line lists the keys worth knowing. When an agent is waiting, the row above it shows a banner pointing at Alt+a.
 
 | Key | What it does |
 |---|---|
 | **Alt+a** | Jump to the agent that needs you: waiting before finished, longest first |
 | **Alt+f** | Every agent in one list, neediest first, searchable, with a live preview |
-| **Alt+n** | New agent window in the current directory (in its own worktree if another agent already works there) |
+| **Alt+n** | New agent window in the current directory (Claude Code starts in its own worktree if another agent already works in that repo) |
 | **Alt+,** | Settings: what Alt+n starts, language, status rows and more. Saved to `~/.config/junban/settings.conf` |
 | **Alt+/** | Cheat sheet, generated from your actual bindings, with today's timeline and the wait report |
 | prefix T | Today's timeline: a row per window, when each agent worked, waited on you, or finished |
@@ -84,13 +84,13 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to make sure it has the right pane.
 
-**Windows are named after the task.** By default a window takes the first line of your prompt. Set a model and it summarizes your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
+**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm` and a model, and it summarizes your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
 **Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
-**It says in one line what each agent needs.** When an agent asks, needs permission or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn it off with `set -g @junban-recap off`. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR.
+**It says in one line what each agent needs.** When an agent asks, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn it off with `set -g @junban-recap off`. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR.
 
 **Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished agents (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
 
@@ -102,19 +102,19 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **A small mascot.** A face on the status line reacts to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
 
-**Speaks your language.** English, 日本語 and ไทย built in, chosen from your system language. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
+**Speaks your language.** English, 日本語, and ไทย built in, chosen from `$LANG` (or `LC_ALL`); `@junban-lang` fixes one. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
-**Plain tmux and bash**, plus python3 for some features. Nothing stays running: work rides on tmux's own status refresh. CI runs the tests on Linux and macOS.
+**Plain tmux and bash**, plus Python 3 for some features. Nothing stays running: work rides on tmux's own status refresh. CI runs the tests on Linux and macOS.
 
 ## Configuration
 
-Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The common ones are also on **Alt+,**, which saves to `~/.config/junban/settings.conf`; A choice made there overrides the same option set before the plugin line. A line after the plugin line would undo it on the next start, so the menu points that line out and offers to turn it off.
+Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The common ones are also on **Alt+,**, which saves to `~/.config/junban/settings.conf`. A choice made there overrides the same option set before the plugin line. A line after the plugin line would undo it on the next start, so the menu points that line out and offers to turn it off.
 
 ```tmux
 # Look
-set -g @junban-theme on            # off = keep your theme, only add the badges and the counter
+set -g @junban-theme on            # off = keep your theme; add the badges, the counter and the guide rows
 set -g @junban-position top        # top | bottom
-set -g @junban-guide on            # the second status line
+set -g @junban-guide on            # the banner and keys rows under the tabs
 set -g @junban-guide-lines 3       # 2 = no keys row; the keys show after you press the prefix
 set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
 set -g @junban-tint-waiting 35     # the same for ✋ (waiting on you)
@@ -154,7 +154,7 @@ set -g @junban-done-batch off      # 30 = ✓ arrive together every 30 minutes
 
 Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.
 
-## Other agents
+## Supported agents
 
 | Agent | Setup | What you get |
 |---|---|---|

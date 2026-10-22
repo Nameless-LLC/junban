@@ -35,7 +35,7 @@ if [ -n "$v" ] && [ "$(opt @junban_version_seen "")" != "$v" ]; then
   f="${XDG_STATE_HOME:-$HOME/.local/state}/junban/version"
   old=$(cat "$f" 2>/dev/null)
   if [ "$old" != "$v" ]; then
-    mkdir -p "${f%/*}" 2>/dev/null; echo "$v" > "$f" 2>/dev/null
+    mkdir -p "${f%/*}" 2>/dev/null; (umask 077; echo "$v" > "$f") 2>/dev/null
     # shellcheck disable=SC2059
     [ -n "$old" ] && tmux display -d 8000 "$(printf "$T_UPDATED" "$v")" 2>/dev/null
   fi

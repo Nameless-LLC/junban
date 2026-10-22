@@ -58,7 +58,7 @@ fi
 
 new_v=$(version)
 log="${XDG_STATE_HOME:-$HOME/.local/state}/junban/update.log"
-printf '%s\t%s\t%s\n' "$(date +%s)" "${old_v:-?}" "${new_v:-?}" >> "$log" 2>/dev/null
+(umask 077; printf '%s\t%s\t%s\n' "$(date +%s)" "${old_v:-?}" "${new_v:-?}" >> "$log") 2>/dev/null
 # Reload only the copy tmux runs; a test or a second checkout stays quiet.
 [ "$dir" = "$JUNBAN_ROOT" ] && bash "$JUNBAN_ROOT/junban.tmux" >/dev/null 2>&1
 load_i18n
@@ -66,7 +66,7 @@ plugin
 # Asked for: say it now. Otherwise the status line says it once (hints.sh), so
 # whoever comes back to the terminal later still sees it.
 if [ -n "$now" ] && [ "$dir" = "$JUNBAN_ROOT" ] && [ -n "$new_v" ]; then
-  echo "$new_v" > "${log%/*}/version" 2>/dev/null
+  (umask 077; echo "$new_v" > "${log%/*}/version") 2>/dev/null
   tmux set -g @junban_version_seen "$new_v" 2>/dev/null
 fi
 say "$(printf "$T_UPDATED" "${new_v:-?}")"
