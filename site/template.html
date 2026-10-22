@@ -464,7 +464,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
           <p lang="en">Each window takes the first line of your prompt, or a model you pick sums up your last few prompts. Short replies like "ok" never rename it, and a name you set yourself stays.</p>
-          <p lang="ja">依頼の1行目、または設定した LLM が直近の依頼をまとめた文から、ウィンドウ名を付けます。「OK」「進めて」のような返事では変わらず、自分で付けた名前も上書きしません。</p>
+          <p lang="ja">標準では依頼の1行目をウィンドウ名にします。LLM を設定すると、直近の依頼をまとめた名前にします。「OK」「進めて」のような返事では変わらず、自分で付けた名前も上書きしません。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Claude Code, Codex, Gemini</h3><h3 lang="ja">Claude Code・Codex・Gemini</h3>
@@ -473,8 +473,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">Settings on Alt+,</h3><h3 lang="ja">設定は Alt+, から</h3>
-          <p lang="en">Pick what Alt+n starts, the language (English, 日本語, ไทย), status rows and more from a menu. Choices save to junban's own file, so your tmux.conf stays yours.</p>
-          <p lang="ja">Alt+n で起動するもの、言語（英語・日本語・タイ語）、ステータスバーの行数などをメニューで変えられます。選んだ内容は junban 専用のファイルに保存し、tmux.conf は書き換えません。</p>
+          <p lang="en">Pick what Alt+n starts, the language (English, 日本語, ไทย), status rows and more from a menu. Choices save to junban's own file; tmux.conf changes only if you let it disable a line that would override them.</p>
+          <p lang="ja">Alt+n で起動するもの、言語（英語・日本語・タイ語）、ステータスバーの行数などをメニューで変えられます。選んだ内容は junban 専用のファイルに保存します。tmux.conf を書き換えるのは、この設定を上書きしている行を無効にすると選んだときだけです。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Your VS Code windows stay put</h3><h3 lang="ja">VS Code では移動先のウィンドウが前面に出る</h3>
@@ -514,7 +514,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
             <tr><th scope="row"><span lang="en">Wait-time meter and day timeline</span><span lang="ja">待ち時間の<wbr>計測と<wbr>1日の<wbr>タイムライン</span></th><td class="jb"><span class="y">✓</span><span lang="en">status line meter, Alt+/ report and timeline; local file only</span><span lang="ja">ステータスバーと Alt+/ で表示。記録は自分のパソコンにだけ残る</span></td><td class="n">—</td><td class="n">—</td><td><span class="y">✓</span><span lang="en"><code>stats</code>, <code>timeline</code></span><span lang="ja"><code>stats</code>・<code>timeline</code></span></td><td><span lang="en">time in current state</span><span lang="ja">今の状態の経過時間</span></td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Keeps a second agent out of a busy repo</span><span lang="ja">ほかのエージェントが<wbr>作業中なら<wbr>別の worktree で起動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+n starts Claude Code in a new worktree when another agent already works in the repo</span><span lang="ja">同じリポジトリでほかのエージェントが作業中なら、Alt+n で Claude Code を別の worktree に起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">作業ごとに先に worktree を作る</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドのセッションは別の worktree</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">次に押すキーを<wbr>表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
-            <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">from your prompt, or a model you pick; "ok" never renames</span><span lang="ja">依頼の1行目か、指定した LLM で付ける。短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude Code's session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
+            <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">from your prompt, or a model you pick; "ok" never renames</span><span lang="ja">依頼の1行目か、設定した LLM で付ける。短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude Code's session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
             <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + anything that can run a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude・Codex・opencode・pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin ほか（任意に追加可）</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini + 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
@@ -595,7 +595,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">What about other agents?</span><span lang="ja">ほかのエージェントでも使える？</span></summary>
           <p lang="en">Claude Code, Codex CLI and Gemini CLI are built in. Anything that can run a command when it needs you or finishes can call <code>scripts/state.sh waiting</code> or <code>done</code>.</p>
-          <p lang="ja">使えます。Claude Code・Codex CLI・Gemini CLI には標準で対応しています。それ以外も、返事待ちや完了のときにコマンドを実行できるツールなら、<code>scripts/state.sh waiting</code>（または <code>done</code>）でつながります。</p>
+          <p lang="ja">使えます。Claude Code・Codex CLI・Gemini CLI には標準で対応しています。それ以外も、返事待ちや完了のときにコマンドを実行できるツールなら、そのときに <code>scripts/state.sh waiting</code>（または <code>done</code>）を呼べば連携できます。</p>
         </details>
         <details>
           <summary><span lang="en">Why the name?</span><span lang="ja">名前の由来は？</span></summary>
