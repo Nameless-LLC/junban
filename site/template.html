@@ -535,7 +535,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
         <p lang="en">Needs tmux ≥ 3.2, bash and git. Python 3 is optional and adds the Esc badge fix, window names, one-line recaps, the timeline, the idle z, the Alt+n worktree check, and Codex/Gemini setup; fzf adds the sorted, searchable Alt+f list (without it, Alt+f opens tmux's own chooser). <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
-        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、Alt+n で起動する Claude Code を、ほかのエージェントが作業中のリポジトリでは別の worktree に分ける機能も使えます（Codex・Gemini の設定にも必要です）。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
+        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、次の機能も使えます。Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、ほかのエージェントが作業中のリポジトリで Alt+n の Claude Code を別の worktree に起動する機能です。Codex・Gemini の設定にも python3 が要ります。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">With TPM, or for other agents</p>
       <p class="more" lang="ja">TPM で入れる場合と、Claude Code 以外のエージェントを使う場合</p>
@@ -575,12 +575,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">エージェントの状態を出すほかの tmux プラグインと何が違う？</span></summary>
           <p lang="en">Two things we didn't find elsewhere: the status line shows your next key, and idle windows move out of the way. It also puts tab badges, a jump to the longest wait and a wait meter in one tmux plugin with no daemon. Others each do some of these; see <a href="#compare">the comparison</a>.</p>
-          <p lang="ja">次に押すキーの表示と、放置したウィンドウを一覧の下に移す機能は、ほかのツールでは見つかりませんでした。また、タブの印、いちばん長く待っているものへの移動、待ち時間の計測を、常駐プログラムなしの tmux プラグイン1つで使えます。それぞれの一部はほかのツールにもあります（<a href="#compare">比較表</a>）。</p>
+          <p lang="ja">次に押すキーの表示と、放置したウィンドウを一覧の下に移す機能は、ほかのツールでは見つかりませんでした。また、タブの印、いちばん長く待っているものへの移動、待ち時間の計測を、常駐プログラムなしの tmux プラグイン1つで使えます。このうちいくつかは、ほかのツールにもあります（<a href="#compare">比較表</a>）。</p>
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
           <p lang="en">Nothing about you or your work by default. State lives in tmux options, and the wait meter in a local file only you can read. Once a day junban asks GitHub for a newer release (a <code>git fetch</code>; Alt+, → Updates → off stops it). Two things leave the machine only if you turn them on: with a model URL set, your recent prompts and the agent's reply go to that URL to name the window and write the one-line recap (a local Ollama keeps them on your machine); with a notify command set, the recap goes wherever that command sends it. A public ntfy.sh topic can be read by anyone who knows its name.</p>
-          <p lang="ja">標準では、作業の内容は送りません。記録は自分のパソコンにだけ残ります。1日に1回、新しいリリースがないか GitHub に問い合わせます（<code>git fetch</code>。Alt+, の「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りを設定した送り先に送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、ステータスバーに出る1行の要約を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
+          <p lang="ja">標準では、作業の内容は送りません。記録は自分のパソコンにだけ残ります。1日に1回、新しいリリースがないか GitHub に問い合わせます（<code>git fetch</code>。Alt+, の「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りをその LLM の URL に送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、ステータスバーに出る1行の要約を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
