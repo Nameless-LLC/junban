@@ -91,13 +91,13 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
-**Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
+**Idle windows move out of the way.** Windows with no agent activity for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
 **One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, the model writes the line for finished work; otherwise junban uses the first real line of the agent's reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn the one-line recap off with `set -g @junban-recap off`.
 
 For finished work, the banner and the Alt+f list also show what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat, and Ctrl+o opens the PR.
 
-**Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished turns (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
+**Finished work can come in batches.** With `set -g @junban-done-batch 30`, the ✓ banner and notification for finished turns wait for the next :00 or :30 and arrive together; until then the status line says how many are held and when they will show (tabs get their ✓ right away). A ✋ still interrupts right away.
 
 **Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a raises the VS Code window already showing that agent (or opens its project folder) instead of switching the terminal you're in. Set `@junban-vscode-raise off` to switch in place instead.
 
