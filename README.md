@@ -165,7 +165,7 @@ Colors: `@junban-color-{waiting,done,running,slower,bg,bg2,fg,accent,muted,dim,k
 
 | Agent | Setup | What you get |
 |---|---|---|
-| Claude Code | the Claude Code plugin (the install command sets it up) | ✋ ✓ ●, one-line recap, window names; badges fix themselves after Esc |
+| Claude Code | the Claude Code plugin (the install command sets it up) | ✋ ✓ ●, one-line recap, change summaries, window names; badges fix themselves after Esc |
 | Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names; Esc clears the badge |
 | Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names |
 
