@@ -90,19 +90,19 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Idle windows move out of the way.** Windows untouched for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
-**It says in one line what each agent needs.** When an agent asks, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). With a model set, the model writes it; otherwise it is the first real line of the reply. Notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn it off with `set -g @junban-recap off`. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR.
+**It says in one line what each agent needs.** When an agent asks, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). For finished work, a model writes that line if you set one; otherwise it is the first real line of the reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn it off with `set -g @junban-recap off`. For finished work it also says what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat and Ctrl+o opens the PR.
 
 **Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished agents (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
 
 **Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a brings the window that shows the target forward (or opens that project's folder) instead of swapping the terminal you are in. Set `@junban-vscode-raise off` to switch in place instead.
 
-**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
+**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
 
 **A timeline of your day.** prefix T (and the top of Alt+/) draws a row per window: yellow █ working, red ▓ waiting on you, green ▒ done and not looked at, then when you were active, how long agents worked and waited on you, and how many ran at once. `scripts/timeline.sh 1` shows yesterday. It stays on your machine. Set `@junban-key-timeline M-y` for an Alt key (there is none by default, since Alt+t toggles thinking in Claude Code).
 
 **A small mascot.** A face on the status line reacts to your agents: `[▮ ▮]!` when someone is waiting, `[◠ ◠]` when one finishes, `[▮▮ ]` glancing around while they run, `[▬ ▬]z` when there is nothing to do. It also comments on your week in the Alt+/ report. Turn it off with `set -g @junban-mascot off`.
 
-**Speaks your language.** English, 日本語, and ไทย built in, chosen from `$LANG` (or `LC_ALL`); `@junban-lang` fixes one. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
+**Speaks your language.** English, 日本語, and ไทย built in, chosen from your locale (`LC_ALL`, `LC_MESSAGES` or `LANG`); `@junban-lang` fixes one. Japanese and Thai window names are truncated by display width, not bytes, so tabs stay aligned.
 
 **Plain tmux and bash**, plus Python 3 for some features. Nothing stays running: work rides on tmux's own status refresh. CI runs the tests on Linux and macOS.
 
@@ -124,12 +124,12 @@ set -g @junban-lang ja             # en | ja | th (default: from $LANG)
 set -g @junban-key-jump M-a
 set -g @junban-key-list M-f
 set -g @junban-key-new M-n
-set -g @junban-key-scratch ""     # e.g. M-g (prefix g works while @junban-prefix-keys is on)
+set -g @junban-key-scratch ""      # e.g. M-g (prefix g works while @junban-prefix-keys is on)
 set -g @junban-key-settings M-,
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     # e.g. M-y (prefix T works while @junban-prefix-keys is on)
 set -g @junban-nav-keys on         # Alt+1..9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z, Alt+w
-set -g @junban-prefix-keys on      # prefix a, f, C, g, / as fallbacks
+set -g @junban-prefix-keys on      # prefix a, f, C, g, /, T as fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto = Alt+n uses claude --worktree when another agent already works in this repo | off
 
@@ -148,7 +148,7 @@ set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…
 
 # Notifications when an agent starts waiting or finishes (message on stdin). Pick one:
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
-set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # the message includes the recap line; a public ntfy.sh topic is readable by anyone who knows its name
+set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # ✓ messages include the recap line; a public ntfy.sh topic is readable by anyone who knows its name
 set -g @junban-done-batch off      # 30 = ✓ arrive together every 30 minutes
 ```
 
