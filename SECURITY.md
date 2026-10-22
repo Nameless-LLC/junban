@@ -13,7 +13,8 @@ Include what an attacker controls (a directory name, a prompt, a hook payload, a
 
 - It reads hook payloads from Claude Code, Codex CLI and Gemini CLI on stdin and stores a few short strings as tmux window options. Nothing from a payload is run as a command.
 - It writes two logs under `$XDG_STATE_HOME/junban` (default `~/.local/state/junban`), readable by you only: how long agents waited, and for each finished turn the prompt and the one-line recap.
-- It sends data off the machine only when you configure it to: `@junban-namer-url` (prompts and agents' final messages go to that model) and `@junban-notify-cmd` (the badge and the recap line go to whatever that command reaches; a public ntfy.sh topic is readable by anyone who guesses its name).
+- Once a day it runs `git fetch` against the repository it was installed from, fast-forwards a clean checkout to the newest release tag, and runs `claude plugin update junban@junban` (`@junban-update off` stops this). Nothing about you or your agents is sent.
+- Otherwise it sends data off the machine only when you configure it to: `@junban-namer-url` (prompts and agents' final messages go to that model) and `@junban-notify-cmd` (the badge and the recap line go to whatever that command reaches; a public ntfy.sh topic is readable by anyone who guesses its name).
 
 ## Supported versions
 
