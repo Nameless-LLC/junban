@@ -585,14 +585,21 @@ if [ -r /proc/self/environ ] && command -v script >/dev/null 2>&1; then
   eq  "other window shows it → raise that window" "$(cat "$WORK/raised" 2>/dev/null)" "ipcA $WORK/links/proj"
   eq  "raising leaves this terminal alone"  "$(sess_of "$ta")" "vsa"
   rm -f "$WORK/raised"; go "$ta" bare:1
-  eq  "no window for it → switch in place"  "$(sess_of "$ta")" "bare"
-  hasnt "…without calling code"             "$(ls "$WORK")" "raised"
+  eq  "no window for it → open its folder"  "$(cat "$WORK/raised" 2>/dev/null)" "ipcA $(tmux display -p -t =bare: '#{session_path}')"
+  eq  "…and this terminal stays put"        "$(sess_of "$ta")" "vsa"
+  # A sibling folder is spelled as this window spells its own (symlinked parent).
+  mkdir -p "$WORK/real/me" "$WORK/real/sib"; ln -s "$WORK/real" "$WORK/lp"
+  tmux new -d -s me -c "$WORK/real/me"; tmux new -d -s sib -c "$WORK/real/sib"
+  attach_as me "$WORK/lp/me" vscode ipcC; tm=$(tty_of me)
+  rm -f "$WORK/raised"; go "$tm" sib:1
+  eq  "…a sibling keeps this window's spelling" "$(cat "$WORK/raised" 2>/dev/null)" "ipcC $WORK/lp/sib"
+  tmux kill-session -t =me; tmux kill-session -t =sib
   tmux switch-client -c "$ta" -t =vsa
   tmux set -g @junban-vscode-raise off; go "$ta" proj:1; tmux set -gu @junban-vscode-raise
   eq  "@junban-vscode-raise off → switch"   "$(sess_of "$ta")" "proj"
   attach_as bare "$WORK/a";                    tw=$(tty_of bare)
   tmux switch-client -c "$ta" -t =vsa; tmux switch-client -c "$tw" -t =vsa
-  go "$tw" proj:1
+  rm -f "$WORK/raised"; go "$tw" proj:1
   eq  "plain terminal → switch as before"   "$(sess_of "$tw")" "proj"
   hasnt "…without calling code"             "$(ls "$WORK")" "raised"
   # ✓ clears only for a terminal that has focus; a background window's client is no reader.

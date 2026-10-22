@@ -358,8 +358,8 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
 
       <section id="vscode">
         <h2><span lang="en">VS Code terminals</span><span lang="ja">VS Code のターミナル</span></h2>
-        <p lang="en">If you keep one VS Code window per project, each terminal attached to its own tmux session, <kbd>Alt+a</kbd> raises the VS Code window that already shows the target, instead of swapping this terminal to another project. Plain terminals and web terminals switch in place. <code>@junban-vscode-raise off</code> always switches in place.</p>
-        <p lang="ja">プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> は行き先をすでに表示している VS Code のウィンドウを前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。普通の端末や Web のターミナルでは、その場で切り替えます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
+        <p lang="en">If you keep one VS Code window per project, each terminal attached to its own tmux session, <kbd>Alt+a</kbd> raises the VS Code window that already shows the target, instead of swapping this terminal to another project. When no terminal shows the target (its window's terminal is closed), it opens that project's folder in VS Code. Plain terminals and web terminals switch in place. <code>@junban-vscode-raise off</code> always switches in place.</p>
+        <p lang="ja">プロジェクトごとに VS Code のウィンドウを分け、それぞれのターミナルを別の tmux セッションにつないでいる場合、<kbd>Alt+a</kbd> は行き先をすでに表示している VS Code のウィンドウを前面に出します。今のターミナルの中身を別プロジェクトに入れ替えることはしません。行き先を表示しているターミナルが無いとき（そのウィンドウのターミナルを閉じているとき）は、そのプロジェクトのフォルダを VS Code で開きます。普通の端末や Web のターミナルでは、その場で切り替えます。<code>@junban-vscode-raise off</code> にすると、常にその場で切り替えます。</p>
       </section>
 
       <section id="options">

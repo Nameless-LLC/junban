@@ -134,10 +134,10 @@ client_fmt() {
 # go_to SESSION:WINDOW — show that window to the client that asked.
 # VS Code users often keep one window per project, each terminal attached to its
 # own session. Swapping what this terminal shows would put project B's agent under
-# project A's tab, so when another VS Code window already shows the target session,
-# raise that window instead (via VS Code's remote `code` CLI and this terminal's IPC
-# socket). Anything else — plain terminals, Web terminals, no window for the target —
-# switches in place as before. @junban-vscode-raise off restores the old behaviour.
+# project A's tab, so a VS Code terminal raises the target session's window instead
+# (via VS Code's remote `code` CLI and this terminal's IPC socket), opening its
+# folder when no window shows it. Plain and Web terminals switch in place as before.
+# @junban-vscode-raise off restores the old behaviour.
 go_to() {
   local target=$1 sess=${1%%:*} c here cpid ipc cli folder p
   # JUNBAN_CLIENT (a client tty) lets tests act as a given client; display -c alone
@@ -156,6 +156,16 @@ go_to() {
         # by that exact path: the resolved path would open a second window.
         folder=$(client_env "$p" PWD) && [ -n "$folder" ] && break
       done
+      # No terminal shows it (its window's terminal was closed, or the window
+      # is): open its folder all the same. Swapping this terminal instead put
+      # project B under project A's window. A sibling of this window's folder is
+      # spelled the way this one was, so a symlinked parent finds the same window.
+      if [ -z "$folder" ]; then
+        folder=$(tmux display -p -t "=$sess:" '#{session_path}' 2>/dev/null)
+        here=$(client_env "$cpid" PWD)
+        p=$(cd "$here/.." 2>/dev/null && pwd -P)
+        case "$folder" in "$p"/*) [ -d "${here%/*}/${folder#"$p"/}" ] && folder="${here%/*}/${folder#"$p"/}" ;; esac
+      fi
       if [ -n "$ipc" ] && [ -x "$cli/code" ] && [ -n "$folder" ]; then
         tmux select-window -t "$target"
         if [ -n "${JUNBAN_DRY_RUN:-}" ]; then echo "raise $folder"; return 0; fi

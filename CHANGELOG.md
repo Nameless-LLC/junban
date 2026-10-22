@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1 — 2026-10-22
+
+### Fixed
+
+- **Jumping to another project from VS Code no longer swaps this window's terminal.** When no terminal showed that project (its window's terminal was closed), junban switched the terminal you were in, so one project's agent ended up under another project's window. It now opens that project's folder in VS Code, which brings its window forward if it is already open.
+
 ## 0.7.0 — 2026-10-20
 
 ### Added
