@@ -34,7 +34,7 @@ It clones junban to `~/.tmux/plugins/junban`, adds one line to your tmux.conf, a
 <details>
 <summary>With TPM (the tmux plugin manager) instead</summary>
 
-Add to `~/.tmux.conf` and press `prefix I`:
+Add this line to `~/.tmux.conf` and press `prefix I`:
 
 ```tmux
 set -g @plugin 'Nameless-LLC/junban'
@@ -50,7 +50,10 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Supported agents](#supported-agents).
 
-Requires tmux 3.2 or newer, bash, and git. Optional: Python 3, for badge repair after Esc, window names, recaps, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check. fzf, for the sorted, searchable Alt+f list (without it, Alt+f opens tmux's own window chooser).
+Requires tmux 3.2 or newer, bash, and git. Optional:
+
+- **Python 3**, for badge repair after Esc, window names, recaps, the "what changed" summary, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check.
+- **fzf**, for the sorted, searchable Alt+f list. Without it, Alt+f opens tmux's own window chooser.
 
 ### Updates
 
@@ -84,7 +87,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to match each session to its pane.
 
-**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm`, `@junban-namer-url` to a model server and `@junban-namer-model` to a model on it, and junban names the window from your last few prompts instead (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
+**Windows are named after the task.** By default a window takes the first line of your latest prompt. Set `@junban-rename llm`, `@junban-namer-url` to a model server and `@junban-namer-model` to a model on it, and junban names the window from your last few prompts instead (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
@@ -92,13 +95,13 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, the model writes the line for finished work; otherwise junban uses the first real line of the agent's reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn the one-line recap off with `set -g @junban-recap off`.
 
-Finished work also shows what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat, and Ctrl+o opens the PR.
+For finished work, the banner and the Alt+f list also show what changed (`3 files +41 −88 · 2 commits · PR #12`); in the Alt+f list the preview starts with the diff stat, and Ctrl+o opens the PR.
 
-**Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished agents (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
+**Finished work can come in batches.** With `set -g @junban-done-batch 30`, finished turns (✓) are held until the next :00 or :30 and arrive in one notification; until then the status line only counts them. A ✋ still interrupts right away.
 
 **Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a raises the VS Code window already showing that agent (or opens its project folder) instead of switching the terminal you're in. Set `@junban-vscode-raise off` to switch in place instead.
 
-**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply under your goal, and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
+**It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply within your goal (`@junban-goal`, 5 minutes by default), and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
 
 **A timeline of your day.** `prefix T` (also in Alt+/) draws a row per window: yellow █ working, red ▓ waiting on you, green ▒ done and not looked at. Below that: when you were active, how long agents worked and waited on you, and the most that ran at once. `scripts/timeline.sh 1` shows yesterday. It stays on your machine. Set `@junban-key-timeline M-y` for an Alt key (there is none by default: Alt+t, the obvious choice, toggles thinking in Claude Code).
 
@@ -144,6 +147,7 @@ set -g @junban-mascot on           # off = hide the face on the status line
 
 # Window names and recaps
 set -g @junban-rename prompt       # off | prompt | llm
+set -g @junban-recap on            # off = no one-line recap on the banner, Alt+f list, or ✓ notifications
 # No model by default. Set the URL and model to have a model name windows (with @junban-rename llm) and write the ✓ recap.
 # set -g @junban-namer-url http://localhost:11434   # e.g. Ollama, or an OpenAI-compatible …/v1
 # set -g @junban-namer-model qwen3:8b               # any model the server has
@@ -155,15 +159,15 @@ set -g @junban-rename prompt       # off | prompt | llm
 set -g @junban-done-batch off      # 30 = ✓ notifications arrive together every 30 minutes
 ```
 
-Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`. With your own theme, put `#{E:@junban-badge}` anywhere in a format.
+Colors: `@junban-color-{waiting,done,running,slower,bg,bg2,fg,accent,muted,dim,key,current-bg}` (`bg2` is the keys row). With your own theme, put `#{E:@junban-badge}` anywhere in a format.
 
 ## Supported agents
 
 | Agent | Setup | What you get |
 |---|---|---|
 | Claude Code | the Claude Code plugin (the install command sets it up) | ✋ ✓ ●, one-line recap, window names; badges fix themselves after Esc |
-| Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recap names the command it wants to run, window names; Esc clears the badge |
-| Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recap names the command it wants to run, window names |
+| Codex CLI | `scripts/setup.sh codex`, then trust the hooks once with `/hooks` in Codex | ✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names; Esc clears the badge |
+| Gemini CLI | `scripts/setup.sh gemini` | ✋ ✓ ●, recaps (including the command it wants to run), change summaries, window names |
 
 ```sh
 ~/.tmux/plugins/junban/scripts/setup.sh codex    # writes ~/.codex/hooks.json
