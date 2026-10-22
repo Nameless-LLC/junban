@@ -50,7 +50,7 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Supported agents](#supported-agents).
 
-Requires tmux 3.2 or newer, bash, and git. Optional: Python 3 (badge repair after Esc, window names, one-line recaps and what changed, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check) and fzf (search in the Alt+f list).
+Requires tmux 3.2 or newer, bash, and git. Optional: Python 3 (badge repair after Esc, window names, one-line recaps and what changed, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check) and fzf (the sorted, searchable Alt+f list; without it Alt+f opens tmux's own window chooser).
 
 ### Updates
 
