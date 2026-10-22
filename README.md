@@ -121,8 +121,8 @@ set -g @junban-theme on            # off = keep your own theme; junban only adds
 set -g @junban-position top        # top | bottom (with @junban-theme on)
 set -g @junban-guide on            # the banner and keys rows under the tabs
 set -g @junban-guide-lines 3       # 2 = no keys row; the keys show after you press the prefix
-set -g @junban-tint 20             # % of the banner color washed over its row (0 = off)
-set -g @junban-tint-waiting 35     # the same for ✋ (waiting on you)
+set -g @junban-tint 20             # % of the ✓ banner color washed over its row (0 = off)
+set -g @junban-tint-waiting 35     # the same for ✋ (0 when @junban-tint is 0)
 # set -g @junban-lang ja           # en | ja | th (default: from your locale)
 
 # Keys ("" to unbind)
