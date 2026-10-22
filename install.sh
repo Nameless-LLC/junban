@@ -34,7 +34,7 @@ if command -v claude >/dev/null 2>&1; then
   say "Connecting Claude Code"
   claude plugin marketplace add Nameless-LLC/junban >/dev/null 2>&1 || true
   if claude plugin install junban@junban >/dev/null 2>&1; then
-    echo "Claude Code plugin installed. New and running sessions pick it up automatically."
+    echo "Claude Code plugin installed. New sessions pick it up; in a session already open, run /reload-plugins."
   else
     echo "Run inside Claude Code:  /plugin marketplace add Nameless-LLC/junban  then  /plugin install junban@junban"
   fi
