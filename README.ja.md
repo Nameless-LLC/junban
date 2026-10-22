@@ -3,7 +3,7 @@
 # junban
 
 **いま、誰の番？**<br>
-Claude Code などのコーディングエージェントを tmux で何本も動かすときに、どれが返事を待っているかをタブに出す tmux プラグイン。
+Claude Code・Codex CLI・Gemini CLI などのコーディングエージェントを tmux で何本も動かすときに、どれが返事を待っているかをタブに出す tmux プラグイン。
 
 [English](README.md) · [日本語](README.ja.md) · [▶ 25秒のデモ](https://junban.namelessjp.com/)
 
@@ -50,7 +50,7 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI と Gemini CLI は `~/.tmux/plugins/junban/scripts/setup.sh codex`（または `gemini`）を実行します。詳しくは[Claude Code 以外のエージェント](#claude-code-以外のエージェント)を見てください。
 
-tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の自動修正・ウィンドウ名の自動設定・1行要約と変更内容の表示・タイムライン・放置ウィンドウの `z`・Alt+n で別の worktree に起動する機能が使えます。Codex CLI と Gemini CLI の設定（setup.sh）にも python3 が要ります。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。
+tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の自動修正・ウィンドウ名の自動設定・1行要約と変更内容の表示・タイムライン・放置ウィンドウの `z`・Alt+n で起動するエージェントを別の worktree に分ける機能が使えます。Codex CLI と Gemini CLI の設定（setup.sh）にも python3 が要ります。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。
 
 ### アップデート
 
@@ -82,7 +82,7 @@ git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban
 
 すべての設定項目は[マニュアル](https://junban.namelessjp.com/manual/)にあります。
 
-## 似たツールとの違い
+## 主な機能
 
 タブに印を出すプラグインは[多く](#先行事例)あり、待たせた順に移動するもの（[gs/tmux-agent-status](https://github.com/gs/tmux-agent-status)）や待ち時間を測るもの（[muxa](https://github.com/Open330/muxa)）もあります（[比較表](https://junban.namelessjp.com/#compare)）。junban は、これらを常駐プロセスなしの tmux プラグイン1つで使えるようにしました。ステータスバーに次に押すキーを出す機能と、放置したウィンドウを一覧の下に移す機能は、どちらもほかのツールには見つかりませんでした。
 
@@ -90,13 +90,15 @@ git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban
 
 **ウィンドウ名は作業内容から自動で付きます。** 標準では依頼の1行目が名前になります。LLM を設定すると、直近の依頼をまとめた名前にします（ローカルの Ollama で小さいモデルを動かせば1秒以内）。「OK」「進めて」のような短い返事では変わらず、自分で付けた名前（`prefix ,`）も上書きしません。
 
-**Alt+n で起動している間も、進み具合が見えます。** エージェントが立ち上がるまで、新しいウィンドウではスピナーが回り、タブには薄い ◌ が付きます。
+**Alt+n で起動している間も、止まって見えません。** エージェントが立ち上がるまで、新しいウィンドウではスピナーが回り、タブには薄い ◌ が付きます。
 
 **VS Code では、移動先を表示しているウィンドウを前面に出します。** VS Code のウィンドウごとにターミナルを別の tmux セッションにつないでいる場合、Alt+a は今のターミナルの中身を入れ替えず、移動先を表示している VS Code のウィンドウを前面に出します（無ければそのプロジェクトのフォルダを開きます）。今のターミナルで切り替えたいときは `set -g @junban-vscode-raise off` を書きます。
 
 **放置したウィンドウは下へ移ります。** 1日以上触っていないウィンドウには `z` が付き、Alt+f の一覧の下に移ります。放置したウィンドウが多くても、返事を待っているものを見失いません。
 
-**何を求めているか、何が終わったかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたときに、その内容を1行でステータスバーと Alt+f の一覧に出します（例:「テスト成功、PR #12 を作成」）。作業を終えたときの1行は、LLM を設定していれば LLM がまとめ、なければ返答の最初の1行を使います。質問や許可を求めたときは、その内容をそのまま出します。`@junban-notify-cmd` で通知を設定していれば、完了の通知にも同じ1行が入ります。ntfy.sh などを使えばスマホにも送れます（ntfy.sh の公開トピックは、名前を知っている人なら誰でも読めます）。止めるときは `set -g @junban-recap off` です。作業を終えたときは、変わったもの（`3ファイル +41 −88 · 2コミット · PR #12`）も出ます。Alt+f の一覧では、プレビューの先頭に変更したファイルの一覧が出て、Ctrl+o で PR を開けます。
+**何を求めているか、何が終わったかを1行で出します。** エージェントが質問・許可を求めたときや作業を終えたときに、その内容を1行でステータスバーと Alt+f の一覧に出します（例:「テスト成功、PR #12 を作成」）。作業を終えたときの1行は、LLM を設定していれば LLM がまとめ、なければ返答の最初の1行を使います。質問や許可を求めたときは、その内容をそのまま出します。`@junban-notify-cmd` で通知を設定していれば、完了の通知にも同じ1行が入ります。ntfy.sh などを使えばスマホにも送れます（ntfy.sh の公開トピックは、名前を知っている人なら誰でも読めます）。1行要約を出さないときは `set -g @junban-recap off` を書きます。
+
+作業を終えたときは、変わったもの（`3ファイル +41 −88 · 2コミット · PR #12`）も出ます。Alt+f の一覧では、プレビューの先頭に変更したファイルの一覧が出て、Ctrl+o で PR を開けます。
 
 **完了の知らせはまとめて受け取れます。** `@junban-notify-cmd` で通知を設定している場合、`set -g @junban-done-batch 30` にすると、完了（✓）は毎時0分と30分にまとめて1通で届き、それまではステータスバーに件数だけが出ます。返事待ち（✋）はすぐに届きます。
 
@@ -112,7 +114,7 @@ git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban
 
 ## 設定
 
-すべて任意です。`~/.tmux.conf` で、プラグインを読み込む行より**前に**書いてください。よく使う項目は **Alt+,** でも変えられ、`~/.config/junban/settings.conf` に保存されます。Alt+, で選んだ値は、ここに書いた同じ設定より優先されます。設定項目の一覧は[マニュアル](https://junban.namelessjp.com/manual/)にあります。日本語の表示に固定したい場合は、次の1行を書きます。
+すべて任意です。`~/.tmux.conf` で、プラグインを読み込む行より**前に**書いてください。よく使う項目は **Alt+,** でも変えられ、`~/.config/junban/settings.conf` に保存されます。Alt+, で選んだ値は、`~/.tmux.conf` に書いた同じ設定より優先されます。設定項目の一覧は[マニュアル](https://junban.namelessjp.com/manual/)にあります。日本語の表示に固定したい場合は、次の1行を書きます。
 
 ```tmux
 set -g @junban-lang ja

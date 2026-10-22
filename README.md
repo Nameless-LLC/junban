@@ -7,13 +7,13 @@ A tmux plugin that shows which of your AI coding agents (Claude Code, Codex CLI,
 
 [English](README.md) · [日本語](README.ja.md) · [▶ 25-second demo](https://junban.namelessjp.com/)
 
-<a href="https://junban.namelessjp.com/"><img src="docs/hero-en.svg" alt="junban: six Claude Code sessions in tmux; a red banner says two are waiting on you, Alt+a jumps to the agent that needs you most, Alt+f lists every agent with a live preview" width="100%"></a>
+<a href="https://junban.namelessjp.com/"><img src="docs/hero-en.svg" alt="junban: six Claude Code agents in tmux windows. A red banner says two are waiting on you, Alt+a jumps to the agent that needs you most, and Alt+f lists every agent with a live preview." width="100%"></a>
 
 </div>
 
 Your agents work in parallel. Somewhere, one has been waiting twenty minutes for you to approve a `psql` command. You only find out by opening every window.
 
-**junban** (順番, Japanese for "turn," as in "whose turn is it?") fixes that and tells you what to press next.
+**junban** (順番, Japanese for "turn," as in "whose turn is it?") badges every tab with its agent's state and tells you what to press next.
 
 - **✋ red**: an agent is waiting on you (permission or question)
 - **✓ green**: it finished and you haven't looked yet
@@ -29,7 +29,7 @@ One line in a terminal:
 curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash
 ```
 
-It installs junban into tmux and connects Claude Code if you have it.
+It clones junban to `~/.tmux/plugins/junban`, adds one line to your tmux.conf, and connects Claude Code if you have it.
 
 <details>
 <summary>With TPM (the tmux plugin manager) instead</summary>
@@ -50,11 +50,11 @@ claude plugin marketplace add Nameless-LLC/junban && claude plugin install junba
 
 Codex CLI or Gemini CLI: `~/.tmux/plugins/junban/scripts/setup.sh codex` (or `gemini`). See [Supported agents](#supported-agents).
 
-Requires tmux 3.2 or newer, bash, and git. Optional: Python 3 (badge repair after Esc, window names, one-line recaps and what changed, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check) and fzf (the sorted, searchable Alt+f list; without it Alt+f opens tmux's own window chooser).
+Requires tmux 3.2 or newer, bash, and git. Optional: Python 3, for badge repair after Esc, window names, recaps, idle-window marks, the timeline, Codex/Gemini setup, and the Alt+n worktree check. fzf, for the sorted, searchable Alt+f list (without it, Alt+f opens tmux's own window chooser).
 
 ### Updates
 
-junban updates itself. Once a day it moves to the newest release (a version that passed CI on Linux and macOS), reloads, and updates the Claude Code plugin; new Claude sessions use the new hooks. It never touches a checkout with local changes or one you pinned. To update right away, use Alt+, → Update now. To follow every commit on main, or to turn updates off, use Alt+, → Updates (`@junban-update stable | main | off`). Installs older than 0.7.0 need one last manual update: `git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban`.
+junban updates itself. Once a day it moves to the newest release (a version that passed CI on Linux and macOS), reloads, and updates the Claude Code plugin; new Claude Code sessions use the new hooks. It never touches a checkout with local changes or one you pinned. To update right away, use Alt+, → Update now. To follow every commit on main, or to turn updates off, use Alt+, → Updates (`@junban-update stable | main | off`). Installs older than 0.7.0 need one last manual update: `git -C ~/.tmux/plugins/junban pull && claude plugin update junban@junban`.
 
 ### Something wrong?
 
@@ -78,13 +78,13 @@ Terminal doesn't send Alt? The main actions also work after the prefix: `prefix 
 
 The full manual, with every option: [junban.namelessjp.com/manual](https://junban.namelessjp.com/manual/).
 
-## What makes it different
+## What you get
 
 Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the longest wait ([tmux-agent-status by gs](https://github.com/gs/tmux-agent-status)) or measure waiting ([muxa](https://github.com/Open330/muxa)); the [comparison](https://junban.namelessjp.com/#compare) lines them up. junban does those in one tmux plugin with no daemon, and adds two things we didn't find elsewhere: a status line that shows your next key, and idle windows that move out of the way.
 
 **Badges don't get stuck.** Press Esc mid-task and Claude Code sends no "stop" event, so tools that rely only on hooks show "working" forever. junban checks Claude Code's own session records (`~/.claude/sessions`) and walks the process tree to match each session to its pane.
 
-**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm` and point `@junban-namer-url` and `@junban-namer-model` at a model, and junban names the window from your last few prompts instead (a small model in a local Ollama takes under a second). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
+**Windows are named after the task.** By default a window takes the first line of your prompt. Set `@junban-rename llm`, `@junban-namer-url` to a model server and `@junban-namer-model` to a model on it, and junban names the window from your last few prompts instead (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
 **Alt+n never looks frozen.** The new pane shows a spinner while the agent starts, and the tab shows a dim ◌ until the agent is up.
 
@@ -114,7 +114,7 @@ Everything is optional. Put it in `~/.tmux.conf` **before** the plugin line. The
 
 ```tmux
 # Look
-set -g @junban-theme on            # off = keep your own theme; junban only adds the badges, the waiting count, and the guide rows
+set -g @junban-theme on            # off = keep your own theme; junban only adds the badges, the ✋ ✓ ● counts and mascot, and the guide rows
 set -g @junban-position top        # top | bottom
 set -g @junban-guide on            # the banner and keys rows under the tabs
 set -g @junban-guide-lines 3       # 2 = no keys row; the keys show after you press the prefix
@@ -130,7 +130,7 @@ set -g @junban-key-scratch ""      # e.g. M-g (prefix g works while @junban-pref
 set -g @junban-key-settings M-,
 set -g @junban-key-help M-/
 set -g @junban-key-timeline ""     # e.g. M-y (prefix T works while @junban-prefix-keys is on)
-set -g @junban-nav-keys on         # Alt+1…9 (tabs count from 1), Alt+[ ], Alt+Tab, Alt+z, Alt+w
+set -g @junban-nav-keys on         # Alt+1…9, Alt+[ ], Alt+Tab, Alt+z, Alt+w; also numbers tabs from 1 and closes gaps
 set -g @junban-prefix-keys on      # prefix a, f, C, g, /, T as fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --worktree if another agent already works in this repo
@@ -144,14 +144,14 @@ set -g @junban-mascot on           # off = hide the face on the status line
 
 # Window names and recaps
 set -g @junban-rename prompt       # off | prompt | llm
-# No model by default. Setting both lines below also lets a model write the ✓ recap.
-set -g @junban-namer-url http://localhost:11434   # e.g. Ollama, or an OpenAI-compatible …/v1
-set -g @junban-namer-model qwen3:8b               # any model the server has
-set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only)
+# No model by default. Set the URL and model to have a model name windows (with @junban-rename llm) and write the ✓ recap.
+# set -g @junban-namer-url http://localhost:11434   # e.g. Ollama, or an OpenAI-compatible …/v1
+# set -g @junban-namer-model qwen3:8b               # any model the server has
+# set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only)
 
 # Notifications when an agent starts waiting or finishes (message on stdin). Pick one:
-set -g @junban-notify-cmd 'xargs -0 notify-send junban'
-set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # ✓ messages include the recap line; a public ntfy.sh topic is readable by anyone who knows its name
+# set -g @junban-notify-cmd 'xargs -0 notify-send junban'
+# set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # ✓ messages include the recap line; anyone who knows a public ntfy.sh topic's name can read it
 set -g @junban-done-batch off      # 30 = ✓ notifications arrive together every 30 minutes
 ```
 
@@ -172,7 +172,7 @@ Colors: `@junban-color-{waiting,done,running,bg,fg,accent,muted,dim,current-bg}`
 
 Both keep your existing hooks, replace only junban's own entries (safe to re-run), and leave a `.bak`; `--print` shows what would be written. Alt+n starts Codex if you `set -g @junban-agent-cmd codex`.
 
-Anything else that can run a command can drive junban too; it only cares about a window option:
+Any other agent can drive junban if it can run a command from inside its tmux pane:
 
 ```sh
 ~/.tmux/plugins/junban/scripts/state.sh running   # or waiting | done | idle | clear

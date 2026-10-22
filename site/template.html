@@ -341,7 +341,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
         <p class="lede" lang="en"><b>junban</b> is a tmux plugin that badges each tab when an AI coding agent (Claude Code, Codex, Gemini) is waiting on you, and shows the one key to press. No more finding out an agent sat for twenty minutes waiting for you to approve a <code>psql</code> command.</p>
-        <p class="lede" lang="ja"><b>junban</b> は tmux のプラグインです。AI エージェント（Claude Code・Codex CLI・Gemini CLI）が返事を待っているとタブに印を付け、次に押すキーをステータスバーに出します。エージェントが <code>psql</code> の実行許可を20分も待っていた、ということがなくなります。</p>
+        <p class="lede" lang="ja"><b>junban</b> は tmux のプラグインです。AI エージェント（Claude Code・Codex CLI・Gemini CLI）が返事を待っているとタブに印を付け、次に押すキーをステータスバーに出します。エージェントが <code>psql</code> の実行許可を20分も待っていたのに、気づかなかった、ということがなくなります。</p>
         <div class="cmd">
           <code id="cmd-hero">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</code>
           <button class="copy" type="button" id="copy-hero" data-copy="cmd-hero"><span lang="en">Copy</span><span lang="ja">コピー</span></button>
@@ -459,7 +459,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Measures how long agents wait on you</h3><h3 lang="ja">待ち時間を測る</h3>
           <p lang="en">The status line shows how long agents sat waiting on you today and your median reply time, with a green <span style="color: var(--done)">▼</span> when today's median beats your 7-day median. Alt+/ adds a daily graph and today's timeline.</p>
-          <p lang="ja">今日エージェントを待たせた合計と、返事までの時間の中央値をステータスバーに出します。今日の中央値が直近7日より短ければ、緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
+          <p lang="ja">今日エージェントを待たせた合計と、返事までの時間の中央値をステータスバーに出します。今日の中央値が前7日の中央値より短ければ、緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
@@ -530,12 +530,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <h2 lang="en">Install in one line.</h2>
       <h2 lang="ja">導入は1行です。</h2>
       <div class="prose" lang="en"><p>Paste it into a terminal. It installs junban into tmux and connects Claude Code if you have it. Alt+/ lists the keys.</p></div>
-      <div class="prose" lang="ja"><p>ターミナルに貼り付けて実行すると、junban を tmux に入れ、Claude Code があれば連携も設定します。キーの一覧は Alt+/ で見られます。</p></div>
+      <div class="prose" lang="ja"><p>ターミナルに貼り付けて実行すると、junban が tmux に入り、Claude Code があれば連携も設定されます。キーの一覧は Alt+/ で見られます。</p></div>
       <div class="step main">
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
         <p lang="en">Needs tmux ≥ 3.2, bash and git. Python 3 is optional and adds the Esc badge fix, window names, one-line recaps, the timeline, the idle z, the Alt+n worktree check, and Codex/Gemini setup; fzf adds the sorted, searchable Alt+f list (without it, Alt+f opens tmux's own chooser). <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
-        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、Alt+n の worktree での起動も使えます（Codex・Gemini の設定にも必要です）。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字で絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
+        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、Alt+n で別の worktree に起動する機能も使えます（Codex・Gemini の設定にも必要です）。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字で絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a>・<a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">With TPM, or for other agents</p>
       <p class="more" lang="ja">TPM で入れる場合と、Claude Code 以外のエージェントを使う場合</p>
@@ -584,8 +584,8 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
-          <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to <code>~/.tmux.conf</code>, before the plugin line, to keep yours; junban then adds only its badges, the waiting count and the guide rows (<code>set -g @junban-guide off</code> drops those rows).</p>
-          <p lang="ja">標準では junban のステータスバーに変わります。今の見た目のままにしたい場合は、<code>~/.tmux.conf</code> のプラグインを読み込む行より前に <code>set -g @junban-theme off</code> を書きます。その場合、junban が加えるのはタブの印、返事待ちの件数、ステータスバーの案内の行です（案内の行は <code>set -g @junban-guide off</code> で消せます）。</p>
+          <p lang="en">By default it brings its own status line. Add <code>set -g @junban-theme off</code> to <code>~/.tmux.conf</code>, before the plugin line, to keep yours; junban then adds only its badges, the ✋ ✓ ● counts and mascot, and the guide rows (<code>set -g @junban-guide off</code> drops those rows).</p>
+          <p lang="ja">標準では junban のステータスバーに変わります。今の見た目のままにしたい場合は、<code>~/.tmux.conf</code> のプラグインを読み込む行より前に <code>set -g @junban-theme off</code> を書きます。その場合、junban が加えるのはタブの印、状態ごとの件数とマスコット、ステータスバーの案内の行です（案内の行は <code>set -g @junban-guide off</code> で消せます）。</p>
         </details>
         <details>
           <summary><span lang="en">Why tmux, and not an app or a VS Code extension?</span><span lang="ja">なぜ tmux？　アプリや VS Code 拡張ではないの？</span></summary>
@@ -600,7 +600,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">Why the name?</span><span lang="ja">名前の由来は？</span></summary>
           <p lang="en">順番 (junban) is Japanese for "whose turn" or "in order".</p>
-          <p lang="ja">「順番」から付けました。待たせている順に、次に返事をするエージェントを示します。</p>
+          <p lang="ja">「順番」から付けました。返事を待たせている順に、次に対応するエージェントへ案内します。</p>
         </details>
       </div>
     </section>
@@ -736,7 +736,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の実行許可を求めています' }, back: { en: 'Migrating', ja: '移行中' } },
     { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI テストの修正' }, why: { en: 'Asks which fix you want', ja: '直し方を質問中' }, back: { en: 'Running e2e ×20', ja: 'e2e を20回実行中' } },
     { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル +41 −88' }, back: { en: 'Applying your edits', ja: '修正を反映中' } },
-    { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュールの分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'Running tests', ja: 'テスト中' } },
+    { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュールの分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可を求めています' }, back: { en: 'Running tests', ja: 'テスト中' } },
     { n: 5, st: 'run', t: 5, name: { en: 'k8s 1.31 upgrade', ja: 'k8s 1.31 への更新' }, why: { en: 'Done: all nodes on 1.31', ja: '完了: 全ノード 1.31' }, back: { en: 'Draining', ja: 'ノード退避中' } }
   ];
   var ICON = { wait: '✋', done: '✓', run: '●', ok: '●' };
