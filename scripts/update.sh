@@ -63,5 +63,11 @@ printf '%s\t%s\t%s\n' "$(date +%s)" "${old_v:-?}" "${new_v:-?}" >> "$log" 2>/dev
 [ "$dir" = "$JUNBAN_ROOT" ] && bash "$JUNBAN_ROOT/junban.tmux" >/dev/null 2>&1
 load_i18n
 plugin
-tmux display -d 5000 "$(printf "$T_UPDATED" "${new_v:-?}")" 2>/dev/null
+# Asked for: say it now. Otherwise the status line says it once (hints.sh), so
+# whoever comes back to the terminal later still sees it.
+if [ -n "$now" ] && [ "$dir" = "$JUNBAN_ROOT" ] && [ -n "$new_v" ]; then
+  echo "$new_v" > "${log%/*}/version" 2>/dev/null
+  tmux set -g @junban_version_seen "$new_v" 2>/dev/null
+fi
+say "$(printf "$T_UPDATED" "${new_v:-?}")"
 exit 0

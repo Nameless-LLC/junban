@@ -783,6 +783,12 @@ JUNBAN_UPDATE_DIR="$WORK/nowhere" bash "$S/update.sh"; eq "no checkout, no error
 eq  "the suite never updates itself"  "$(JUNBAN_NO_UPDATE=1 bash "$S/update.sh"; echo $?)" "0"
 tmux set -gu @junban_update_day; bash "$S/hints.sh" >/dev/null
 eq  "the status line checks once a day" "$(tmux show -gv @junban_update_day)" "$(date +%Y%m%d)"
+vf="${XDG_STATE_HOME:-$HOME/.local/state}/junban/version"
+rm -f "$vf"; tmux set -g @junban_version 1.0.0; tmux set -gu @junban_version_seen; bash "$S/hints.sh" >/dev/null
+eq  "a first install records its version" "$(cat "$vf")" "1.0.0"
+tmux set -g @junban_version 1.1.0; bash "$S/hints.sh" >/dev/null
+eq  "a new version is told once"      "$(cat "$vf") $(tmux show -gv @junban_version_seen)" "1.1.0 1.1.0"
+tmux set -g @junban_version "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json")"
 has "Alt+, offers Update now"         "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")" "Update now"
 has "…next to the version"            "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" | grep "Update now")" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json")"
 

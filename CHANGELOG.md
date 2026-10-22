@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3 — 2026-10-22
+
+### Changed
+
+- **An update says so once, where you will see it.** "junban updated to X" now shows the first time the status line draws after a new version arrives, so an update that ran in the background or overnight is not missed. A first install says nothing.
+
 ## 0.7.2 — 2026-10-22
 
 ### Changed

@@ -14,7 +14,7 @@ opt_prefetch @junban-lang @junban-color-bg @junban-color-waiting @junban-color-d
   @junban-color-muted @junban-color-slower @junban-color-dim @junban-key-jump @junban-key-list \
   @junban-key-new @junban-key-settings @junban-key-help @junban-nav-keys @junban-meter @junban-tint \
   @junban-tint-waiting @junban-stale-hours @junban-done-batch @junban-meter-cap @junban_meter_cache \
-  @junban_update_day
+  @junban_update_day @junban_version @junban_version_seen
 load_i18n
 
 # Once a day, look for a newer junban (update.sh). The day is marked first, so
@@ -23,6 +23,22 @@ today=$(date +%Y%m%d)
 if [ "$(opt @junban_update_day "")" != "$today" ]; then
   tmux set -g @junban_update_day "$today" 2>/dev/null
   (bash "$JUNBAN_SCRIPTS/update.sh" </dev/null >/dev/null 2>&1 &)
+fi
+
+# A new version says so once, at the first status line that draws it: an update
+# that ran in the background, or while no one was looking, is not missed. A
+# first install says nothing. The file outlives the tmux server; the option
+# saves reading it every few seconds.
+v=$(opt @junban_version "")
+if [ -n "$v" ] && [ "$(opt @junban_version_seen "")" != "$v" ]; then
+  tmux set -g @junban_version_seen "$v" 2>/dev/null
+  f="${XDG_STATE_HOME:-$HOME/.local/state}/junban/version"
+  old=$(cat "$f" 2>/dev/null)
+  if [ "$old" != "$v" ]; then
+    mkdir -p "${f%/*}" 2>/dev/null; echo "$v" > "$f" 2>/dev/null
+    # shellcheck disable=SC2059
+    [ -n "$old" ] && tmux display -d 8000 "$(printf "$T_UPDATED" "$v")" 2>/dev/null
+  fi
 fi
 
 cols=${1:-0}

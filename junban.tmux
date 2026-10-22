@@ -4,6 +4,8 @@
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 S="$CURRENT_DIR/scripts"
 . "$S/lib.sh"
+# Read by the status line, which tells you once when this changes (hints.sh).
+tmux set -g @junban_version "$(junban_version)"
 
 tmux set -g @junban-dir "$CURRENT_DIR"
 # Choices made in the Alt+, menu, before anything below reads an option.
