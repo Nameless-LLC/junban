@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2 — 2026-10-22
+
+### Changed
+
+- **The installed version shows in Alt+/ (next to the title) and in Alt+, (next to Update now).** It used to be only in `doctor.sh`.
+
 ## 0.7.1 — 2026-10-22
 
 ### Fixed

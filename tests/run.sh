@@ -539,6 +539,7 @@ tmux set -gu @junban-dir
 has "doctor: says when not loaded"  "$(bash "$S/doctor.sh")" "FAIL  junban.tmux is not loaded"
 tmux set -g @junban-dir "$ROOT"
 has "help points at the doctor"     "$(bash "$S/help.sh" </dev/null | cat)" "doctor.sh"
+has "help shows the version"        "$(bash "$S/help.sh" </dev/null | head -n 3)" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json")"
 
 echo "quoting"
 qd="$WORK/a'; touch $WORK/PWNED; ' b"; mkdir -p "$qd"
@@ -783,6 +784,7 @@ eq  "the suite never updates itself"  "$(JUNBAN_NO_UPDATE=1 bash "$S/update.sh";
 tmux set -gu @junban_update_day; bash "$S/hints.sh" >/dev/null
 eq  "the status line checks once a day" "$(tmux show -gv @junban_update_day)" "$(date +%Y%m%d)"
 has "Alt+, offers Update now"         "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh")" "Update now"
+has "…next to the version"            "$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" | grep "Update now")" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json")"
 
 echo "stability"
 w31=$(tmux new-window -d -P -F '#{window_id}' -t u: -n 'issue a#[fg=red]b' 'sleep 600')

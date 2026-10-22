@@ -9,7 +9,7 @@ k() { local v; v=$(opt "@junban-key-$1" "$2"); [ -n "$v" ] && keylabel "$v"; }
 nav=$(opt @junban-nav-keys on)
 
 {
-  printf '\n  %s%s%s\n\n' "$b" "$HELP_TITLE" "$r"
+  printf '\n  %s%s%s  %s%s%s\n\n' "$b" "$HELP_TITLE" "$r" "$dim" "$(junban_version)" "$r"
   printf '  %s── %s%s\n' "$dim" "$HELP_BADGES" "$r"
   printf '   %s✋%s  %s\n' "$cw" "$r" "$HELP_B_WAITING"
   printf '   %s✓%s   %s\n' "$cd_" "$r" "$HELP_B_DONE"

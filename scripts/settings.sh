@@ -190,7 +190,7 @@ case "${1:-}" in
       items+=("$(esc "$label")  #[fg=colour244]$(esc "$(shown "$o")")$mark" "$k" "run -b \"$me menu $o\"")
       k=$((k + 1))
     done < <(options)
-    items+=("" "  $(esc "$SET_UPDATE_NOW")" u "run -b \"bash $JUNBAN_SCRIPTS/update.sh now\"")
+    items+=("" "  $(esc "$SET_UPDATE_NOW")  #[fg=colour244]$(esc "$(junban_version)")" u "run -b \"bash $JUNBAN_SCRIPTS/update.sh now\"")
     # A leading "-" makes the row a note, not a choice.
     note=$(printf "$SET_FILE" "${file/#$HOME/\~}")
     menu "$SET_TITLE" "${items[@]}"

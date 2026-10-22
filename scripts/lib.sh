@@ -115,6 +115,9 @@ fmt_dur() {
   fi
 }
 
+# junban_version — the installed version, from the plugin manifest.
+junban_version() { sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$JUNBAN_ROOT/.claude-plugin/plugin.json" 2>/dev/null | head -n 1; }
+
 # client_env PID NAME — one variable from a tmux client's environment (Linux /proc only).
 client_env() {
   local f="${JUNBAN_PROC:-/proc}/$1/environ"
