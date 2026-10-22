@@ -1,5 +1,7 @@
 # Copy review
 
+The company-wide rule and process live in the `copy-review` skill (nameless-harness); this folder holds junban's own briefs.
+
 Every page people read goes through this before its wording changes ship:
 the landing page (`site/template.html`), the manual (`site/manual.html`),
 `README.md` and `README.ja.md`.
