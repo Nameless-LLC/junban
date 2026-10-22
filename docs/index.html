@@ -467,7 +467,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Measures how long agents wait on you</h3><h3 lang="ja">待ち時間を測る</h3>
           <p lang="en">The status line shows how long agents sat waiting on you today and your median reply time, with a green <span style="color: var(--done)">▼</span> when today's median beats your 7-day median. Alt+/ adds a daily graph and today's timeline.</p>
-          <p lang="ja">今日エージェントを待たせた合計と、返答の中央値をステータスバーに出します。今日の中央値が前7日の中央値より短ければ、緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
+          <p lang="ja">今日エージェントを待たせた時間の合計と、返答の中央値をステータスバーに出します。今日の中央値が過去7日の中央値より短ければ、緑の <span style="color: var(--done)">▼</span> が付きます。日ごとのグラフとタイムラインは Alt+/ で見られます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Windows named by task</h3><h3 lang="ja">ウィンドウ名は自動で付く</h3>
@@ -477,7 +477,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Claude Code, Codex, Gemini</h3><h3 lang="ja">Claude Code・Codex・Gemini</h3>
           <p lang="en">Run any mix. They share one list and one Alt+a.</p>
-          <p lang="ja">混ぜて使っても、同じ一覧に並びます。</p>
+          <p lang="ja">Claude Code・Codex CLI・Gemini CLI を混ぜて使っても、同じ一覧に並びます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Settings on Alt+,</h3><h3 lang="ja">設定は Alt+, から</h3>
@@ -487,10 +487,10 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Your VS Code windows stay put</h3><h3 lang="ja">VS Code では移動先のウィンドウが前面に出る</h3>
           <p lang="en">Alt+a brings the VS Code window showing that agent to the front (or opens its folder) instead of swapping the terminal you're in. This works when each VS Code window runs its own tmux session over a remote connection (Remote-SSH, Dev Containers, WSL) to a Linux host.</p>
-          <p lang="ja">VS Code から Linux にリモート接続（SSH・Dev Containers・WSL など）し、ウィンドウごとに別の tmux セッションを使っている場合、Alt+a を押すと、移動先のエージェントを表示している VS Code のウィンドウが前面に出ます（そのウィンドウがなければ、junban がそのプロジェクトのフォルダを開きます）。今使っているターミナルの表示は切り替えません。</p>
+          <p lang="ja">VS Code から Linux にリモート接続（SSH・Dev Containers・WSL など）し、VS Code のウィンドウごとに別の tmux セッションを使っている場合の機能です。Alt+a を押すと、移動先のエージェントを表示している VS Code のウィンドウが前面に出ます。そのウィンドウがなければ、junban がそのプロジェクトのフォルダを開きます。今使っているターミナルの表示は切り替えません。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Alt+n never looks frozen</h3><h3 lang="ja">Alt+n で起動した直後も止まって見えない</h3>
+          <h3 lang="en">Alt+n never looks frozen</h3><h3 lang="ja">Alt+n で起動した直後からスピナーを表示</h3>
           <p lang="en">An agent can take seconds to draw anything. The new window shows a spinner right away, and its tab shows ◌ until the agent is up.</p>
           <p lang="ja">エージェントは画面が出るまで数秒かかることがあります。新しいウィンドウではすぐにスピナーが回り、起動が終わるまでタブに ◌ が付きます。</p>
         </div>
@@ -543,7 +543,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="bar"><span class="t"><span lang="en">Terminal</span><span lang="ja">ターミナル</span></span><button class="copy" type="button" data-copy="cmd-install"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
         <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Nameless-LLC/junban/main/install.sh | bash</pre>
         <p lang="en">Needs tmux ≥ 3.2, bash and git. Python 3 is optional and adds the Esc badge fix, window names, one-line recaps, the "what changed" summary, the timeline, the idle z, the Alt+n worktree check, and Codex/Gemini setup; fzf adds the sorted, searchable Alt+f list (without it, Alt+f opens tmux's own chooser). <a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">Read install.sh</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">Security</a></p>
-        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z、Codex・Gemini の設定も使えます。同じリポジトリでほかのエージェントのウィンドウが開いているときに、Alt+n の Claude Code を別の worktree で起動する機能も python3 を使います。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
+        <p lang="ja">tmux 3.2 以上、bash、git が必要です。python3 があれば、Esc で止めたときの印の修正、ウィンドウ名の自動設定、1行の要約、タイムライン、放置ウィンドウの z が使えます。Codex CLI・Gemini CLI との連携の設定にも python3 が要ります。同じリポジトリでほかのエージェントのウィンドウが開いているときに、Alt+n の Claude Code を別の worktree で起動する機能も python3 を使います。fzf があれば、Alt+f の一覧が返事待ち・完了の順に並び、文字を打って絞り込めます（なければ tmux 標準のウィンドウ一覧になります）。<a href="https://github.com/Nameless-LLC/junban/blob/main/install.sh">install.sh を読む</a> · <a href="https://github.com/Nameless-LLC/junban/blob/main/SECURITY.md">セキュリティ</a></p>
       </div>
       <p class="more" lang="en">With TPM, or for other agents</p>
       <p class="more" lang="ja">TPM で入れる場合と、Claude Code 以外のエージェントを使う場合</p>
@@ -552,7 +552,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <div class="bar"><span class="t"><span lang="en">tmux (TPM)</span><span lang="ja">tmux（TPM）</span></span><button class="copy" type="button" data-copy="cmd-tpm"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
           <pre id="cmd-tpm">set -g @plugin 'Nameless-LLC/junban'</pre>
           <p lang="en">Using TPM (the tmux plugin manager)? Add this to <code>~/.tmux.conf</code>, then press prefix + I.</p>
-          <p lang="ja">tmux のプラグイン管理ツール（TPM）を使っている場合です。<code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
+          <p lang="ja">tmux のプラグイン管理ツール（TPM）を使っている場合です。上の行を <code>~/.tmux.conf</code> に追記して、prefix + I を押します。</p>
         </div>
         <div class="step">
           <div class="bar"><span class="t">Claude Code</span><button class="copy" type="button" data-copy="cmd-claude"><span lang="en">Copy</span><span lang="ja">コピー</span></button></div>
