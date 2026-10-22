@@ -363,7 +363,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <div class="who" aria-live="polite">
             <div class="name" id="b-name">✋ db migration</div>
             <div class="why" lang="en" id="b-why-en">Wants to run psql on dev · waited 4m</div>
-            <div class="why" lang="ja" id="b-why-ja">開発 DB で psql の許可待ち · 4分待ち</div>
+            <div class="why" lang="ja" id="b-why-ja">開発 DB で psql の実行許可を求めています · 4分経過</div>
           </div>
         </div>
         <ol class="queue" id="b-queue">
@@ -373,7 +373,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <li><span class="t">5</span><span class="st-run">●</span><span lang="en">k8s 1.31 upgrade · Draining</span><span lang="ja">k8s 1.31 への更新 · ノード退避中</span><span class="t">5m</span></li>
         </ol>
         <div class="board-foot" lang="en">Waiting before finished, longest wait first. Press <kbd>Alt+a</kbd> and you're there.</div>
-        <div class="board-foot" lang="ja">返事待ち、完了の順に、長く待たせているものから並びます。<kbd>Alt+a</kbd> で先頭へ移動します。</div>
+        <div class="board-foot" lang="ja">返事待ち、完了の順に、それぞれ長く待たせているものから並びます。<kbd>Alt+a</kbd> で先頭へ移動します。</div>
         <div class="try">
           <span class="nudge" lang="en">Try it: press a</span><span class="nudge" lang="ja">a キーで試せます</span>
           <button type="button" id="board-next"><span lang="en">Answer &amp; next →</span><span lang="ja">返事して次へ →</span></button>
@@ -384,7 +384,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
     <figure class="shot rv" data-pal="run:video">
       <video class="wide" lang="en" data-src="{{VIDEO_EN}}" poster="{{HERO_EN}}" width="1920" height="1080" muted loop playsinline controls aria-label="25-second demo: two agents start waiting, Alt+a jumps to the one that has waited longest, you approve, Alt+a again, then Alt+f searches every agent"></video>
-      <video class="wide" lang="ja" data-src="{{VIDEO_JA}}" poster="{{HERO_JA}}" width="1920" height="1080" muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、もう一度 Alt+a で次へ移動します。最後に Alt+f で全エージェントを検索します。"></video>
+      <video class="wide" lang="ja" data-src="{{VIDEO_JA}}" poster="{{HERO_JA}}" width="1920" height="1080" muted loop playsinline controls aria-label="25秒のデモ。2つのエージェントが返事待ちになり、Alt+a でいちばん長く待っているウィンドウへ移動して許可し、もう一度 Alt+a で次へ移動します。最後に Alt+f で全エージェントの一覧を開き、絞り込みます。"></video>
       <video class="tall" lang="en" data-src="{{VIDEO_MOBILE_EN}}" poster="{{HERO_EN}}" width="1080" height="1350" muted loop playsinline controls aria-label="25-second demo, cropped for phones"></video>
       <video class="tall" lang="ja" data-src="{{VIDEO_MOBILE_JA}}" poster="{{HERO_JA}}" width="1080" height="1350" muted loop playsinline controls aria-label="25秒のデモ（スマホ向けに拡大）"></video>
       <figcaption lang="en">A real tmux session, recorded scene by scene. 25 seconds.</figcaption>
@@ -419,7 +419,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <h2 lang="en">One key to remember. The status line shows the rest.</h2>
           <h2 lang="ja">使い方は<wbr>画面に出ます。</h2>
           <div class="prose" lang="en"><p>The bottom status line lists the keys worth knowing. When an agent needs you, the line above it turns into a banner pointing at Alt+a.</p></div>
-          <div class="prose" lang="ja"><p>ステータスバーのいちばん下に、よく使うキーを表示します。返事待ちがあれば、その上の行に「Alt+a で移動」を表示します。</p></div>
+          <div class="prose" lang="ja"><p>ステータスバーのいちばん下に、よく使うキーを表示します。返事待ちがあればその上の行に「Alt+a で移動」が、未確認の完了があれば「Alt+a で確認」が出ます。</p></div>
         </div>
       </div>
       <div class="strips">
@@ -442,7 +442,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">Esc で止めても、Claude Code の記録（<code>~/.claude/sessions</code>）を見て表示を直します。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Most urgent goes first</h3><h3 lang="ja">長く待たせた順に移動</h3>
+          <h3 lang="en">Most urgent goes first</h3><h3 lang="ja">返事待ちを先に、長く待たせた順に移動</h3>
           <p lang="en">Alt+a takes you to the agent that needs you: questions and approvals before finished work, longest wait first.</p>
           <p lang="ja">Alt+a で、返事待ちのうちいちばん長く待っているエージェントへ移動します。返事待ちがなければ、完了したものへ移動します。</p>
         </div>
@@ -489,12 +489,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Keeps itself up to date</h3><h3 lang="ja">自動でアップデート</h3>
           <p lang="en">Once a day it updates to the newest release that passed CI, and says so on the status line. It never touches a checkout with local changes or a pinned version. Alt+, → Update now does it immediately.</p>
-          <p lang="ja">1日に1回、テストを通った最新のリリースに更新し、更新したら1回だけ知らせます。手元に変更があるときや版を固定しているときは更新しません。Alt+, の「今すぐアップデート」でも更新できます。</p>
+          <p lang="ja">1日に1回、テストを通った最新のリリースに更新し、更新したらステータスバーで1回だけ知らせます。手元に変更があるときや版を固定しているときは更新しません。Alt+, の「今すぐアップデート」でも更新できます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">No daemon</h3><h3 lang="ja">常駐プログラムなし</h3>
           <p lang="en">Runs on tmux and bash (Python 3 for some features). Nothing stays running: work rides on tmux's own status refresh.</p>
-          <p lang="ja">tmux と bash だけで動き、一部の機能は python3 を使います。処理は tmux のステータスバーの更新に合わせて実行します。</p>
+          <p lang="ja">tmux と bash で動きます（一部の機能は python3 を使います）。処理は tmux のステータスバーの更新に合わせて実行します。</p>
         </div>
       </div>
     </section>
@@ -510,12 +510,12 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <thead><tr><th scope="col"></th><th scope="col" class="jb">junban<small><span lang="en">tmux plugin · bash</span><span lang="ja">tmux プラグイン・bash</span></small></th><th scope="col"><a href="https://github.com/gs/tmux-agent-status">gs/tmux-agent-status</a><small><span lang="en">tmux plugin</span><span lang="ja">tmux プラグイン</span></small></th><th scope="col"><a href="https://github.com/samleeney/tmux-agent-status">samleeney/tmux-agent-status</a><small><span lang="en">tmux plugin + daemon</span><span lang="ja">tmux プラグイン＋常駐</span></small></th><th scope="col"><a href="https://github.com/Open330/muxa">muxa</a><small><span lang="en">Rust daemon + TUI, beta</span><span lang="ja">Rust の常駐＋TUI・β版</span></small></th><th scope="col"><a href="https://github.com/raine/workmux">workmux</a><small><span lang="en">worktree CLI for tmux</span><span lang="ja">tmux 用 worktree CLI</span></small></th><th scope="col"><a href="https://code.claude.com/docs/en/agent-view">Claude Code agent view</a><small><span lang="en">built in, preview</span><span lang="ja">標準機能・プレビュー</span></small></th></tr></thead>
           <tbody>
             <tr><th scope="row"><span lang="en">Watches agents you already run</span><span lang="ja">起動済みの<wbr>エージェントを表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span class="y">✓</span><span lang="en">hooks + screen</span><span lang="ja">フック＋画面</span></td><td><span class="y">✓</span><span lang="en">hooks</span><span lang="ja">フック</span></td><td><span lang="en">background sessions only</span><span lang="ja">バックグラウンドのセッションだけ</span></td></tr>
-            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待っているものへ<wbr>移動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">キーを設定可能（標準では未設定）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">受信箱の順に次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">dashboard: waiting, done, working</span><span lang="ja">一覧で返事待ち・完了・作業中の順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
+            <tr><th scope="row"><span lang="en">Jump to the longest wait</span><span lang="ja">いちばん長く<wbr>待っているものへ<wbr>移動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+a</span><span lang="ja">Alt+a</span></td><td><span class="y">✓</span><span lang="en">optional key, off by default</span><span lang="ja">キーを設定可能（標準では未設定）</span></td><td><span lang="en">next in inbox order</span><span lang="ja">inbox（一覧）の並び順で次へ</span></td><td><span class="y">✓</span><span lang="en"><code>muxa attend</code></span><span lang="ja"><code>muxa attend</code></span></td><td><span lang="en">dashboard: waiting, done, working</span><span lang="ja">一覧で返事待ち・完了・作業中の順</span></td><td><span lang="en">state groups, manual order</span><span lang="ja">状態ごと・並びは手動</span></td></tr>
             <tr><th scope="row"><span lang="en">Wait-time meter and day timeline</span><span lang="ja">待ち時間の<wbr>計測と<wbr>1日の<wbr>タイムライン</span></th><td class="jb"><span class="y">✓</span><span lang="en">status line meter, Alt+/ report and timeline; local file only</span><span lang="ja">ステータスバーと Alt+/ で表示。記録は自分のパソコンにだけ残る</span></td><td class="n">—</td><td class="n">—</td><td><span class="y">✓</span><span lang="en"><code>stats</code>, <code>timeline</code></span><span lang="ja"><code>stats</code>・<code>timeline</code></span></td><td><span lang="en">time in current state</span><span lang="ja">今の状態の経過時間</span></td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Keeps a second agent out of a busy repo</span><span lang="ja">使用中のフォルダでは<wbr>別の worktree で起動</span></th><td class="jb"><span class="y">✓</span><span lang="en">Alt+n starts Claude Code in a new worktree when another agent already works in the repo</span><span lang="ja">使用中なら Alt+n が Claude Code を別の worktree で起動</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><span lang="en">a worktree per task, up front</span><span lang="ja">作業ごとに先に worktree を作る</span></td><td><span lang="en">isolates background sessions</span><span lang="ja">バックグラウンドのセッションは別の worktree</span></td></tr>
             <tr><th scope="row"><span lang="en">Status line shows the next key</span><span lang="ja">次に押すキーを<wbr>表示</span></th><td class="jb"><span class="y">✓</span><span lang="en"></span><span lang="ja"></span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
             <tr><th scope="row"><span lang="en">Names windows by task</span><span lang="ja">作業内容で<wbr>ウィンドウに<wbr>名前を付ける</span></th><td class="jb"><span class="y">✓</span><span lang="en">from your prompt, or a model you pick; "ok" never renames</span><span lang="ja">依頼の1行目か、指定した LLM で付ける。短い返事では変えない</span></td><td class="n">—</td><td class="n">—</td><td><span lang="en">by hand</span><span lang="ja">手動</span></td><td><span lang="en">LLM names the branch</span><span lang="ja">LLM がブランチ名を付ける</span></td><td><span lang="en">Claude Code's session title</span><span lang="ja">Claude Code が付ける名前</span></td></tr>
-            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + anything that can run a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude・Codex・opencode・pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin＋任意</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini + 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
+            <tr><th scope="row"><span lang="en">Agents</span><span lang="ja">対応<wbr>エージェント</span></th><td class="jb"><span lang="en">Claude Code, Codex, Gemini + anything that can run a command</span><span lang="ja">Claude Code・Codex・Gemini ほか</span></td><td><span lang="en">Claude, Codex, opencode, pi</span><span lang="ja">Claude・Codex・opencode・pi</span></td><td><span lang="en">Claude, Codex, Devin + custom</span><span lang="ja">Claude・Codex・Devin ほか（任意に追加可）</span></td><td><span lang="en">Claude, Codex, Gemini, Antigravity + more from the screen</span><span lang="ja">Claude・Codex・Gemini・Antigravity ほか（画面から判定）</span></td><td><span lang="en">Claude, Codex, Gemini + 6 more</span><span lang="ja">Claude・Codex・Gemini ほか6種</span></td><td><span lang="en">Claude Code only</span><span lang="ja">Claude Code のみ</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -573,14 +573,14 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
       <h2 lang="ja">導入前によく聞かれること</h2>
       <div class="faq">
         <details>
-          <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">ほかの tmux 向けステータス表示と何が違う？</span></summary>
+          <summary><span lang="en">How is it different from other tmux status plugins for agents?</span><span lang="ja">エージェントの状態を出すほかの tmux プラグインと何が違う？</span></summary>
           <p lang="en">Two things we didn't find elsewhere: the status line shows your next key, and idle windows move out of the way. It also puts tab badges, a jump to the longest wait and a wait meter in one tmux plugin with no daemon. Others each do some of these; see <a href="#compare">the comparison</a>.</p>
           <p lang="ja">次に押すキーの表示と、放置したウィンドウを一覧の下に移す機能は、ほかのツールでは見つかりませんでした。また、タブの印、いちばん長く待っているものへの移動、待ち時間の計測を、常駐プログラムなしの tmux プラグイン1つで使えます。それぞれの一部はほかのツールにもあります（<a href="#compare">比較表</a>）。</p>
         </details>
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
           <p lang="en">Nothing about you or your work by default. State lives in tmux options, and the wait meter in a local file only you can read. Once a day junban asks GitHub for a newer release (a <code>git fetch</code>; Alt+, → Updates → off stops it). Two things leave the machine only if you turn them on: with a model URL set, your recent prompts and the agent's reply go to that URL to name the window and write the one-line recap (a local Ollama keeps them on your machine); with a notify command set, the recap goes wherever that command sends it. A public ntfy.sh topic can be read by anyone who knows its name.</p>
-          <p lang="ja">標準では、作業の内容は送りません。記録は自分のパソコンにだけ残ります。1日に1回、新しいリリースがないか GitHub に問い合わせます（<code>git fetch</code>。Alt+, の「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りを設定した送り先に送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、その1行を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
+          <p lang="ja">標準では、作業の内容は送りません。記録は自分のパソコンにだけ残ります。1日に1回、新しいリリースがないか GitHub に問い合わせます（<code>git fetch</code>。Alt+, の「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りを設定した送り先に送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、ステータスバーに出る1行の要約を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
@@ -588,14 +588,14 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">標準では junban のステータスバーに変わります。今の見た目のままにしたい場合は、<code>~/.tmux.conf</code> のプラグインを読み込む行より前に <code>set -g @junban-theme off</code> を書きます。その場合、junban が加えるのはタブの印、返事待ちの件数、ステータスバーの案内の行です（案内の行は <code>set -g @junban-guide off</code> で消せます）。</p>
         </details>
         <details>
-          <summary><span lang="en">Why tmux, and not an app or a VS Code extension?</span><span lang="ja">なぜ tmux？アプリや VS Code 拡張ではないの？</span></summary>
+          <summary><span lang="en">Why tmux, and not an app or a VS Code extension?</span><span lang="ja">なぜ tmux？　アプリや VS Code 拡張ではないの？</span></summary>
           <p lang="en">Because that's where many people already run their agents, including over SSH. There is no daemon and no app: if tmux is up, junban works.</p>
           <p lang="ja">多くの人が、すでに tmux の中でエージェントを動かしているからです。SSH 先でも同じように使えます。アプリも常駐プログラムもないので、tmux が動いていれば junban も動きます。</p>
         </details>
         <details>
           <summary><span lang="en">What about other agents?</span><span lang="ja">ほかのエージェントでも使える？</span></summary>
           <p lang="en">Claude Code, Codex CLI and Gemini CLI are built in. Anything that can run a command when it needs you or finishes can call <code>scripts/state.sh waiting</code> or <code>done</code>.</p>
-          <p lang="ja">Claude Code・Codex CLI・Gemini CLI は標準で対応しています。返事待ちや完了のときにコマンドを実行できるツールなら、<code>scripts/state.sh waiting</code>（または <code>done</code>）でつながります。</p>
+          <p lang="ja">使えます。Claude Code・Codex CLI・Gemini CLI には標準で対応しています。それ以外も、返事待ちや完了のときにコマンドを実行できるツールなら、<code>scripts/state.sh waiting</code>（または <code>done</code>）でつながります。</p>
         </details>
         <details>
           <summary><span lang="en">Why the name?</span><span lang="ja">名前の由来は？</span></summary>
@@ -733,7 +733,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
 
   // live call board: press "a" (or the button) to answer the agent being called
   var Q = [
-    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の許可待ち' }, back: { en: 'Migrating', ja: '移行中' } },
+    { n: 4, st: 'wait', t: 4, name: { en: 'db migration', ja: 'DB 移行' }, why: { en: 'Wants to run psql on dev', ja: '開発 DB で psql の実行許可を求めています' }, back: { en: 'Migrating', ja: '移行中' } },
     { n: 2, st: 'wait', t: 2, name: { en: 'fix flaky CI', ja: 'CI テストの修正' }, why: { en: 'Asks which fix you want', ja: '直し方を質問中' }, back: { en: 'Running e2e ×20', ja: 'e2e を20回実行中' } },
     { n: 3, st: 'done', t: 3, name: { en: 'pricing page copy', ja: '料金ページの文言' }, why: { en: 'Done: 3 files, +41 −88', ja: '完了: 3ファイル +41 −88' }, back: { en: 'Applying your edits', ja: '修正を反映中' } },
     { n: 1, st: 'run', t: 1, name: { en: 'billing refactor', ja: '請求モジュールの分割' }, why: { en: 'Wants to delete legacy invoices.ts', ja: '旧 invoices.ts の削除許可待ち' }, back: { en: 'Running tests', ja: 'テスト中' } },
@@ -757,7 +757,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
     num.textContent = cur ? cur.n : '✓';
     if (animate) { num.classList.remove('flip'); void num.offsetWidth; num.classList.add('flip'); }
     document.getElementById('b-name').textContent = cur ? ICON[cur.st] + ' ' + cur.name[L()] : (L() === 'ja' ? '返事待ちはありません' : 'Nobody is waiting on you');
-    var m = function (q, l) { return l === 'ja' ? q.t + '分待ち' : 'waited ' + q.t + 'm'; };
+    var m = function (q, l) { return l === 'ja' ? q.t + '分経過' : 'waited ' + q.t + 'm'; };
     document.getElementById('b-why-en').textContent = cur ? cur.why.en + ' · ' + m(cur, 'en') : 'Every agent is back at work.';
     document.getElementById('b-why-ja').textContent = cur ? cur.why.ja + ' · ' + m(cur, 'ja') : 'すべて作業に戻りました。';
     var rest = Q.filter(function (q) { return q !== cur; }).sort(function (a, b) {
