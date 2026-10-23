@@ -25,7 +25,14 @@ while [ $i -lt 600 ]; do
   i=$((i + 1))
   sleep 0.1
 done
-# Still alone on the screen: leave it blank for the agent. Once the agent has
-# drawn, clearing the line could take its text with ours.
-[ "${s##*|}" = 00 ] && printf '\r\033[2K'
+# Still alone on the screen: leave it blank for the agent.
+if [ "${s##*|}" = 00 ]; then
+  printf '\r\033[2K'
+else
+  # The agent drew around us (Claude's trust prompt): wipe our top line only if
+  # it holds nothing of theirs, then put the cursor back where the agent left it.
+  c=$(tmux capture-pane -p -t "$p" -S 0 -E 0 2>/dev/null); c=${c//"$1"/}
+  for x in "${f[@]}"; do c=${c//"$x"/}; done
+  [ -z "${c//[[:space:]]/}" ] && printf '\0337\033[1;1H\033[2K\0338'
+fi
 exit 0

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.6 — 2026-10-23
+
+### Fixed
+
+- **The stopped spinner no longer leaves "Starting claude…" above Claude Code's trust prompt.** Its line is wiped when nothing of the agent's is on it.
+
 ## 0.7.5 — 2026-10-23
 
 ### Fixed

@@ -570,6 +570,14 @@ nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1
 sleep 1.2; a=$(tmux capture-pane -p -t "$nw"); sleep 0.5; b=$(tmux capture-pane -p -t "$nw")
 eq  "Alt+n: the spinner stops when the agent draws first" "$a" "$b"
 has "…and leaves what it drew"      "$b" "Trust this folder?"
+tmux kill-window -t "$nw"
+# The same, drawn below the spinner's line: the spinner's line is wiped, the rest kept.
+tmux set -g @junban-agent-cmd "printf '\\n\\nTrust this folder?\\033[H'; sleep 5"
+TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
+nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
+sleep 1.5; b=$(tmux capture-pane -p -t "$nw")
+hasnt "…its own line is wiped"      "$b" "Starting"
+has "…the agent's text stays"       "$b" "Trust this folder?"
 tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
 tmux set -gu @junban-agent-cmd
 
