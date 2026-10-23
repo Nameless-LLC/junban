@@ -562,6 +562,15 @@ eq  "Alt+n: the first hook ends ◌"  "$(tmux show -wv -t "$nw" @junban_starting
 sleep 0.3
 eq  "Alt+n: and leaves the pane blank for the agent" "$(tmux capture-pane -p -t "$nw" | tr -d ' \n')" ""
 tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
+# An agent that draws before any hook (Claude's trust prompt) with the cursor
+# back on the top row: the spinner must not keep drawing over it.
+tmux set -g @junban-agent-cmd "printf 'Trust this folder?\\n\\033[H'; sleep 5"
+TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
+nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
+sleep 1.2; a=$(tmux capture-pane -p -t "$nw"); sleep 0.5; b=$(tmux capture-pane -p -t "$nw")
+eq  "Alt+n: the spinner stops when the agent draws first" "$a" "$b"
+has "…and leaves what it drew"      "$b" "Trust this folder?"
+tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
 tmux set -gu @junban-agent-cmd
 
 echo "VS Code windows"

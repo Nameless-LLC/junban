@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.5 — 2026-10-23
+
+### Fixed
+
+- **Alt+n's spinner no longer draws over Claude Code's "trust this folder?" prompt.** The prompt comes before any hook and leaves the cursor on the top row, so the spinner kept going for a minute on top of it. It now stops as soon as anything else is on the screen.
+
 ## 0.7.4 — 2026-10-22
 
 ### Fixed
