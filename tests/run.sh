@@ -558,6 +558,8 @@ nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1
 spun() { for _ in $(seq 40); do tmux show -wv -t "$nw" @junban_starting_msg 2>/dev/null | grep -q "$1" && { echo yes; return; }; sleep 0.05; done; echo no; }
 eq  "Alt+n: a spinner runs while it starts" "$(spun 'Starting sleep')" "yes"
 eq  "…without writing into the pane" "$(tmux capture-pane -p -t "$nw" | tr -d ' \n')" ""
+tmux set -w -t "$nw" @junban_starting_note "2 agents already work here"
+eq  "…and carries the worktree notice" "$(spun '2 agents already work here')" "yes"
 TMUX_PANE=$(tmux display -p -t "$nw" '#{pane_id}') bash "$S/state.sh" idle </dev/null
 eq  "Alt+n: the first hook ends ◌"  "$(tmux show -wv -t "$nw" @junban_starting 2>/dev/null)" ""
 sleep 0.3

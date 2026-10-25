@@ -18,12 +18,16 @@ agent_cmd() {
       cmd="$cmd --worktree"
       load_i18n
       # shellcheck disable=SC2059
-      tmux display "$(printf "$T_NEW_WORKTREE" "$n")"
+      note=$(printf "$T_NEW_WORKTREE" "$n")
+      # The spinner (starting.sh) redraws the message line; it shows this beside itself.
+      [ -n "${in_pane:-}" ] && tmux set -w -t "$TMUX_PANE" @junban_starting_note "$note" 2>/dev/null
+      tmux display "$note"
     fi
   fi
 }
 
 if [ "${1:-}" = --run ]; then
+  in_pane=1
   agent_cmd "$PWD"
   # The shell tmux would have run the command with, so agent-cmd reads the same.
   sh=$(tmux show -gv default-shell 2>/dev/null)

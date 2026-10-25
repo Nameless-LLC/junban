@@ -89,7 +89,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Windows are named after the task.** By default a window takes the first line of your latest prompt. To have a model name windows from your last few prompts instead, set `@junban-rename llm`, point `@junban-namer-url` at a model server, and set `@junban-namer-model` to one of its models (a small local model is enough). Short replies like "ok" or "yes" never rename a window, and a name you set yourself (`prefix ,`) is never changed.
 
-**Alt+n never looks frozen.** The status line shows a spinner while the agent starts (nothing is drawn over the agent's own screen), and the tab shows a dim ◌ until the agent is up.
+**Alt+n never looks frozen.** The status line shows a spinner until the agent draws its first screen (nothing is drawn over the agent's own screen), and the tab shows a dim ◌ until the agent is up.
 
 **Idle windows move out of the way.** Windows with no agent activity for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 

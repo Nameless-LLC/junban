@@ -20,6 +20,7 @@ while [ $i -lt 600 ]; do
   # The agent is our sibling: both are children of the pane's sh -c.
   [ $i -lt 5 ] || pgrep -P "$PPID" 2>/dev/null | grep -qvx "$$" || break
   m="${f[i % 10]} $1"
+  n=$(tmux show -wv -t "$w" @junban_starting_note 2>/dev/null) && [ -n "$n" ] && m="$m  ·  $n"
   # Kept on the window too, so a status format (or a test) can show it.
   tmux set -w -t "$w" @junban_starting_msg "$m" 2>/dev/null
   for c in $(tmux list-clients -F '#{client_name}|#{window_id}' 2>/dev/null | awk -F'|' -v w="$w" '$2 == w { print $1 }'); do
@@ -28,5 +29,5 @@ while [ $i -lt 600 ]; do
   i=$((i + 1))
   sleep 0.1
 done
-tmux set -wu -t "$w" @junban_starting_msg 2>/dev/null
+tmux set -wu -t "$w" @junban_starting_msg \; set -wu -t "$w" @junban_starting_note 2>/dev/null
 exit 0
