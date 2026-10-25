@@ -555,30 +555,25 @@ tmux kill-window -t "$nw"
 tmux set -g @junban-agent-cmd "sleep 5"
 TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
 nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
-spun() { for _ in $(seq 40); do tmux capture-pane -p -t "$nw" | grep -q "$1" && { echo yes; return; }; sleep 0.05; done; echo no; }
-eq  "Alt+n: the pane spins while it starts" "$(spun 'Starting sleep')" "yes"
+spun() { for _ in $(seq 40); do tmux show -wv -t "$nw" @junban_starting_msg 2>/dev/null | grep -q "$1" && { echo yes; return; }; sleep 0.05; done; echo no; }
+eq  "Alt+n: a spinner runs while it starts" "$(spun 'Starting sleep')" "yes"
+eq  "…without writing into the pane" "$(tmux capture-pane -p -t "$nw" | tr -d ' \n')" ""
 TMUX_PANE=$(tmux display -p -t "$nw" '#{pane_id}') bash "$S/state.sh" idle </dev/null
 eq  "Alt+n: the first hook ends ◌"  "$(tmux show -wv -t "$nw" @junban_starting 2>/dev/null)" ""
 sleep 0.3
-eq  "Alt+n: and leaves the pane blank for the agent" "$(tmux capture-pane -p -t "$nw" | tr -d ' \n')" ""
+eq  "…and the spinner"              "$(tmux show -wv -t "$nw" @junban_starting_msg 2>/dev/null)" ""
 tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
-# An agent that draws before any hook (Claude's trust prompt) with the cursor
-# back on the top row: the spinner must not keep drawing over it.
-tmux set -g @junban-agent-cmd "printf 'Trust this folder?\\n\\033[H'; sleep 5"
+# An agent that draws before any hook (Claude's trust prompt): the spinner stops
+# and the screen is exactly what the agent drew.
+tmux set -g @junban-agent-cmd "printf 'Trust this folder?\\n> No, exit\\033[2;1H'; sleep 5"
 TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
 nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
-sleep 1.2; a=$(tmux capture-pane -p -t "$nw"); sleep 0.5; b=$(tmux capture-pane -p -t "$nw")
-eq  "Alt+n: the spinner stops when the agent draws first" "$a" "$b"
-has "…and leaves what it drew"      "$b" "Trust this folder?"
+sleep 1
+eq  "Alt+n: the spinner stops when the agent draws first" "$(tmux show -wv -t "$nw" @junban_starting_msg 2>/dev/null)" ""
+eq  "…and the agent's screen is untouched" "$(tmux capture-pane -p -t "$nw" | sed '/^ *$/d')" "Trust this folder?
+> No, exit"
 tmux kill-window -t "$nw"
-# The same, drawn below the spinner's line: the spinner's line is wiped, the rest kept.
-tmux set -g @junban-agent-cmd "printf '\\n\\nTrust this folder?\\033[H'; sleep 5"
-TMUX_PANE=$(tmux display -p -t u:9 '#{pane_id}') bash "$S/new.sh" "$WORK"
-nw=$(tmux list-windows -t u -F '#{window_id} #{@junban_starting}' | awk '$2 == 1 { print $1; exit }')
-sleep 1.5; b=$(tmux capture-pane -p -t "$nw")
-hasnt "…its own line is wiped"      "$b" "Starting"
-has "…the agent's text stays"       "$b" "Trust this folder?"
-tmux kill-window -t "$nw"; tmux set -gu @junban-agent-cmd
+tmux set -gu @junban-agent-cmd
 tmux set -gu @junban-agent-cmd
 
 echo "VS Code windows"

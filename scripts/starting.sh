@@ -1,38 +1,32 @@
 #!/usr/bin/env bash
-# starting.sh MESSAGE — a spinner in the pane Alt+n just opened, until the agent is up.
+# starting.sh MESSAGE — a spinner for the window Alt+n just opened, until the agent is up.
 #
-# It runs beside the agent, so it has to be gone before the agent draws: it stops
-# at the agent's first hook (Claude Code's SessionStart comes ~0.3 s before its
-# first frame), as soon as anything else is on the screen or moves the cursor, when the agent exits
-# (its shell takes over the screen), or after a minute.
+# It never writes into the pane: the agent owns that screen, and anything drawn
+# there races the agent's first frame (Claude Code's trust prompt comes before
+# any hook, and a spinner frame landing on it looked like a hang). The spinner
+# goes to the message line of each client looking at the window instead.
+#
+# It stops at the agent's first hook, as soon as anything is on the pane's
+# screen, when the agent exits, or after a minute.
 p=${TMUX_PANE:-}
 [ -n "$p" ] && [ -n "${1:-}" ] || exit 0
 f=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+w=$(tmux display -p -t "$p" '#{window_id}' 2>/dev/null) || exit 0
 i=0
 while [ $i -lt 600 ]; do
-  s=$(tmux display -p -t "$p" '#{@junban_starting}|#{@junban}|#{alternate_on}#{cursor_y}' 2>/dev/null) || exit 0
-  [ "$s" = "1||00" ] || break
-  # Anything else on the screen is the agent drawing (a trust prompt comes before
-  # any hook and may leave the cursor on the top row): stop rather than draw over it.
-  if [ $i -ge 2 ]; then
-    c=$(tmux capture-pane -p -t "$p" 2>/dev/null); c=${c//"$1"/}
-    for x in "${f[@]}"; do c=${c//"$x"/}; done
-    [ -z "${c//[[:space:]]/}" ] || { s=drawn; break; }
-  fi
+  s=$(tmux display -p -t "$p" '#{@junban_starting}|#{@junban}' 2>/dev/null) || break
+  [ "$s" = "1|" ] || break
+  [ -z "$(tmux capture-pane -p -t "$p" 2>/dev/null | tr -d ' \n')" ] || break
   # The agent is our sibling: both are children of the pane's sh -c.
   [ $i -lt 5 ] || pgrep -P "$PPID" 2>/dev/null | grep -qvx "$$" || break
-  printf '\r\033[2m  %s %s\033[0m' "${f[i % 10]}" "$1"
+  m="${f[i % 10]} $1"
+  # Kept on the window too, so a status format (or a test) can show it.
+  tmux set -w -t "$w" @junban_starting_msg "$m" 2>/dev/null
+  for c in $(tmux list-clients -F '#{client_name}|#{window_id}' 2>/dev/null | awk -F'|' -v w="$w" '$2 == w { print $1 }'); do
+    tmux display -c "$c" -d 300 "$m" 2>/dev/null
+  done
   i=$((i + 1))
   sleep 0.1
 done
-# Still alone on the screen: leave it blank for the agent.
-if [ "${s##*|}" = 00 ]; then
-  printf '\r\033[2K'
-else
-  # The agent drew around us (Claude's trust prompt): wipe our top line only if
-  # it holds nothing of theirs, then put the cursor back where the agent left it.
-  c=$(tmux capture-pane -p -t "$p" -S 0 -E 0 2>/dev/null); c=${c//"$1"/}
-  for x in "${f[@]}"; do c=${c//"$x"/}; done
-  [ -z "${c//[[:space:]]/}" ] && printf '\0337\033[1;1H\033[2K\0338'
-fi
+tmux set -wu -t "$w" @junban_starting_msg 2>/dev/null
 exit 0

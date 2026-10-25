@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.7 — 2026-10-25
+
+### Fixed
+
+- **Alt+n's spinner can no longer land on Claude Code's "trust this folder?" prompt.** It used to draw in the new pane, and a frame written just as Claude drew its prompt stayed on top of the options, so the window looked frozen. The spinner now shows on the status line and never writes into the agent's screen; it stops as soon as the agent draws anything.
+
 ## 0.7.6 — 2026-10-23
 
 ### Fixed
