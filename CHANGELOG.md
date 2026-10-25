@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- **The "starting in a new worktree" notice is no longer hidden by the spinner.** Both now share the status line while the agent starts.
+- **Alt+n's new-worktree notice is no longer hidden by the spinner.** Both now share the status line while the agent starts.
 
 ## 0.7.7 — 2026-10-25
 
