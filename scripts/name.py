@@ -8,7 +8,8 @@ Runs from the UserPromptSubmit hook (async, so it never delays the agent).
       llm     ask a model to summarise the last few prompts; falls back to prompt
     @junban-namer-url    e.g. http://localhost:11434 (Ollama) or https://api.openai.com/v1
     @junban-namer-model  e.g. qwen3:8b, gpt-4o-mini
-    @junban-namer-key    name of the env var holding the API key (OpenAI-compatible only)
+    @junban-namer-key    name of the env var holding the API key (OpenAI-compatible only;
+                         without it, $OPENAI_API_KEY is sent to api.openai.com only)
 
 Rules that keep names stable:
   * short replies ("ok", "yes", "進めて", "ครับ") never rename
@@ -20,6 +21,7 @@ import os
 import re
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 
 MIN_CHARS, MAX_CHARS, TURNS, TIMEOUT = 8, 24, 4, 6
@@ -95,7 +97,13 @@ def ask_llm(context, system=None, max_tokens=32):
     if url.endswith("/v1"):  # OpenAI-compatible
         endpoint = url + "/chat/completions"
         body = {"model": model, "messages": msgs, "temperature": 0.2, "max_tokens": max_tokens}
-        key = os.environ.get(tmux("show", "-gqv", "@junban-namer-key") or "OPENAI_API_KEY", "")
+        # A key goes only where it was meant to: the variable named in
+        # @junban-namer-key, or $OPENAI_API_KEY to OpenAI itself. Any other
+        # OpenAI-compatible server never sees your OpenAI key.
+        var = tmux("show", "-gqv", "@junban-namer-key")
+        if not var and urllib.parse.urlsplit(url).hostname == "api.openai.com":
+            var = "OPENAI_API_KEY"
+        key = os.environ.get(var, "") if var else ""
         if key:
             headers["Authorization"] = "Bearer " + key
     else:  # Ollama native: lets us switch thinking off, which /v1 does not

@@ -485,6 +485,24 @@ eq  "model writes the recap"        "$(get u:7 @junban_recap)" "Model: 3 files f
 tmux set -gu @junban-namer-url \; set -gu @junban-namer-model
 kill "$stub" 2>/dev/null; wait "$stub" 2>/dev/null
 
+# The API key only goes where it was meant to: never $OPENAI_API_KEY to another /v1 server.
+keyto() {  # keyto URL [KEYVAR] — the Authorization header ask_llm would send
+  tmux set -g @junban-namer-url "$1" \; set -g @junban-namer-model m
+  if [ -n "${2:-}" ]; then tmux set -g @junban-namer-key "$2"; else tmux set -gu @junban-namer-key; fi
+  OPENAI_API_KEY=sk-openai MINE=sk-mine python3 -c '
+import importlib.util, json, sys, urllib.request
+spec = importlib.util.spec_from_file_location("n", sys.argv[1]); n = importlib.util.module_from_spec(spec)
+sys.argv = ["x"]; spec.loader.exec_module(n)
+def fake(req, timeout=0):
+    print(req.headers.get("Authorization", "none")); raise SystemExit
+urllib.request.urlopen = fake
+n.ask_llm(["hi"])' "$S/name.py"
+}
+eq  "no key to another /v1 server"  "$(keyto http://127.0.0.1:9/v1)" "none"
+eq  "\$OPENAI_API_KEY to OpenAI"     "$(keyto https://api.openai.com/v1)" "Bearer sk-openai"
+eq  "the named key to any /v1"      "$(keyto http://127.0.0.1:9/v1 MINE)" "Bearer sk-mine"
+tmux set -gu @junban-namer-url \; set -gu @junban-namer-model \; set -gu @junban-namer-key
+
 echo "other agents"
 tmux new-window -d -t u:8 -n x; px=$(tmux display -p -t u:8 '#{pane_id}')
 hk() { TMUX_PANE=$px bash "$S/hook.sh" "$1" "$2" <<<"$3"; }

@@ -154,7 +154,7 @@ set -g @junban-recap on            # off = no one-line recap on the banner, Alt+
 # No model by default. Set the URL and model to have a model name windows (with @junban-rename llm) and write the ✓ recap.
 # set -g @junban-namer-url http://localhost:11434   # e.g. Ollama, or an OpenAI-compatible …/v1
 # set -g @junban-namer-model qwen3:8b               # any model the server has
-# set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only)
+# set -g @junban-namer-key OPENAI_API_KEY           # env var holding the key (…/v1 only; without it, $OPENAI_API_KEY goes to api.openai.com only)
 
 # Notifications when an agent starts waiting or finishes (message on stdin). Pick one:
 # set -g @junban-notify-cmd 'xargs -0 notify-send junban'
