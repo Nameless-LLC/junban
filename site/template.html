@@ -483,7 +483,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         </div>
         <div class="why-row">
           <h3 lang="en">Claude Code windows come back after a restart</h3><h3 lang="ja">再起動しても Claude Code のウィンドウが戻る</h3>
-          <p lang="en">tmux crashed or the machine rebooted? When tmux starts again, junban runs <code>claude --resume</code> to reopen the Claude Code windows you'd want back, each with its old tmux session, folder, and window name. It brings back the ones that were waiting on you, running, or finished but not yet looked at, and any active in the last day, up to six and two seconds apart, and skips any marked z. The rest wait under Alt+, → Restore windows.</p>
+          <p lang="en">tmux crashed or the machine rebooted? When tmux starts again, junban runs <code>claude --resume</code> to reopen the Claude Code windows you'd want back, each with its old tmux session, folder, and window name. It brings back the ones that were waiting on you, working, or finished but not yet looked at, and any active in the last day, but not ones marked z. Up to six reopen on their own, two seconds apart. The rest wait under Alt+, → Restore windows.</p>
           <p lang="ja">tmux が落ちたりマシンを再起動したりしたあとで tmux を起動し直すと、Claude Code のウィンドウを元の tmux セッション・フォルダ・ウィンドウ名のまま <code>claude --resume</code> で開き直します。自動で開くのは、再起動の前に返事待ち・作業中だったもの、完了してまだ見ていなかったもの、直近1日に動いていたものです（z が付いたものは除き、最大6件を2秒ずつ間を空けて）。残りは Alt+, →「ウィンドウを復元」から開けます。</p>
         </div>
         <div class="why-row">
