@@ -84,7 +84,8 @@ def descends(pid, ancestor):
 
 
 def sessions():
-    """Claude Code's own records: {"session:@win.%pane": record}."""
+    """Claude Code's own records: {"session:@win.%pane": [record, ...]}. A pane
+    can have several: records of agents that exited stay behind."""
     live = {}
     for f in glob.glob(os.path.expanduser("~/.claude/sessions/*.json")):
         try:
@@ -93,7 +94,7 @@ def sessions():
         except Exception:
             continue
         if isinstance(d, dict) and isinstance(d.get("tmux"), str) and ".%" in d["tmux"] and d.get("sessionId"):
-            live[d["tmux"]] = d
+            live.setdefault(d["tmux"], []).append(d)
     return live
 
 
@@ -106,8 +107,8 @@ def current():
     seen = set()
     for row in rows.splitlines():
         sess, wid, pane, ppid, name, st, ts, stale = (row.split("\t") + [""] * 8)[:8]
-        d = live.get(f"{sess}:{wid}.{pane}")
-        if not d or wid in seen or not descends(d.get("pid"), ppid):
+        d = next((r for r in live.get(f"{sess}:{wid}.{pane}", []) if descends(r.get("pid"), ppid)), None)
+        if not d or wid in seen:
             continue
         seen.add(wid)
         out.append({"session": sess, "name": name, "cwd": d.get("cwd") or "", "id": d["sessionId"],
@@ -154,7 +155,7 @@ def picked(w, now):
 
 def candidates():
     prev = load(names(server()[0])[1])
-    open_ids = {d["sessionId"] for d in sessions().values()}
+    open_ids = {w["id"] for w in current()}
     now = time.time()
     out = []
     for i, w in enumerate(prev.get("windows") or []):

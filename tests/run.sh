@@ -893,10 +893,13 @@ rec() {  # rec WINDOW ID — a Claude Code session record for that window's pane
     > "$HOME/.claude/sessions/$pid.json"
 }
 rec r:1 aaa; rec r:2 bbb
+# A record left by an agent that exited, naming the same pane: ignored.
+printf '{"pid":1,"tmux":"r:%s.%s","sessionId":"old","cwd":"%s"}' "$(tmux display -p -t r:1 '#{window_id}')" "$(tmux display -p -t r:1 '#{pane_id}')" "$WORK" > "$HOME/.claude/sessions/zzz.json"
 tmux set -w -t r:1 @junban waiting \; set -w -t r:2 @junban idle \; set -w -t r:2 @junban_stale 30
 python3 "$S/restore.py" save
 for wj in "$st"/windows-*.json; do case "$wj" in *prev*) ;; *) break ;; esac; done
 has "save: which window runs which session" "$(cat "$wj")" '"id": "aaa"'
+hasnt "…not a record left by an agent that exited" "$(cat "$wj")" '"id": "old"'
 eq  "save: written private"        "$(stat -c %a "$wj" 2>/dev/null || stat -f %Lp "$wj")" "600"
 python3 "$S/restore.py" rotate
 eq  "same server: nothing to restore" "$(find "$st" -name '*prev*' | grep -c .)" "0"

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 — 2026-10-27
+
+### Fixed
+
+- **A window whose pane also has a record from an agent that exited is still remembered for restoring.**
+
 ## 0.8.0 — 2026-10-27
 
 ### Added
