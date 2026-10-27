@@ -484,7 +484,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <div class="why-row">
           <h3 lang="en">Claude Code windows come back after a restart</h3><h3 lang="ja">再起動しても Claude Code のウィンドウが戻る</h3>
           <p lang="en">tmux crashed or the machine rebooted? When tmux starts again, junban reopens the Claude Code windows you'd want back with <code>claude --resume</code>, each in its old session, folder, and name. It brings back the ones waiting on you, working, finished but not yet looked at, or active in the last day, and skips any marked z. The rest wait under Alt+, → Restore windows.</p>
-          <p lang="ja">tmux が落ちたあとやマシンを再起動したあとに tmux を起動し直すと、Claude Code のウィンドウを元のセッション・フォルダ・名前のまま <code>claude --resume</code> で開き直します。自動で開くのは、返事待ちと作業中のもの、完了してまだ見ていないもの、直近1日に動いていたものです（z が付いたものは除きます）。残りは Alt+, →「ウィンドウを復元」から開けます。</p>
+          <p lang="ja">tmux が落ちたりマシンを再起動したりしたあとで tmux を起動し直すと、Claude Code のウィンドウを元の tmux セッション・フォルダ・ウィンドウ名のまま <code>claude --resume</code> で開き直します。自動で開くのは、返事待ちと作業中のもの、完了してまだ見ていないもの、直近1日に動いていたものです（z が付いたものは除きます）。残りは Alt+, →「ウィンドウを復元」から開けます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Keeps itself up to date</h3><h3 lang="ja">自動でアップデート</h3>
@@ -580,7 +580,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
         <details>
           <summary><span lang="en">Does it send anything anywhere?</span><span lang="ja">どこかにデータを送る？</span></summary>
           <p lang="en">No telemetry: by default nothing about you or your work leaves your machine. State lives in tmux options, and everything junban records (wait times, prompts and recaps, the restore list) lives in local files only you can read. Once a day junban checks GitHub for a newer release and installs it (a <code>git fetch</code>, a fast-forward, and <code>claude plugin update</code>; Alt+, → Updates → off stops it). Two things leave the machine only if you turn them on: with a model URL set, the agent's reply goes to that URL to write the one-line recap, and with <code>@junban-rename llm</code> your recent prompts go too, to name the window (a local Ollama keeps them on your machine); with a notify command set, each ✋/✓ message (the window name, which by default is your latest prompt's first line, plus the recap on ✓) goes wherever that command sends it. A public ntfy.sh topic can be read by anyone who knows its name.</p>
-          <p lang="ja">標準では、作業の内容は送りません。待ち時間の記録と、復元するウィンドウの一覧は、tmux を動かしているマシンにだけ残ります（ファイルは自分だけが読める権限で作ります）。1日に1回、新しいリリースがないか GitHub に問い合わせ、あれば更新します（<code>git fetch</code> のあと早送りで更新。Alt+, →「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM を設定すると、ウィンドウ名と1行の要約を作るために、最近のやり取りをその LLM の URL に送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、ウィンドウ名と1行の要約を通知先に送ります（ウィンドウ名は、標準では最新の依頼の1行目です）。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
+          <p lang="ja">テレメトリはありません。標準では、作業の内容は外に送りません。junban が記録するもの（待ち時間、依頼と1行要約、復元するウィンドウの一覧）は、tmux を動かしているマシンにだけ残ります（ファイルは自分だけが読める権限で作ります）。1日に1回、新しいリリースがないか GitHub に問い合わせ、あれば更新します（<code>git fetch</code> のあと fast-forward で更新し、<code>claude plugin update</code> も実行します。Alt+, →「アップデート」をオフにすると止まります）。自分で設定した場合だけ、次の2つを送ります。LLM の URL を設定すると、1行要約を作るためにエージェントの返答をその URL に送ります。<code>@junban-rename llm</code> にすると、ウィンドウ名を付けるために最近の依頼も送ります（ローカルの Ollama なら手元から出ません）。通知を設定すると、返事待ち（✋）と完了（✓）のたびに、ウィンドウ名（標準では最新の依頼の1行目）と、完了のときは1行要約を通知先に送ります。ntfy.sh の公開トピックは、名前を知っていれば誰でも読めます。</p>
         </details>
         <details>
           <summary><span lang="en">Will it change how my tmux looks?</span><span lang="ja">tmux の見た目は変わる？</span></summary>
