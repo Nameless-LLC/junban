@@ -1,10 +1,16 @@
 # Changelog
 
+## 0.8.2 — 2026-10-27
+
+### Fixed
+
+- **The restore message no longer says "0 window(s)" or points at an empty menu.** When nothing is left to restore by hand, it only says how many came back.
+
 ## 0.8.1 — 2026-10-27
 
 ### Fixed
 
-- **Restoring no longer misses a window because an earlier Claude Code session in the same pane left its record behind.** Such windows were sometimes not saved, or not reopened after the restart.
+- **Restoring no longer misses windows whose pane once ran another Claude Code session.** That session's leftover record sometimes kept the window from being saved, or from being reopened after the restart.
 
 ## 0.8.0 — 2026-10-27
 

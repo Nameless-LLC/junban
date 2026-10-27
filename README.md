@@ -138,7 +138,7 @@ set -g @junban-key-timeline ""     # e.g. M-y (prefix T works while @junban-pref
 set -g @junban-nav-keys on         # Alt+1…9, Alt+[ ], Alt+Tab, Alt+z, Alt+w; also numbers tabs from 1 and closes gaps
 set -g @junban-prefix-keys on      # prefix a, f, C, g, /, T as fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
-set -g @junban-restore on          # off = reopen nothing on its own after a restart (Alt+, still can)
+set -g @junban-restore on          # off = no automatic reopening after a restart; Alt+, → Restore windows still works
 set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --worktree if another agent already works in this repo
 
 # Wait meter, idle windows, mascot

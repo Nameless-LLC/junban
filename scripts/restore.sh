@@ -13,6 +13,11 @@ py() { python3 "$JUNBAN_SCRIPTS/restore.py" "$@"; }
 agent=$(opt @junban-agent-cmd claude)
 case "${agent%% *}" in claude) ;; *) agent=claude ;; esac
 esc() { printf '%s' "${1//#/##}"; }
+# say MS OPENED LEFT — how many came back, and where the rest are when any are left.
+say() {
+  if [ "$3" -gt 0 ]; then m=$(printf "$T_RESTORED" "$2" "$3"); else m=$(printf "$T_RESTORED_ALL" "$2"); fi
+  tmux display -d "$1" "$m" 2>/dev/null
+}
 
 case "${1:-}" in
   auto)
@@ -21,11 +26,11 @@ case "${1:-}" in
     [ "$(py rotate)" = rotated ] || exit 0
     n=$(py open "$agent" auto); rest=$(py list | grep -c .)
     [ "${n:-0}" -gt 0 ] || [ "${rest:-0}" -gt 0 ] || exit 0
-    tmux display -d 8000 "$(printf "$T_RESTORED" "${n:-0}" "${rest:-0}")" 2>/dev/null
+    say 8000 "${n:-0}" "${rest:-0}"
     ;;
   open)
     shift; n=$(py open "$agent" "$@")
-    tmux display "$(printf "$T_RESTORED" "${n:-0}" "$(py list | grep -c .)")" 2>/dev/null
+    say 3000 "${n:-0}" "$(py list | grep -c .)"
     ;;
   menu)
     items=() k=1
