@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.4 — 2026-10-27
+
+### Fixed
+
+- **Restoring no longer starts every agent at once.** Each Claude Code with its MCP servers takes the better part of a gigabyte, and a dozen starting together can run a machine out of memory. Agents now start two seconds apart, at most six reopen on their own (the ones waiting on you first), and the rest stay in the menu.
+- **The restore message counts what is really left,** and the menu no longer offers a window that was just reopened, so a session is never opened twice.
+- **The restore menu shows on a short terminal.** A list taller than the screen used to draw nothing; Restore all now comes first and the list ends where the screen does.
+- **The restore message is no longer lost** when tmux starts from a terminal that attaches a moment later.
+- **Window names with `#` come back unchanged,** and a tmux server that gets the old pid after a container restart still counts as restarted.
+
 ## 0.8.3 — 2026-10-27
 
 ### Security

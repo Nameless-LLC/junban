@@ -27,25 +27,35 @@ case "${1:-}" in
     # Off: still drop the old list, or it would block saving the new one.
     [ "$(opt @junban-restore on)" = on ] || { py rotate >/dev/null; exit 0; }
     [ "$(py rotate)" = rotated ] || exit 0
-    n=$(py open "$agent" auto); rest=$(py list | grep -c .)
+    IFS=$'\t' read -r n rest <<<"$(py open "$agent" auto)"
     [ "${n:-0}" -gt 0 ] || [ "${rest:-0}" -gt 0 ] || exit 0
+    # Run while the config loads: the first client may not be attached yet.
+    for _ in $(seq 100); do [ -n "$(tmux list-clients 2>/dev/null)" ] && break; sleep 0.1; done
     say 8000 "${n:-0}" "${rest:-0}"
     ;;
   open)
-    shift; n=$(py open "$agent" "$@")
-    say 3000 "${n:-0}" "$(py list | grep -c .)"
+    shift; IFS=$'\t' read -r n rest <<<"$(py open "$agent" "$@")"
+    say 3000 "${n:-0}" "${rest:-0}"
     ;;
   menu)
-    items=() k=1
+    # A menu taller than the terminal is not drawn at all: "Restore all" goes
+    # first, and the list stops where the screen does.
+    h=$(tmux display -p '#{client_height}' 2>/dev/null); case "$h" in '' | *[!0-9]*) h=24 ;; esac
+    room=$((h - 6)); [ "$room" -lt 1 ] && room=1
+    rows=() k=1 total=0
     while IFS=$'\t' read -r i _ sess name _ _; do
       [ -n "$i" ] || continue
-      items+=("$(esc "$sess: $name")" "$([ $k -le 9 ] && echo $k)" "run -b \"bash $JUNBAN_SCRIPTS/restore.sh open $i\"")
+      total=$((total + 1))
+      [ "$total" -le "$room" ] || continue
+      rows+=("$(esc "$sess: $name")" "$([ $k -le 9 ] && echo $k)" "run -b \"bash $JUNBAN_SCRIPTS/restore.sh open $i\"")
       k=$((k + 1))
     done < <(py list)
-    if [ ${#items[@]} -eq 0 ]; then
+    if [ "$total" -eq 0 ]; then
       tmux display "$T_RESTORE_NONE" 2>/dev/null; exit 0
     fi
-    items+=("" "$(esc "$SET_RESTORE_ALL")" a "run -b \"bash $JUNBAN_SCRIPTS/restore.sh open all\"")
+    items=("$(esc "$SET_RESTORE_ALL")" a "run -b \"bash $JUNBAN_SCRIPTS/restore.sh open all\"" "" "${rows[@]}")
+    # A leading "-" makes the row a note, not a choice.
+    [ "$total" -gt "$room" ] && items+=("-$(esc "$(printf "$SET_RESTORE_MORE" $((total - room)))")" "" "")
     if [ -n "${JUNBAN_DRY_RUN:-}" ]; then printf '%s\n' "${items[@]}"; exit 0; fi
     tmux display-menu -T "#[align=centre] $(esc "$SET_RESTORE") " -x C -y C "${items[@]}"
     ;;

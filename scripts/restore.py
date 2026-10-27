@@ -25,6 +25,8 @@ import sys
 import time
 
 DAY = 86400
+AUTO = 6     # at most this many reopen on their own
+GAP = 2.0    # seconds between two reopened agents
 
 
 def tmux(*args):
@@ -38,7 +40,9 @@ def state_dir():
 
 
 def server():
-    out = tmux("display", "-p", "#{socket_path}\t#{pid}").strip().split("\t")
+    # pid and start time together: a container restart can hand the new server
+    # the old pid on the same socket.
+    out = tmux("display", "-p", "#{socket_path}\t#{pid}.#{start_time}").strip().split("\t")
     return (out + ["", ""])[:2]
 
 
@@ -155,7 +159,8 @@ def picked(w, now):
 
 def candidates():
     prev = load(names(server()[0])[1])
-    open_ids = {w["id"] for w in current()}
+    # Just reopened ones have not written their session records yet.
+    open_ids = {w["id"] for w in current()} | recent()
     now = time.time()
     out = []
     for i, w in enumerate(prev.get("windows") or []):
@@ -167,9 +172,25 @@ def candidates():
     return out
 
 
+JUST = 120  # seconds a reopened session counts as open before its record exists
+
+
+def recent():
+    now = time.time()
+    return {k for k, t in (load("reopened.json").get("ids") or {}).items() if now - t < JUST}
+
+
+def mark(ids):
+    now = time.time()
+    keep = {k: t for k, t in (load("reopened.json").get("ids") or {}).items() if now - t < JUST}
+    keep.update({k: now for k in ids})
+    write("reopened.json", {"ids": keep})
+
+
 def reopen(cmd, w):
     run = f"{cmd} --resume {w['id']}; exec $SHELL"
     sess, name, cwd = w.get("session") or "junban", w.get("name") or "claude", w["cwd"]
+    name = name.replace("#", "##")  # tmux expands formats in -n
     if subprocess.run(["tmux", "has-session", "-t", f"={sess}"], capture_output=True).returncode == 0:
         wid = tmux("new-window", "-d", "-P", "-F", "#{window_id}", "-t", f"={sess}:", "-n", name, "-c", cwd, run).strip()
     else:
@@ -193,13 +214,27 @@ def main():
                 continue
             print("\t".join(str(x) for x in (i, int(p), w.get("session", ""), w.get("name", ""), w["cwd"], w["id"])))
     elif cmd == "open" and len(sys.argv) > 3:
+        # Prints "opened<TAB>left". One agent at a time, a few seconds apart, and
+        # at most AUTO on their own: each claude with its MCP servers takes the
+        # better part of a gigabyte, and starting a dozen at once runs a machine
+        # out of memory. The rest stay in the menu.
         agent, which = sys.argv[2], sys.argv[3:]
-        n = 0
-        for i, p, w in candidates():
-            if which == ["all"] or (which == ["auto"] and p) or str(i) in which:
-                reopen(agent, w)
-                n += 1
-        print(n)
+        todo = [(i, p, w) for i, p, w in candidates()
+                if which == ["all"] or (which == ["auto"] and p) or str(i) in which]
+        if which == ["auto"]:
+            # The ones that need you come first when only AUTO can open.
+            rank = {"waiting": 0, "running": 1, "done": 2}
+            todo.sort(key=lambda t: (rank.get(t[2].get("state"), 3), -int(t[2].get("ts") or 0)))
+            todo = todo[:AUTO]
+        done = set()
+        for k, (i, p, w) in enumerate(todo):
+            if k:
+                time.sleep(GAP)
+            reopen(agent, w)
+            done.add(w["id"])
+            mark([w["id"]])
+        left = sum(1 for _, _, w in candidates() if w["id"] not in done)
+        print(f"{len(done)}\t{left}")
 
 
 try:

@@ -933,16 +933,28 @@ eq  "rotate after a restart"        "$(python3 "$S/restore.py" rotate)" "rotated
 eq  "auto picks the waiting one, not the stale one" "$(python3 "$S/restore.py" list auto | cut -f6)" "aaa"
 eq  "…the stale one is offered too" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "aaa bbb "
 tmux kill-window -t r:1
-eq  "open auto reopens it"          "$(python3 "$S/restore.py" open "echo" auto)" "1"
+eq  "open auto reopens it, and says what is left" "$(python3 "$S/restore.py" open "echo" auto)" "1	1"
+hasnt "…which no longer lists it before its record exists" "$(python3 "$S/restore.py" list | cut -f6)" "aaa"
 w=$(tmux list-windows -t r -F '#{window_name}|#{automatic-rename}' | grep '^fix login')
 eq  "…with its name kept"           "$w" "fix login|0"
 has "…resuming that session"        "$(tmux list-panes -t r -a -F '#{pane_start_command}')" "echo --resume aaa"
 has "menu lists the rest"           "$(JUNBAN_DRY_RUN=1 bash "$S/restore.sh" menu)" "r: old idea"
 rec "r:fix login" aaa
+# A list taller than the terminal: "Restore all" first, the rest cut off with a note.
+for pj in "$st"/windows-*prev.json; do python3 - "$pj" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["windows"].append(dict(d["windows"][-1], id="ccc", name="third"))
+json.dump(d, open(p, "w"))
+PY
+done
+m=$(JUNBAN_DRY_RUN=1 bash -c "tmux() { if [ \"\$1 \$2 \$3\" = 'display -p #{client_height}' ]; then echo 7; else command tmux \"\$@\"; fi; }; export -f tmux; bash '$S/restore.sh' menu")
+eq  "a short screen gets Restore all first" "$(printf '%s\n' "$m" | head -n1)" "Restore all"
+has "…and a note for what does not fit" "$m" "and 1 more"
 hasnt "…not one already open"       "$(python3 "$S/restore.py" list | cut -f6)" "aaa"
 tmux -L other -f /dev/null new -d -s o 'sleep 60'
 tmux -L other run-shell "python3 '$S/restore.py' save; python3 '$S/restore.py' rotate" 2>/dev/null; tmux -L other kill-server
-eq  "another tmux server keeps its own list" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "bbb "
+eq  "another tmux server keeps its own list" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "bbb ccc "
 rm -f "$HOME/.claude/sessions/"*.json
 fi
 
