@@ -4,7 +4,7 @@
 
 ### Security
 
-- **$OPENAI_API_KEY no longer goes to other servers unless you say so.** With a `…/v1` model URL and no `@junban-namer-key`, junban used to send that key to whatever server the URL named. Other servers now get a key only if you name the variable that holds it in `@junban-namer-key`. To keep sending your OpenAI key to another server, set `@junban-namer-key` to `OPENAI_API_KEY`.
+- **$OPENAI_API_KEY no longer goes to other servers unless you say so.** With a `…/v1` model URL and no `@junban-namer-key`, junban used to send that key to whatever server the URL named. Other servers now get a key only if you name the variable that holds it in `@junban-namer-key`. To keep sending your OpenAI key to another server, set `@junban-namer-key` to `OPENAI_API_KEY`. Until you do, window names and recaps fall back to your prompt and the first line of the agent's reply.
 
 ## 0.8.2 — 2026-10-27
 
