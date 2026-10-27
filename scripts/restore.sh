@@ -15,7 +15,8 @@ case "${agent%% *}" in claude) ;; *) agent=claude ;; esac
 esc() { printf '%s' "${1//#/##}"; }
 # say MS OPENED LEFT — how many came back, and where the rest are; no zero counts.
 say() {
-  if [ "$2" -eq 0 ]; then m=$(printf "$T_RESTORE_LEFT" "$3")
+  if [ "$2" -eq 0 ] && [ "$3" -eq 0 ]; then m=$T_RESTORE_NONE
+  elif [ "$2" -eq 0 ]; then m=$(printf "$T_RESTORE_LEFT" "$3")
   elif [ "$3" -gt 0 ]; then m=$(printf "$T_RESTORED" "$2" "$3")
   else m=$(printf "$T_RESTORED_ALL" "$2"); fi
   tmux display -d "$1" "$m" 2>/dev/null
