@@ -4,7 +4,7 @@
 
 ### Security
 
-- **$OPENAI_API_KEY is no longer sent to any OpenAI-compatible server but OpenAI's.** With a `…/v1` model URL and no `@junban-namer-key`, junban used to send that key to whatever server the URL named. It now sends it only to api.openai.com; for another server, name the variable that holds its key in `@junban-namer-key`.
+- **$OPENAI_API_KEY now goes only to api.openai.com.** With a `…/v1` model URL and no `@junban-namer-key`, junban used to send that key to whatever server the URL named. Now other servers get no key unless you name its variable in `@junban-namer-key` (to keep sending your OpenAI key to a proxy, set it to `OPENAI_API_KEY`).
 
 ## 0.8.2 — 2026-10-27
 
