@@ -345,7 +345,7 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
   <main id="top">
     <div class="hero">
       <div>
-        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.7</b><span lang="en">New: junban keeps itself up to date</span><span lang="ja">自動でアップデートされるようになりました</span></a>
+        <a class="pill" href="https://github.com/Nameless-LLC/junban/releases"><b>0.8</b><span lang="en">New: windows come back after a restart</span><span lang="ja">再起動してもウィンドウが戻るようになりました</span></a>
         <h1 lang="en">Whose turn<br>is it? <em>Yours.</em></h1>
         <h1 lang="ja">いま、誰の番？<br><em>あなたです。</em></h1>
         <p class="lede" lang="en"><b>junban</b> is a tmux plugin that badges each tab when an AI coding agent (Claude Code, Codex, Gemini) is waiting on you, and shows the one key to press. No more finding out an agent sat for twenty minutes waiting for you to approve a <code>psql</code> command.</p>
@@ -490,9 +490,9 @@ h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display); font-weight:
           <p lang="ja">Alt+a を押すと、移動先のエージェントを表示している VS Code のウィンドウが前面に出ます。そのウィンドウがなければ、junban がそのプロジェクトのフォルダを開きます。今使っているターミナルの表示は切り替えません。VS Code から Linux にリモート接続（SSH・Dev Containers・WSL など）し、VS Code のウィンドウごとに別の tmux セッションを使っている場合に使えます。</p>
         </div>
         <div class="why-row">
-          <h3 lang="en">Alt+n never looks frozen</h3><h3 lang="ja">Alt+n で起動した直後からスピナーを表示</h3>
-          <p lang="en">An agent can take several seconds to draw anything. The status line shows a spinner until the agent draws its first screen, and the new tab shows a dim ◌ until the agent reports in.</p>
-          <p lang="ja">エージェントは画面が出るまで数秒かかることがあります。ステータスバーですぐにスピナーが回り、起動が終わるまでタブに ◌ が付きます。</p>
+          <h3 lang="en">Windows come back after a restart</h3><h3 lang="ja">再起動してもウィンドウが戻る</h3>
+          <p lang="en">tmux crashed or the machine rebooted? The Claude Code windows that were waiting on you, working, or active in the last day reopen by themselves with <code>claude --resume</code>, in their old session, folder, and name. The rest are a menu away.</p>
+          <p lang="ja">tmux が落ちても、マシンを再起動しても、返事待ち・作業中・直近1日に動いていた Claude Code のウィンドウが、元のセッション・フォルダ・名前のまま <code>claude --resume</code> で自動で開き直します。残りはメニューから開けます。</p>
         </div>
         <div class="why-row">
           <h3 lang="en">Keeps itself up to date</h3><h3 lang="ja">自動でアップデート</h3>
