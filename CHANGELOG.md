@@ -4,13 +4,13 @@
 
 ### Fixed
 
-- **A window whose pane also has a record from an agent that exited is still remembered for restoring.**
+- **Restoring no longer misses a window because an earlier Claude Code session in the same pane left its record behind.** Such windows were sometimes not saved, or not reopened after the restart.
 
 ## 0.8.0 — 2026-10-27
 
 ### Added
 
-- **Windows come back after a restart.** junban keeps a list of which window runs which Claude Code conversation. When tmux starts again, it reopens the ones worth reopening (waiting on you, working, finished and not yet looked at, or active in the last day; never ones marked z) in their old session, folder and name with `claude --resume`, and says how many. The rest are under Alt+, → Restore windows. `@junban-restore off` turns it off. Each tmux server keeps its own list.
+- **Windows come back after a restart.** junban keeps a list of which window runs which Claude Code conversation. When tmux starts again, it reopens the ones worth reopening (waiting on you, working, finished and not yet looked at, or active in the last day; never ones marked z) in their old session, folder and name with `claude --resume`, and says how many. The rest are under Alt+, → Restore windows. `@junban-restore off` turns off the automatic reopening. Each tmux server keeps its own list.
 
 ## 0.7.8 — 2026-10-25
 

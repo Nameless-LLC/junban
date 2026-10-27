@@ -101,7 +101,7 @@ For finished work, the banner and the Alt+f list also show what changed (`3 file
 
 **Your VS Code windows stay put.** If each VS Code window's terminal is its own tmux session, Alt+a (and Alt+f) raises the VS Code window already showing that agent (or opens its project folder) instead of switching the terminal you're in. This works when VS Code connects remotely (Remote-SSH, Dev Containers, WSL) to the Linux host running tmux. Set `@junban-vscode-raise off` to switch in place instead.
 
-**Windows come back after a restart.** When tmux starts again (a crash, a reboot), junban reopens the Claude Code windows that were waiting on you, working, finished and not yet looked at, or active in the last day, each in its old session, folder and name, with `claude --resume`. The rest are under Alt+, → Restore windows. `set -g @junban-restore off` turns it off.
+**Windows come back after a restart.** When tmux starts again (after a crash or a reboot), junban reopens the Claude Code windows worth reopening with `claude --resume`, each in its old session, folder and name: ones waiting on you, working, finished but not yet looked at, or active in the last day (not ones marked `z`). The rest are under Alt+, → Restore windows. `set -g @junban-restore off` stops the automatic reopening; Alt+, → Restore windows still works.
 
 **It measures how long your agents sat waiting on you.** The status line shows today's total and your median reply time (`kept waiting 42m today · median reply 3m10s`), with a green ▼ when today's median beats your median over the last 7 days. Alt+/ adds a bar per day for the last week, this week vs. last (median reply and total), your best day, a streak of days with a median reply within your goal (`@junban-goal`, 5 minutes by default), and today's slowest windows; `scripts/stats.sh 30` goes further back. A wait runs from ✋ or ✓ until you answer or look; an agent that finishes while you're watching doesn't count, and one left overnight counts for at most an hour (`@junban-meter-cap`). Everything stays in a local TSV file.
 
@@ -138,7 +138,7 @@ set -g @junban-key-timeline ""     # e.g. M-y (prefix T works while @junban-pref
 set -g @junban-nav-keys on         # Alt+1…9, Alt+[ ], Alt+Tab, Alt+z, Alt+w; also numbers tabs from 1 and closes gaps
 set -g @junban-prefix-keys on      # prefix a, f, C, g, /, T as fallbacks
 set -g @junban-agent-cmd claude    # what Alt+n starts
-set -g @junban-restore on          # off = reopen no windows after a restart
+set -g @junban-restore on          # off = reopen nothing on its own after a restart (Alt+, still can)
 set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --worktree if another agent already works in this repo
 
 # Wait meter, idle windows, mascot
