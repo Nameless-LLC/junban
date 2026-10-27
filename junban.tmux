@@ -163,3 +163,7 @@ if [ "$(opt @junban-nav-keys on)" = on ]; then
   # Closing a window ends the agent in it, so it asks first, naming the window.
   tmux bind -n M-w confirm-before -p "$T_CLOSE_ASK" kill-window
 fi
+
+# After a restart of tmux (or the machine), reopen the Claude Code windows that
+# were waiting, working or recently active. A reload of this file does nothing.
+(bash "$S/restore.sh" auto </dev/null >/dev/null 2>&1 &)

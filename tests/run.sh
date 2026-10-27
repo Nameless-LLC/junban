@@ -880,5 +880,50 @@ eq  "badge spliced exactly once"    "$(grep -o junban-badge <<<"$f" | wc -l | tr
 
 fi
 
+if half A; then
+echo "restore after a restart"
+tmux kill-server 2>/dev/null; sleep 0.2
+tmux -f "$WORK/tmux.conf" new -d -s r -n "fix login" -c "$WORK" 'sleep 600'
+tmux new-window -d -t r: -n "old idea" -c "$WORK" 'sleep 600'
+st="$HOME/.local/state/junban"; rm -f "$st"/windows*.json
+rec() {  # rec WINDOW ID — a Claude Code session record for that window's pane
+  local w p pid; w=$(tmux display -p -t "$1" '#{window_id}'); p=$(tmux display -p -t "$1" '#{pane_id}')
+  pid=$(tmux display -p -t "$1" '#{pane_pid}')
+  printf '{"pid":%d,"tmux":"r:%s.%s","sessionId":"%s","cwd":"%s","status":"idle"}' "$pid" "$w" "$p" "$2" "$WORK" \
+    > "$HOME/.claude/sessions/$pid.json"
+}
+rec r:1 aaa; rec r:2 bbb
+tmux set -w -t r:1 @junban waiting \; set -w -t r:2 @junban idle \; set -w -t r:2 @junban_stale 30
+python3 "$S/restore.py" save
+for wj in "$st"/windows-*.json; do case "$wj" in *prev*) ;; *) break ;; esac; done
+has "save: which window runs which session" "$(cat "$wj")" '"id": "aaa"'
+eq  "save: written private"        "$(stat -c %a "$wj" 2>/dev/null || stat -f %Lp "$wj")" "600"
+python3 "$S/restore.py" rotate
+eq  "same server: nothing to restore" "$(find "$st" -name '*prev*' | grep -c .)" "0"
+# A restart: the agents are gone and the server has a new pid.
+rm -f "$HOME/.claude/sessions/"*.json
+python3 - "$wj" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p)); d["pid"] = "1"; json.dump(d, open(p, "w"))
+PY
+python3 "$S/restore.py" save
+has "save never overwrites the list from before the restart" "$(cat "$wj")" '"pid": "1"'
+eq  "rotate after a restart"        "$(python3 "$S/restore.py" rotate)" "rotated"
+eq  "auto picks the waiting one, not the stale one" "$(python3 "$S/restore.py" list auto | cut -f6)" "aaa"
+eq  "…the stale one is offered too" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "aaa bbb "
+tmux kill-window -t r:1
+eq  "open auto reopens it"          "$(python3 "$S/restore.py" open "echo" auto)" "1"
+w=$(tmux list-windows -t r -F '#{window_name}|#{automatic-rename}' | grep '^fix login')
+eq  "…with its name kept"           "$w" "fix login|0"
+has "…resuming that session"        "$(tmux list-panes -t r -a -F '#{pane_start_command}')" "echo --resume aaa"
+has "menu lists the rest"           "$(JUNBAN_DRY_RUN=1 bash "$S/restore.sh" menu)" "r: old idea"
+rec "r:fix login" aaa
+hasnt "…not one already open"       "$(python3 "$S/restore.py" list | cut -f6)" "aaa"
+tmux -L other -f /dev/null new -d -s o 'sleep 60'
+tmux -L other run-shell "python3 '$S/restore.py' save; python3 '$S/restore.py' rotate" 2>/dev/null; tmux -L other kill-server
+eq  "another tmux server keeps its own list" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "bbb "
+rm -f "$HOME/.claude/sessions/"*.json
+fi
+
 printf '\n%d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]
