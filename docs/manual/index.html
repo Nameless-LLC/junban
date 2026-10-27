@@ -283,7 +283,7 @@ set -g @junban-rename prompt
 set -g @junban-rename llm
 set -g @junban-namer-url http://localhost:11434      <span class="c"># Ollama, or an OpenAI-compatible …/v1</span>
 set -g @junban-namer-model qwen3:8b
-# set -g @junban-namer-key OPENROUTER_API_KEY       <span class="c"># env var holding the key for a …/v1 server (unset: api.openai.com gets $OPENAI_API_KEY, other servers get no key)</span></pre>
+<span class="c"># set -g @junban-namer-key OPENROUTER_API_KEY       # env var holding the key for a …/v1 server (unset: api.openai.com gets $OPENAI_API_KEY, other servers get no key)</span></pre>
         <p lang="en">A small local model is fast enough for this. If the model is unreachable, the prompt is used.</p>
         <p lang="ja">名前付けには、Ollama などで自分の PC に置いた小さなモデルで十分です。モデルにつながらないときは、頼んだ内容をそのまま使います。</p>
       </section>
