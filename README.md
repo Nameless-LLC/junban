@@ -52,7 +52,7 @@ Codex CLI or Gemini CLI: run `~/.tmux/plugins/junban/scripts/setup.sh codex` (or
 
 Requires tmux 3.2 or newer, bash, and git. Optional:
 
-- **Python 3**, for badge repair after Esc, window names, recaps, the "what changed" summary, idle-window marks, the silent-agent mark, restoring windows after a restart, the timeline, Codex/Gemini setup, and the Alt+n worktree check.
+- **Python 3**, for badge repair after Esc, window names, recaps, the "what changed" summary, idle-window marks, the orange mark on silent agents, restoring windows after a restart, the timeline, Codex/Gemini setup, and the Alt+n worktree check.
 - **fzf**, for the sorted, searchable Alt+f list. Without it, Alt+f opens tmux's own window chooser.
 
 ### Updates
@@ -93,7 +93,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Idle windows move out of the way.** Windows with no agent activity for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
-**An agent that may be stuck turns orange.** A command that never returns or a network call that hangs leaves the tab on ●, looking just like an agent that is still working. When an agent has been working for 15 minutes without finishing a tool call, its ● turns orange and shows the minutes since then (`● 23m`). The mark clears at the next tool call. The status line counts these agents, and they come first among the working ones in the Alt+f list. If you set `@junban-notify-cmd`, junban sends it one message when the mark appears. A long build or test run gets the mark too, so look before you stop anything. Change the minutes, or turn it off, with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off).
+**An agent that may be stuck turns orange.** A command that never returns or a network call that hangs leaves the tab on ●, looking just like an agent that is still working. When 15 minutes pass without a tool call finishing, its ● turns orange and shows how long it has been quiet (`● 23m`). The mark clears when the next tool call finishes or the agent stops working. The status line counts these agents, and they come first among the working ones in the Alt+f list. If you set `@junban-notify-cmd`, you get one notification when the mark appears. A long build, a long test run, or a long reply with no tool call gets the mark too, so look before you stop anything. Change the minutes, or turn it off, with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off).
 
 **One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, the model writes the line for finished work; otherwise junban uses the first real line of the agent's reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn the one-line recap off with `set -g @junban-recap off`.
 
