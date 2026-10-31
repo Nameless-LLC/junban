@@ -130,16 +130,34 @@ case "${1:-}" in
     [ -n "$(field "$o" 1)" ] || exit 1
     mkdir -p "${file%/*}"
     # Two saves at once (two clients, a quick double pick) would each rewrite the
-    # file from the same old copy, and one choice would vanish. mkdir is the lock
-    # that works on macOS too. One left by a killed save is taken over after 3 s.
+    # file from the same old copy, and one choice would vanish. The lock is a
+    # symlink to the saver's pid (made in one step, on macOS too). After 3 s one
+    # whose saver is gone (killed, or a directory left by junban 0.8 and older)
+    # is taken over; a live saver is waited for, up to 10 s. Taking a live lock
+    # after a fixed time let a stalled save and the next one both rewrite it.
     lock="${file%/*}/.settings.lock"
-    for _ in $(seq 30); do mkdir "$lock" 2>/dev/null && break; sleep 0.1; done
-    mkdir -p "$lock"; trap 'rmdir "$lock" 2>/dev/null' EXIT
+    # ln -s onto a directory would put the link inside it and "succeed".
+    take() { { [ -d "$lock" ] && [ ! -L "$lock" ]; } && return 1; ln -s "$$" "$lock" 2>/dev/null; }
+    for i in $(seq 100); do
+      take && break
+      if [ "$i" -ge 30 ]; then
+        p=$(readlink "$lock" 2>/dev/null)
+        if [ -z "$p" ] || ! kill -0 "$p" 2>/dev/null; then
+          [ "$(readlink "$lock" 2>/dev/null)" = "$p" ] && rm -rf "$lock"
+          take && break
+        fi
+      fi
+      sleep 0.1
+    done
+    unlock() { [ "$(readlink "$lock" 2>/dev/null)" = "$$" ] && rm -f "$lock"; }
+    trap unlock EXIT
     tmp=$(mktemp "${file%/*}/.settings.XXXXXX")
     { [ -f "$file" ] && grep -v "^set -g $o " "$file"
       # Single quotes keep " as typed; a ' closes, goes in "'" and reopens.
       printf "set -g %s '%s'\n" "$o" "${v//\'/\'\"\'\"\'}"; } > "$tmp"
     mv "$tmp" "$file"
+    # The file is what needs the lock; the reload below can take seconds.
+    unlock
     tmux set -g "$o" "$v"
     # Most options are read when junban loads (keys, rows, language).
     bash "$JUNBAN_ROOT/junban.tmux"
