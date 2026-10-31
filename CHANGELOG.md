@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.0 — 2026-10-31
+
+### Added
+
+- **An agent that may be stuck turns orange.** A command that never returns or a network call that hangs used to leave the tab on ●, looking like an agent still at work. After 15 minutes without a finished tool call, the ● turns orange and shows how long it has been silent (`● 23m`). The status line counts these agents, they come first among the working ones in the Alt+f list, and `@junban-notify-cmd` gets one message each time. The mark clears at the next finished tool call, or when the agent waits on you or finishes. A long build or test run gets it too, so look before you stop anything. Change the minutes or turn it off with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off). Works with Claude Code, Codex CLI and Gemini CLI.
+
+### Fixed
+
+- **Alt+, no longer splits English choices with spaces into pieces.** "every 30 min" showed up as three menu items.
+- **Two settings saved at the same moment both stick.** A save that took more than 3 seconds could have its lock taken over, and one of the two choices was lost.
+
 ## 0.8.4 — 2026-10-27
 
 ### Fixed
