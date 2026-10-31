@@ -238,6 +238,42 @@ eq  "scan is throttled"             "$(get u:3 @junban_stale)" "30"
 scan
 eq  "parked clears on activity"     "$(get u:3 @junban_stale)" ""
 
+echo "silent agents"
+now=$(date +%s)
+eq  "running is never parked, but a day without tools is silent" "$(get u:4 @junban_quiet)" "$(( (now - 1) / 60 ))"
+tmux set -w -t u:4 @junban_ts $((now - 20 * 60)) \; set -w -t u:4 @junban_act $((now - 20 * 60)) \; set -w -t u:4 -u @junban_quiet
+tmux set -w -t u:2 @junban running \; set -w -t u:2 @junban_ts $((now - 20 * 60)) \; set -w -t u:2 @junban_act $((now - 60))
+tmux set -w -t u:1 @junban_ts $((now - 20 * 60))
+tmux set -g @junban-notify-cmd "cat >> '$WORK/quiet-note'"; rm -f "$WORK/quiet-note"
+scan
+eq  "20 min without a tool call → silent" "$(get u:4 @junban_quiet)" "20"
+eq  "a recent tool call is not silent"   "$(get u:2 @junban_quiet)" ""
+eq  "idle is never silent"               "$(get u:1 @junban_quiet)" ""
+has "the badge shows how long"           "$(tmux show -gv @junban-badge)" "#{@junban_quiet}"
+has "guide counts silent agents"         "$(bash "$S/hints.sh")" "1 working, no tool activity for 15m+"
+has "…and points at the list"            "$(plain 160 1)" "Alt+f to check"
+eq  "notify hears about it"              "$(cat "$WORK/quiet-note" 2>/dev/null)" "● d: no tool activity for 20 min"
+scan
+eq  "…once"                              "$(wc -l < "$WORK/quiet-note" | tr -d ' ')" "1"
+tmux set -g @junban-quiet-minutes 30; scan
+eq  "the threshold is an option"         "$(get u:4 @junban_quiet)" ""
+tmux set -g @junban-quiet-minutes 0; tmux set -w -t u:4 @junban_act 1; scan
+eq  "…0 turns it off"                    "$(get u:4 @junban_quiet)" ""
+tmux set -gu @junban-quiet-minutes; scan
+p4=$(tmux display -p -t u:4 '#{pane_id}')
+TMUX_PANE=$p4 bash "$S/state.sh" tool </dev/null
+eq  "a tool call clears it at once"      "$(get u:4 @junban_quiet)" ""
+near_now() { local v; v=$(get "$1" @junban_act); if [ "${v:-0}" -ge "$now" ]; then ok "$2"; else bad "$2" "$v"; fi; }
+near_now u:4 "…and stamps the time"
+tmux set -w -t u:4 @junban_act 1 \; set -w -t u:4 @junban_ts 1; scan
+TMUX_PANE=$p4 bash "$S/state.sh" "done" </dev/null
+eq  "a change of state clears it"        "$(get u:4 @junban_quiet)" ""
+TMUX_PANE=$p4 bash "$S/state.sh" clear </dev/null
+eq  "closing forgets the stamp"          "$(get u:4 @junban_act)" ""
+tmux set -w -t u:4 @junban running \; set -w -t u:4 @junban_ts "$(date +%s)"
+tmux set -w -t u:2 @junban idle \; set -w -t u:1 @junban_ts "$(date +%s)"
+tmux set -gu @junban-notify-cmd; rm -f "$WORK/quiet-note"
+
 echo "wait meter"
 # Timings cross a second boundary now and then, so allow a few seconds.
 near() { if [ "$2" -ge "$3" ] && [ "$2" -le $(($3 + 3)) ]; then ok "$1"; else bad "$1" "$2 (want ~$3)"; fi; }
@@ -737,6 +773,10 @@ sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-agent-cmd)
 has "bypass is on offer"            "$sub" "claude --dangerously-skip-permissions"
 has "…and asks first"               "$(grep -F 'dangerously-skip' <<<"$sub" | grep -c confirm-before)" "2"
 has "current choice is ticked"      "$sub" "✓ claude"
+sub=$(JUNBAN_DRY_RUN=1 bash "$S/settings.sh" menu @junban-done-batch)
+has "a choice with spaces stays whole" "$sub" "  every 30 min"
+eq  "…one item per choice"          "$(grep -c "set @junban-done-batch" <<<"$sub")" "3"
+has "silent agents are on the menu" "$menu" "Mark silent agents  #[fg=colour244]after 15 min"
 for m in "" "menu @junban-agent-cmd" "menu @junban-lang"; do
   # shellcheck disable=SC2086
   JUNBAN_DRY_RUN=1 bash "$S/settings.sh" $m | grep -E '^(run|confirm|display)' > "$WORK/menu.cmds"

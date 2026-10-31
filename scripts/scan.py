@@ -3,6 +3,11 @@
 lost among them. Idle/done windows untouched for @junban-stale-hours
 (default 24) get @junban_stale = <hours>.
 
+Agents can also hang: a command that never returns, a network call that never
+times out, a loop. A running window with no tool call and no change of state
+for @junban-quiet-minutes (default 15) gets @junban_quiet = <minutes>, and
+@junban-notify-cmd hears about it once.
+
 Runs from summary.sh on every status refresh, but does real work at most once
 per @junban-scan-interval seconds (default 30).
 
@@ -52,18 +57,20 @@ def agent_windows(leftovers=None):
     wins = {}
     rows = tmux("list-panes", "-a", "-F",
                 "#{window_id}\t#{@junban}\t#{@junban_ts}\t#{pane_current_path}"
-                "\t#{@junban_shared}\t#{@junban_stale}\t#{@junban_cwd}").splitlines()
+                "\t#{@junban_shared}\t#{@junban_stale}\t#{@junban_cwd}"
+                "\t#{@junban_act}\t#{@junban_quiet}\t#{window_name}").splitlines()
     for row in rows:
-        wid, state, ts, path, shared, stale, cwd = (row.split("\t") + [""] * 7)[:7]
+        wid, state, ts, path, shared, stale, cwd, act, quiet, name = (row.split("\t") + [""] * 10)[:10]
         # The directory the agent's hooks ran in (state.sh) beats pane_current_path,
         # which shows the launching shell's directory, not a worktree claude moved to.
         path = cwd or path
         if not state:
-            if leftovers is not None and (shared or stale):
+            if leftovers is not None and (shared or stale or quiet):
                 leftovers.add(wid)
             continue
         w = wins.setdefault(wid, {"state": state, "ts": int(ts) if ts.isdigit() else 0, "paths": [],
-                                  "shared": shared, "stale": stale})
+                                  "shared": shared, "stale": stale, "act": int(act) if act.isdigit() else 0,
+                                  "quiet": quiet, "name": name})
         w["paths"].append(path)
     return wins
 
@@ -82,6 +89,16 @@ def setw(wid, name, value):
         tmux("set", "-w", "-t", wid, name, str(value))
     else:
         tmux("set", "-wu", "-t", wid, name)
+
+
+def notify(msg):
+    ncmd = opt("@junban-notify-cmd", "")
+    if ncmd:
+        try:
+            subprocess.run(["sh", "-c", ncmd], input=msg + "\n", text=True,
+                           capture_output=True, timeout=10)
+        except Exception:
+            pass
 
 
 def scan():
@@ -103,6 +120,7 @@ def scan():
     for wid in leftovers - set(wins):
         setw(wid, "@junban_shared", "")
         setw(wid, "@junban_stale", "")
+        setw(wid, "@junban_quiet", "")
 
     try:
         hours = float(opt("@junban-stale-hours", "24"))
@@ -119,6 +137,23 @@ def scan():
             setw(wid, "@junban_shared", "")
         if str(stale) != w["stale"]:
             setw(wid, "@junban_stale", stale)
+
+    try:
+        quiet_min = int(opt("@junban-quiet-minutes", "15"))
+    except ValueError:
+        quiet_min = 15
+    for wid, w in wins.items():
+        quiet = ""
+        last = max(w["ts"], w["act"])
+        if quiet_min > 0 and w["state"] == "running" and last:
+            mins = int((now - last) // 60)
+            if mins >= quiet_min:
+                quiet = mins
+        if str(quiet) != w["quiet"]:
+            setw(wid, "@junban_quiet", quiet)
+            # Once per silent stretch: the first scan that finds it.
+            if quiet and not w["quiet"]:
+                notify(f"● {w['name']}: no tool activity for {quiet} min")
 
 
 def main():

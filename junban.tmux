@@ -24,7 +24,7 @@ fi
 # Every option below in one tmux call; each opt would otherwise be its own.
 opt_prefetch @junban-lang @junban-color-accent @junban-color-bg @junban-color-bg2 @junban-color-current-bg \
   @junban-color-dim @junban-color-done @junban-color-fg @junban-color-muted @junban-color-running \
-  @junban-color-waiting @junban-guide @junban-guide-lines @junban-key-help @junban-key-jump \
+  @junban-color-slower @junban-color-waiting @junban-guide @junban-guide-lines @junban-key-help @junban-key-jump \
   @junban-key-list @junban-key-new @junban-key-scratch @junban-key-settings @junban-key-timeline \
   @junban-name-width @junban-nav-keys @junban-position @junban-prefix-keys @junban-theme
 
@@ -33,6 +33,7 @@ load_i18n
 cw=$(opt @junban-color-waiting "#e06c75")
 cd_=$(opt @junban-color-done "#98c379")
 cr=$(opt @junban-color-running "#e5c07b")
+co=$(opt @junban-color-slower "#d19a66")
 bg=$(opt @junban-color-bg "#1e2127")
 fg=$(opt @junban-color-fg "#abb2bf")
 acc=$(opt @junban-color-accent "#61afef")
@@ -42,7 +43,8 @@ sel=$(opt @junban-color-current-bg "#2c313c")
 
 # The badge, reusable in your own formats as #{E:@junban-badge}
 # ◌ an agent Alt+n opened is still starting (its first hook ends it)
-badge="#{?#{@junban},,#{?@junban_starting,#[fg=$mut]◌ ,}}#{?#{==:#{@junban},waiting},#[fg=$cw bold]✋ ,#{?#{==:#{@junban},done},#[fg=$cd_ bold]✓ ,#{?#{==:#{@junban},running},#[fg=$cr]● ,}}}"
+# ● 23m working, but no tool call for that long (@junban-quiet-minutes): stuck?
+badge="#{?#{@junban},,#{?@junban_starting,#[fg=$mut]◌ ,}}#{?#{==:#{@junban},waiting},#[fg=$cw bold]✋ ,#{?#{==:#{@junban},done},#[fg=$cd_ bold]✓ ,#{?#{==:#{@junban},running},#{?@junban_quiet,#[fg=$co]● #{@junban_quiet}$T_M ,#[fg=$cr]● },}}}"
 # ! another agent works in the same git tree; z untouched for @junban-stale-hours
 badge="$badge#{?@junban_stale,#[fg=$dim nobold]z ,}"
 tmux set -g @junban-badge "$badge"

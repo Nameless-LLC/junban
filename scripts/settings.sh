@@ -32,18 +32,28 @@ options() {
     "@junban-meter|on|$SET_METER|on=$SET_ON off=$SET_OFF" \
     "@junban-done-batch|off|$SET_BATCH|off=$SET_OFF 30=$(printf "$SET_EVERY" 30) 60=$(printf "$SET_EVERY" 60)" \
     "@junban-mascot|on|$SET_MASCOT|on=$SET_ON off=$SET_OFF" \
+    "@junban-quiet-minutes|15|$SET_QUIET|15=$(printf "$SET_AFTER" 15) 30=$(printf "$SET_AFTER" 30) 60=$(printf "$SET_AFTER" 60) 0=$SET_OFF" \
     "@junban-update|stable|$SET_UPDATE|stable=$SET_UPDATE_STABLE main=$SET_UPDATE_MAIN off=$SET_OFF"
 }
 
 field() { options | awk -F'|' -v o="$1" -v n="$2" '$1 == o { print $n }'; }
 
+# choices OPTION — its choices, one "value=label" per line. Labels can have
+# spaces ("every 30 min"); values never do, so a word with = starts the next.
+choices() {
+  field "$1" 4 | awk '{ c = ""
+    for (i = 1; i <= NF; i++) {
+      if ($i ~ /^[^=]+=/ && c != "") { print c; c = $i } else c = (c == "" ? $i : c " " $i) }
+    if (c != "") print c }'
+}
+
 # shown OPTION — the current value as the menu says it.
 shown() {
   local v c
   v=$(opt "$1" "$(field "$1" 2)")
-  for c in $(field "$1" 4); do
+  while IFS= read -r c; do
     [ "${c%%=*}" = "$v" ] && { printf '%s' "${c#*=}"; return; }
-  done
+  done < <(choices "$1")
   printf '%s' "$v"
 }
 
@@ -175,11 +185,11 @@ case "${1:-}" in
   menu)
     if [ "$2" = @junban-agent-cmd ]; then agent_menu; exit 0; fi
     cur=$(opt "$2" "$(field "$2" 2)") items=() k=1
-    for c in $(field "$2" 4); do
+    while IFS= read -r c; do
       items+=("$([ "${c%%=*}" = "$cur" ] && printf '✓ ' || printf '  ')$(esc "${c#*=}")" "$k" \
               "run -b \"$me set $2 '${c%%=*}'\"")
       k=$((k + 1))
-    done
+    done < <(choices "$2")
     override_items "$2"
     menu "$(field "$2" 3)" "${items[@]}"
     ;;

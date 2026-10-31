@@ -13,7 +13,7 @@
 opt_prefetch @junban-lang @junban-color-bg @junban-color-waiting @junban-color-done @junban-color-key \
   @junban-color-muted @junban-color-slower @junban-color-dim @junban-key-jump @junban-key-list \
   @junban-key-new @junban-key-settings @junban-key-help @junban-nav-keys @junban-meter @junban-tint \
-  @junban-tint-waiting @junban-stale-hours @junban-done-batch @junban-meter-cap @junban_meter_cache \
+  @junban-tint-waiting @junban-stale-hours @junban-quiet-minutes @junban-done-batch @junban-meter-cap @junban_meter_cache \
   @junban_update_day @junban_version @junban_version_seen
 load_i18n
 
@@ -86,14 +86,14 @@ fit() {
   printf '%s…' "${out% }"
 }
 
-w=0; d=0; z=0; held=0
+w=0; d=0; z=0; q=0; held=0
 slot=$(slot_start)
 # The window Alt+a would open (oldest ✋, else oldest ✓), so the banner can say
 # what it wants before you go there.
 next_rank=9; next_ts=0; next_line=""
 # Empty fields print as "-": read collapses runs of tab separators, which would
 # shift the fields. (tmux escapes control characters, so no \037 trick.)
-while IFS=$'\t' read -r s st name ts recap review; do
+while IFS=$'\t' read -r s st name ts recap review quiet; do
   case "$s" in
     waiting) w=$((w + 1)); rank=1 ;;
     done) if [ "$slot" -gt 0 ] && [ "${ts:-0}" -ge "$slot" ]; then held=$((held + 1)); rank=9
@@ -108,7 +108,8 @@ while IFS=$'\t' read -r s st name ts recap review; do
     [ "$rank" = 2 ] && [ "$review" != - ] && next_line="$next_line · $review"
   fi
   [ "$st" != - ] && z=$((z + 1))
-done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}	#{?@junban_review,#{@junban_review},-}' 2>/dev/null)
+  [ "$s" = running ] && [ "$quiet" != - ] && q=$((q + 1))
+done < <(tmux list-windows -a -F '#{?@junban,#{@junban},-}	#{?@junban_stale,#{@junban_stale},-}	#{=12:window_name}	#{?@junban_ts,#{@junban_ts},0}	#{?@junban_recap,#{@junban_recap},-}	#{?@junban_review,#{@junban_review},-}	#{?@junban_quiet,#{@junban_quiet},-}' 2>/dev/null)
 # A window name is free text: a # in it would start a style ("a#[fg=red]").
 next_line=${next_line//#/＃}
 
@@ -205,6 +206,9 @@ if [ "$row" != 2 ] && [ "$(opt @junban-meter on)" = on ]; then
     info="$info  "
   fi
 fi
+# An agent gone silent mid-turn may be stuck: worth a look, not a call to come now.
+# shellcheck disable=SC2059
+[ "$q" -gt 0 ] && info="$info#[fg=$co]● $(printf "$T_QUIET" "$q" "$(num @junban-quiet-minutes 15)") → $(printf "$T_QUIET_GO" "$kf")  "
 # Parked agents can sit for days, so this rides along instead of taking over.
 # shellcheck disable=SC2059
 [ "$z" -gt 0 ] && info="$info#[fg=$cdim]z $(printf "$T_STALE" "$z" "$(num @junban-stale-hours 24)") → $(printf "$T_STALE_GO" "$kf")"
