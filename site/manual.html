@@ -22,7 +22,7 @@
   --ink: #0a0b0d; --panel: #121419; --panel-2: #171a20;
   --line: rgba(255,255,255,.075); --line-2: rgba(255,255,255,.13);
   --text: #edece8; --muted: #9a9ea6; --dim: #6f737d;
-  --wait: #ff5d52; --done: #7cc483; --run: #e2b350;
+  --wait: #ff5d52; --done: #7cc483; --run: #e2b350; --slow: #d19a66;
   --f-display: "Geist", "Zen Kaku Gothic New", "IBM Plex Sans JP", system-ui, sans-serif;
   --f-body: "Geist", "IBM Plex Sans JP", system-ui, sans-serif;
   --f-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -99,7 +99,7 @@ tr:last-child td { border-bottom: 0; }
 th { font: 500 .7rem/1.4 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); background: rgba(255,255,255,.02); }
 td:first-child { white-space: nowrap; }
 td { color: #c7c9ce; }
-.b { font-weight: 600; } .w { color: var(--wait); } .d { color: var(--done); } .r { color: var(--run); } .m { color: var(--dim); }
+.b { font-weight: 600; } .w { color: var(--wait); } .d { color: var(--done); } .r { color: var(--run); } .o { color: var(--slow); } .m { color: var(--dim); }
 
 /* status line samples */
 .tl { font: 400 .78rem/1 var(--f-mono); background: #1e2127; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 10px 0 14px; display: flex; gap: 14px; align-items: center; white-space: nowrap; overflow-x: auto; color: #7f848e; scrollbar-width: none; }
@@ -188,6 +188,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td class="w b">✋</td><td><span lang="en">Waiting on you: a question, or permission to run something. Clears when you answer.</span><span lang="ja">あなたの返事待ち（質問、または実行の許可）。返事をすると消えます。</span></td></tr>
             <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or switch back to a terminal that shows it.</span><span lang="ja">作業が終わり、まだ確認していません。そのウィンドウを開くか、そのウィンドウを表示しているターミナルに戻ると消えます。</span></td></tr>
             <tr><td class="r">●</td><td><span lang="en">Working.</span><span lang="ja">作業中。</span></td></tr>
+            <tr><td class="o"><span lang="en">●&nbsp;23m</span><span lang="ja">●&nbsp;23分</span></td><td><span lang="en">Working, but no tool call for 23 minutes: it may be stuck on a command or a network call. Shows after <code>@junban-quiet-minutes</code> (15 by default; 0 turns it off) and clears at the next tool call. A long build or test run looks the same.</span><span lang="ja">作業中のまま23分間ツールを使っていません。コマンドや通信で止まっているかもしれません。<code>@junban-quiet-minutes</code>（標準15分、0 でオフ）を過ぎると付き、次にツールを使うと消えます。時間のかかるビルドやテストでも付きます。</span></td></tr>
             <tr><td class="m">◌</td><td><span lang="en">Starting: <kbd>Alt+n</kbd> opened it and the agent hasn't reported in yet. Clears when the agent's first hook fires, or after a minute. Until the agent draws anything, a spinner shows on the status line.</span><span lang="ja">起動中。<kbd>Alt+n</kbd> で開いたウィンドウで、エージェントがまだ起動を終えていない状態です。エージェントの最初のフックが動くか、1分たつと消えます。何か表示されるまでは、ステータスバーにスピナーが出ます。</span></td></tr>
             <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていないウィンドウ（時間は <code>@junban-stale-hours</code> で変えられます）。<kbd>Alt+f</kbd> の一覧ではいちばん下に並びます。</span></td></tr>
           </tbody>
@@ -341,8 +342,8 @@ set -g @junban-namer-model qwen3:8b
 
       <section id="notify">
         <h2><span lang="en">Notifications</span><span lang="ja">通知</span></h2>
-        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work.</p>
-        <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、junban は指定したコマンドを実行し、標準入力に短いメッセージ（ウィンドウの名前と、完了したときは1行要約）を渡します。</p>
+        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work. It does the same, once, when a working agent goes silent (<code>● name: no tool activity for 15 min</code>).</p>
+        <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、junban は指定したコマンドを実行し、標準入力に短いメッセージ（ウィンドウの名前と、完了したときは1行要約）を渡します。作業中のエージェントの動きが止まったときも、1回だけ同じように知らせます（<code>● name: no tool activity for 15 min</code>）。</p>
         <pre><span class="c"># desktop (Linux)</span>
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 <span class="c"># phone, via ntfy</span>
@@ -424,6 +425,7 @@ set -g @junban-done-batch off      <span class="c"># N = hold ✓ and show them 
 <span class="c"># Waits and untouched agents</span>
 set -g @junban-scan-interval 30    <span class="c"># seconds between checks for untouched agents (z)</span>
 set -g @junban-stale-hours 24      <span class="c"># z after this many hours untouched (0 = off)</span>
+set -g @junban-quiet-minutes 15    <span class="c"># orange ● after this many minutes working without a tool call (0 = off)</span>
 set -g @junban-meter on            <span class="c"># today's wait and median reply on the status line</span>
 set -g @junban-meter-cap 60        <span class="c"># minutes one wait can count for</span>
 set -g @junban-goal 5              <span class="c"># streak: days with a median reply within this many minutes</span>

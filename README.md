@@ -52,7 +52,7 @@ Codex CLI or Gemini CLI: run `~/.tmux/plugins/junban/scripts/setup.sh codex` (or
 
 Requires tmux 3.2 or newer, bash, and git. Optional:
 
-- **Python 3**, for badge repair after Esc, window names, recaps, the "what changed" summary, idle-window marks, restoring windows after a restart, the timeline, Codex/Gemini setup, and the Alt+n worktree check.
+- **Python 3**, for badge repair after Esc, window names, recaps, the "what changed" summary, idle-window marks, the silent-agent mark, restoring windows after a restart, the timeline, Codex/Gemini setup, and the Alt+n worktree check.
 - **fzf**, for the sorted, searchable Alt+f list. Without it, Alt+f opens tmux's own window chooser.
 
 ### Updates
@@ -92,6 +92,8 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 **Alt+n never looks frozen.** The status line shows a spinner until the agent draws its first screen, and the tab shows a dim ◌ until the agent reports in (or a minute passes).
 
 **Idle windows move out of the way.** Windows with no agent activity for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
+
+**An agent that may be stuck gets a mark.** A command that never returns or a network call that hangs leaves the tab on ● forever. When an agent has been working for 15 minutes without a tool call, its ● turns orange and shows how long (`● 23m`). The status line counts these agents, and they come first among the working ones in the Alt+f list. `@junban-notify-cmd` gets one message per stretch. A long build or test run gets the mark too, so look before you stop anything. It clears at the next tool call. Change the minutes, or turn it off, with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off).
 
 **One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, the model writes the line for finished work; otherwise junban uses the first real line of the agent's reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn the one-line recap off with `set -g @junban-recap off`.
 
@@ -141,8 +143,9 @@ set -g @junban-agent-cmd claude    # what Alt+n starts
 set -g @junban-restore on          # off = no automatic reopening after a restart; Alt+, → Restore windows still works
 set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --worktree if another agent already works in this repo
 
-# Wait meter, idle windows, mascot
+# Wait meter, idle and silent agents, mascot
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
+set -g @junban-quiet-minutes 15    # orange ● 23m on agents working this long without a tool call (0 = off)
 set -g @junban-meter on            # today's wait total and median reply on the status line
 set -g @junban-meter-cap 60        # minutes one wait can count for
 set -g @junban-goal 5              # streak: days with a median reply within this many minutes
@@ -156,7 +159,7 @@ set -g @junban-recap on            # off = no one-line recap on the banner, Alt+
 # set -g @junban-namer-model qwen3:8b               # any model the server has
 # set -g @junban-namer-key OPENROUTER_API_KEY       # env var holding the key for a …/v1 server (unset: api.openai.com gets $OPENAI_API_KEY, other servers get no key)
 
-# Notifications when an agent starts waiting or finishes (message on stdin). Pick one:
+# Notifications when an agent starts waiting, finishes, or goes silent (message on stdin). Pick one:
 # set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 # set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'   # ✓ messages include the recap line; anyone who knows a public ntfy.sh topic's name can read it
 set -g @junban-done-batch off      # 30 = ✓ notifications arrive together every 30 minutes
