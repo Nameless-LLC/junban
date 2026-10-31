@@ -797,7 +797,18 @@ has "two saves at once keep both (2)" "$(cat "$conf")" "@junban-meter 'off'"
 mkdir "${conf%/*}/.settings.lock"
 bash "$S/settings.sh" set @junban-meter on
 has "a lock left by a killed save is taken over" "$(cat "$conf")" "@junban-meter 'on'"
-eq  "and released after" "$([ -d "${conf%/*}/.settings.lock" ] && echo held || echo free)" "free"
+eq  "and released after" "$([ -e "${conf%/*}/.settings.lock" ] || [ -L "${conf%/*}/.settings.lock" ] && echo held || echo free)" "free"
+ln -s 999999999 "${conf%/*}/.settings.lock"
+bash "$S/settings.sh" set @junban-meter off
+has "a lock whose saver is gone is taken over" "$(cat "$conf")" "@junban-meter 'off'"
+# A save still running past 3 s keeps its lock: taking it over let both rewrite the file.
+sleep 30 & holder=$!
+ln -s "$holder" "${conf%/*}/.settings.lock"
+bash "$S/settings.sh" set @junban-meter on & saver=$!
+sleep 4
+has "a live save is waited for"      "$(cat "$conf")" "@junban-meter 'off'"
+kill "$holder"; wait "$holder" 2>/dev/null; rm -f "${conf%/*}/.settings.lock"; wait "$saver"
+has "…and the next save goes in after" "$(cat "$conf")" "@junban-meter 'on'"
 bash "$S/settings.sh" set @junban-position top
 eq  "…and nothing was saved"         "$(grep -c key-jump "$conf")" "0"
 has "keys row shows Alt+,"           "$(plain 160 2)" "Alt+, settings"
