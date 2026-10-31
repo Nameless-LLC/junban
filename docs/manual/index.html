@@ -188,7 +188,7 @@ h1:lang(ja), h2:lang(ja) { font-family: "Zen Kaku Gothic New", var(--f-display);
             <tr><td class="w b">✋</td><td><span lang="en">Waiting on you: a question, or permission to run something. Clears when you answer.</span><span lang="ja">あなたの返事待ち（質問、または実行の許可）。返事をすると消えます。</span></td></tr>
             <tr><td class="d b">✓</td><td><span lang="en">Finished, and you haven't looked yet. Clears the moment you open the window, or switch back to a terminal that shows it.</span><span lang="ja">作業が終わり、まだ確認していません。そのウィンドウを開くか、そのウィンドウを表示しているターミナルに戻ると消えます。</span></td></tr>
             <tr><td class="r">●</td><td><span lang="en">Working.</span><span lang="ja">作業中。</span></td></tr>
-            <tr><td class="o"><span lang="en">●&nbsp;23m</span><span lang="ja">●&nbsp;23分</span></td><td><span lang="en">Working, but no tool call for 23 minutes: it may be stuck on a command or a network call. Shows after <code>@junban-quiet-minutes</code> (15 by default; 0 turns it off) and clears at the next tool call. A long build or test run looks the same.</span><span lang="ja">作業中のまま23分間ツールを使っていません。コマンドや通信で止まっているかもしれません。<code>@junban-quiet-minutes</code>（標準15分、0 でオフ）を過ぎると付き、次にツールを使うと消えます。時間のかかるビルドやテストでも付きます。</span></td></tr>
+            <tr><td class="o"><span lang="en">●&nbsp;23m</span><span lang="ja">●&nbsp;23分</span></td><td><span lang="en">Working, but no tool call for 23 minutes: it may be stuck on a command or a network call. Shows after 15 minutes by default (<code>@junban-quiet-minutes</code>; 0 turns it off) and clears at the next tool call. A long build or test run looks the same.</span><span lang="ja">作業中のまま23分間ツールを使っていません。終わらないコマンドや、応答が返ってこない通信で止まっているかもしれません。ツールを使わない時間が <code>@junban-quiet-minutes</code> の分数（既定は15分、0 でオフ）を超えると印が付き、エージェントが次にツールを使うと消えます。時間のかかるビルドやテストでも付くので、止める前にそのウィンドウの様子を確かめてください。</span></td></tr>
             <tr><td class="m">◌</td><td><span lang="en">Starting: <kbd>Alt+n</kbd> opened it and the agent hasn't reported in yet. Clears when the agent's first hook fires, or after a minute. Until the agent draws anything, a spinner shows on the status line.</span><span lang="ja">起動中。<kbd>Alt+n</kbd> で開いたウィンドウで、エージェントがまだ起動を終えていない状態です。エージェントの最初のフックが動くか、1分たつと消えます。何か表示されるまでは、ステータスバーにスピナーが出ます。</span></td></tr>
             <tr><td class="m">z</td><td><span lang="en">Untouched for a day (<code>@junban-stale-hours</code>). Sinks to the bottom of the <kbd>Alt+f</kbd> list.</span><span lang="ja">1日以上触っていないウィンドウ（時間は <code>@junban-stale-hours</code> で変えられます）。<kbd>Alt+f</kbd> の一覧ではいちばん下に並びます。</span></td></tr>
           </tbody>
@@ -342,8 +342,8 @@ set -g @junban-namer-model qwen3:8b
 
       <section id="notify">
         <h2><span lang="en">Notifications</span><span lang="ja">通知</span></h2>
-        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work. It does the same, once, when a working agent goes silent (<code>● name: no tool activity for 15 min</code>).</p>
-        <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、junban は指定したコマンドを実行し、標準入力に短いメッセージ（ウィンドウの名前と、完了したときは1行要約）を渡します。作業中のエージェントの動きが止まったときも、1回だけ同じように知らせます（<code>● name: no tool activity for 15 min</code>）。</p>
+        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work. It also sends one message when a working agent gets that mark (<code>● name: no tool activity for 15 min</code>).</p>
+        <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、junban は指定したコマンドを実行し、標準入力に短いメッセージ（ウィンドウの名前と、完了したときは1行要約）を渡します。作業中のエージェントがツールを使わないまま <code>@junban-quiet-minutes</code> の時間（既定は15分）を過ぎたときも、印が付くたびに1回、同じようにコマンドを実行します（メッセージは <code>● name: no tool activity for 15 min</code>）。</p>
         <pre><span class="c"># desktop (Linux)</span>
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
 <span class="c"># phone, via ntfy</span>
