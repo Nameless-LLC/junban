@@ -93,7 +93,7 @@ Plenty of [plugins](#prior-art) badge your tabs, and a couple also jump to the l
 
 **Idle windows move out of the way.** Windows with no agent activity for a day get a dim `z` and move to the bottom of the Alt+f list, so the one that needs you never gets lost among dozens of idle ones.
 
-**An agent that may be stuck turns orange.** A command that never returns or a network call that hangs leaves the tab on ●, looking just like an agent that is still working. After 15 minutes without a finished tool call, its ● turns orange and shows how long it has been silent (`● 23m`). The mark clears when the next tool call finishes or the agent stops working. The status line counts these agents, and they come first among the working ones in the Alt+f list. If you set `@junban-notify-cmd`, you get one notification when the mark appears. A long build or test run gets the mark too, and so does a long reply with no tool call, so look before you stop anything. Change the minutes, or turn it off, with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off).
+**An agent that may be stuck turns orange.** A command that never returns or a network call that hangs leaves the tab on ●, looking just like an agent that is still working. After 15 minutes without a finished tool call, its ● turns orange and shows how long it has been silent (`● 23m`). The mark clears when the next tool call finishes, or when the agent waits on you or finishes. The status line counts these agents, and they come first among the working ones in the Alt+f list. If you set `@junban-notify-cmd`, you get one notification when the mark appears. A long build or test run gets the mark too, as does a long answer with no tool call. Look before you stop anything. Change the minutes, or turn it off, with Alt+, → Mark silent agents (`@junban-quiet-minutes`, 0 = off).
 
 **One line on what each agent needs, or what it did.** When an agent asks a question, needs permission, or finishes, the ✋/✓ banner and the Alt+f list show one line on what it wants or how the work turned out ("tests pass, PR #12 opened"). If you set a model, the model writes the line for finished work; otherwise junban uses the first real line of the agent's reply. ✓ notifications (`@junban-notify-cmd`, e.g. ntfy to your phone) carry the same line. Turn the one-line recap off with `set -g @junban-recap off`.
 
@@ -145,7 +145,7 @@ set -g @junban-new-worktree auto   # auto | off. auto: Alt+n starts claude --wor
 
 # Wait meter, idle and silent agents, mascot
 set -g @junban-stale-hours 24      # z on agents idle this long (0 = off)
-set -g @junban-quiet-minutes 15    # orange ● 23m on agents working this long without finishing a tool call (0 = off)
+set -g @junban-quiet-minutes 15    # orange ● 23m on working agents with no finished tool call for this long (0 = off)
 set -g @junban-meter on            # today's wait total and median reply on the status line
 set -g @junban-meter-cap 60        # minutes one wait can count for
 set -g @junban-goal 5              # streak: days with a median reply within this many minutes
