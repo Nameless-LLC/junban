@@ -342,7 +342,7 @@ set -g @junban-namer-model qwen3:8b
 
       <section id="notify">
         <h2><span lang="en">Notifications</span><span lang="ja">通知</span></h2>
-        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work. It also sends one message when a working agent goes 15 minutes without finishing a tool call (<code>@junban-quiet-minutes</code>) and its ● turns orange: <code>● name: no tool activity for 15 min</code>.</p>
+        <p lang="en">When an agent starts waiting or finishes, junban can run a command with a short message on stdin: the window name, plus the recap for finished work. It also runs the command once each time a working agent goes 15 minutes (by default; <code>@junban-quiet-minutes</code>) without finishing a tool call and its ● turns orange. The message reads <code>● name: no tool activity for 15 min</code>, with the window name and the minutes so far.</p>
         <p lang="ja">エージェントが返事待ちになったときや作業を終えたときに、junban は指定したコマンドを実行し、標準入力に短いメッセージ（ウィンドウの名前と、完了したときは1行要約）を渡します。作業中のエージェントがツールを使わないまま <code>@junban-quiet-minutes</code> の分数（既定は15分）に達し、タブに「● 23分」のような印が付いたときも、印1回につき1度だけ、同じようにコマンドを実行します（メッセージの例: <code>● name: no tool activity for 15 min</code>。name はウィンドウの名前、数字は印が付いたときの分数です）。</p>
         <pre><span class="c"># desktop (Linux)</span>
 set -g @junban-notify-cmd 'xargs -0 notify-send junban'
