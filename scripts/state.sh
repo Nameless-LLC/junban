@@ -3,13 +3,17 @@
 #
 # tool is "running" for hooks that fire after every tool call (PostToolUse):
 # it ignores the payload, which carries the tool's whole output, and costs
-# one tmux query when the agent is already running.
+# one tmux call when the agent is already running. That call also stamps the
+# window with the time (scan.py marks an agent silent when the stamp gets old).
 #
 # Called from agent hooks (Claude Code, or anything else that can run a command).
 # Records the agent's state on the tmux *window* that owns $TMUX_PANE:
 #   @junban        running | waiting | done | idle
 #   @junban_ts     epoch seconds of the last change (used to order Alt+a)
 #   @junban_prompt the last thing you asked it (shown in the Alt+f list)
+#   @junban_act    epoch seconds of the last tool call
+#   @junban_quiet  minutes without a tool call or a change, once past
+#                  @junban-quiet-minutes (set by scan.py, cleared here)
 #
 # Leaving "waiting" or "done" ends a stretch where the agent sat on you. Each one
 # is appended to $XDG_STATE_HOME/junban/waits.tsv (start, end, kind, window) for
@@ -25,7 +29,8 @@ st=${1:-}
 # PostToolUse fires on every tool call with megabytes of output on stdin, and
 # only the first one after a wait changes anything. Decide before reading it.
 if [ "$st" = tool ]; then
-  [ "$(tmux display -p -t "$pane" '#{@junban}' 2>/dev/null)" = running ] && exit 0
+  [ "$(tmux set -w -t "$pane" @junban_act "$(date +%s)" \; set -wu -t "$pane" @junban_quiet \; \
+       display -p -t "$pane" '#{@junban}' 2>/dev/null)" = running ] && exit 0
   st=running; exec </dev/null
 fi
 
@@ -81,7 +86,7 @@ case "$st" in
   clear)
     # Closing the agent is not answering it, so no wait is logged.
     [ -n "$cur" ] && timeline clear
-    for o in @junban @junban_ts @junban_prompt @junban_shared @junban_stale @junban_recap @junban_review @junban_pr @junban_base; do t set -wu -t "$pane" "$o"; done
+    for o in @junban @junban_ts @junban_act @junban_quiet @junban_prompt @junban_shared @junban_stale @junban_recap @junban_review @junban_pr @junban_base; do t set -wu -t "$pane" "$o"; done
     t set -pu -t "$pane" @junban_cwd
     exit 0 ;;
   done)
@@ -121,7 +126,7 @@ if [ "$st" != "$cur" ]; then
   esac
   timeline "$st"
   t set -w -t "$pane" @junban "$st"
-  t set -w -t "$pane" @junban_ts "$(date +%s)"
+  t set -w -t "$pane" @junban_ts "$(date +%s)" \; set -wu -t "$pane" @junban_quiet
 fi
 
 if [ "$st" = running ] && [ -n "$prompt" ]; then

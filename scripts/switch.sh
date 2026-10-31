@@ -27,7 +27,7 @@ if ! command -v fzf >/dev/null 2>&1; then
 fi
 
 now=$(date +%s)
-list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{window_index}	#{window_name}	#{?@junban_recap,→ #{@junban_recap},#{@junban_prompt}}	#{@junban_stale}	#{@junban_review}" |
+list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{window_index}	#{window_name}	#{?@junban_recap,→ #{@junban_recap},#{@junban_prompt}}	#{@junban_stale}	#{@junban_review}	#{@junban_quiet}" |
   awk -F'\t' -v now="$now" '
     { rank = 4; icon = "  "
       if ($1 == "waiting")      { rank = 1; icon = "\033[31m✋\033[0m" }
@@ -35,12 +35,15 @@ list=$(tmux list-windows -a -F "#{@junban}	#{@junban_ts}	#{session_name}:#{windo
       else if ($1 == "running") { rank = 3; icon = "\033[33m●\033[0m " }
       age = ""
       if ($2 != "") { d = now - $2; age = (d < 60 ? d "s" : d < 3600 ? int(d / 60) "m" : d < 172800 ? int(d / 3600) "h" : int(d / 86400) "d") }
+      # Working but silent (scan.py): orange, first among the running, with how long.
+      quiet = (rank == 3 && $8 != "")
+      if (quiet) { icon = "\033[38;5;173m●\033[0m "; age = $8 "m" }
       # Parked for a day or more: sink to the bottom, dimmed, so they read as "tidy me".
       if ($6 != "") { rank = 5; icon = "\033[2mz\033[0m " }
       # A finished turn says what it changed, so you can pick what to review first.
       if (rank == 2 && $7 != "") $5 = $5 "  · " $7
       # waiting/done: oldest first. Parked: oldest last. Others keep window order.
-      key = (rank <= 2 ? $2 : rank == 5 ? 9999999999 - $2 : 0)
+      key = (rank <= 2 ? $2 : rank == 5 ? 9999999999 - $2 : quiet ? 0 : 1)
       printf "%d\t%012d\t%s\t%s %-5s \033[1m%s\033[0m  \033[2m%s\033[0m\n", rank, key, $3, icon, age, $4, $5 }' |
   sort -t"$(printf '\t')" -k1,1n -k2,2n -s | cut -f3-)
 
