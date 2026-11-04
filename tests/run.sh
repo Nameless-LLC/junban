@@ -1006,6 +1006,39 @@ hasnt "…not one already open"       "$(python3 "$S/restore.py" list | cut -f6)
 tmux -L other -f /dev/null new -d -s o 'sleep 60'
 tmux -L other run-shell "python3 '$S/restore.py' save; python3 '$S/restore.py' rotate" 2>/dev/null; tmux -L other kill-server
 eq  "another tmux server keeps its own list" "$(python3 "$S/restore.py" list | cut -f6 | tr '\n' ' ')" "bbb ccc "
+
+echo "reopen a window you closed"
+tmux kill-server 2>/dev/null; sleep 0.2
+tmux -f "$WORK/tmux.conf" new -d -s r -n "keep" -c "$WORK" 'sleep 600'
+tmux new-window -d -t r: -n "shut me" -c "$WORK" 'sleep 600'
+rm -f "$st"/windows*.json "$st"/closed-*.json "$st"/reopened.json "$HOME/.claude/sessions/"*.json
+rec r:1 kkk; rec "r:shut me" sss
+python3 "$S/restore.py" save
+eq  "nothing closed yet"            "$(python3 "$S/restore.py" closed)" ""
+rec r:1 kk2; python3 "$S/restore.py" save
+hasnt "a new session in an open window is not a closed one" "$(python3 "$S/restore.py" closed)" "kkk"
+rm -f "$HOME/.claude/sessions/"*.json; rec r:1 kkk; rec "r:shut me" sss; python3 "$S/restore.py" save
+tmux kill-window -t "r:shut me"; rm -f "$HOME/.claude/sessions/"*.json; rec r:1 kkk
+python3 "$S/restore.py" save
+eq  "closing a window remembers its session" "$(python3 "$S/restore.py" closed | cut -f6)" "sss"
+for cj in "$st"/closed-*.json; do :; done
+eq  "…in a private file"            "$(stat -c %a "$cj" 2>/dev/null || stat -f %Lp "$cj")" "600"
+cp "$cj" "$cj.keep"; python3 - "$cj" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p)); d["windows"][0]["closed"] -= 8 * 86400; json.dump(d, open(p, "w"))
+PY
+eq  "…for a week"                   "$(python3 "$S/restore.py" closed)" ""
+mv "$cj.keep" "$cj"
+m=$(JUNBAN_DRY_RUN=1 bash "$S/restore.sh" menu)
+has "the menu offers it"            "$m" "r: shut me · closed"
+hasnt "…without Restore all, which is for restarts" "$m" "Restore all"
+has "…reopening that session"       "$m" "restore.sh back sss"
+eq  "a restart does not reopen it"  "$(python3 "$S/restore.py" list auto)" ""
+w=$(python3 "$S/restore.py" back "echo" sss)
+has "back reopens it"               "$(tmux list-panes -t "$w" -F '#{pane_start_command}')" "echo --resume sss"
+eq  "…under its old name"           "$(tmux display -p -t "$w" '#{window_name}')" "shut me"
+eq  "…and it leaves the list"       "$(python3 "$S/restore.py" closed)" ""
+eq  "a second try opens nothing"    "$(python3 "$S/restore.py" back "echo" sss)" ""
 rm -f "$HOME/.claude/sessions/"*.json
 fi
 

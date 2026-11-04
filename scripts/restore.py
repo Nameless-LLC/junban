@@ -6,6 +6,8 @@
   restore.py list [auto]   previous windows not open now, one per line:
                            index, picked-by-auto, session, window name, cwd, id
   restore.py open CMD N..  reopen entries N.. (or "all", "auto") with CMD --resume
+  restore.py closed        windows closed by hand, newest first, in the list format
+  restore.py back CMD ID   reopen one of those; prints its window id
 
 The list lives in $XDG_STATE_HOME/junban/windows-<socket>.json, one per tmux
 socket, tagged with the server pid: a different pid on the same socket means
@@ -15,6 +17,9 @@ the server restarted, and only then is anything reopened. Another tmux server
 auto picks what you would reopen by hand: an agent waiting on you, running,
 or finished and not yet looked at, and anything active in the last day, except
 windows marked z (untouched for @junban-stale-hours).
+
+A window closed by hand (Alt+w) is remembered too, in closed-<socket>.json. Its
+agent starts again only when you pick it: it never counts towards a restart.
 """
 import glob
 import hashlib
@@ -27,6 +32,8 @@ import time
 DAY = 86400
 AUTO = 6     # at most this many reopen on their own
 GAP = 2.0    # seconds between two reopened agents
+CLOSED = 9   # closed windows worth keeping: one digit each in the menu
+WEEK = 7 * DAY
 
 
 def tmux(*args):
@@ -115,7 +122,7 @@ def current():
         if not d or wid in seen:
             continue
         seen.add(wid)
-        out.append({"session": sess, "name": name, "cwd": d.get("cwd") or "", "id": d["sessionId"],
+        out.append({"session": sess, "win": wid, "name": name, "cwd": d.get("cwd") or "", "id": d["sessionId"],
                     "state": st, "ts": int(ts) if ts.isdigit() else 0, "stale": bool(stale)})
     return out
 
@@ -134,7 +141,36 @@ def save():
     # A list from before a restart waits for rotate; never overwrite it here.
     if old.get("socket") == sock and old.get("pid") != pid:
         return
+    if old.get("socket") == sock:
+        note_closed(sock, old.get("windows") or [])
     write(cur, {"socket": sock, "pid": pid, "saved": int(time.time()), "windows": current()})
+
+
+def closed_name(sock):
+    return f"closed-{hashlib.sha1(sock.encode()).hexdigest()[:10]}.json"
+
+
+def note_closed(sock, before):
+    """Compare window ids, not sessions: /clear or /resume changes the session
+    in a window that is still open."""
+    live = set(tmux("list-windows", "-a", "-F", "#{window_id}").split())
+    gone = [w for w in before if isinstance(w, dict) and w.get("win") and w["win"] not in live]
+    if not live or not gone:
+        return
+    now = int(time.time())
+    known = {w["id"]: w for w in load(closed_name(sock)).get("windows") or [] if isinstance(w, dict) and w.get("id")}
+    known.update({w["id"]: dict(w, closed=now) for w in gone if w.get("id")})
+    keep = sorted((w for w in known.values() if now - int(w.get("closed") or 0) < WEEK),
+                  key=lambda w: -int(w.get("closed") or 0))
+    write(closed_name(sock), {"windows": keep[:CLOSED]})
+
+
+def closed_windows():
+    open_ids = {w["id"] for w in current()} | recent()
+    rows = load(closed_name(server()[0])).get("windows") or []
+    now = time.time()
+    return [w for w in rows if isinstance(w, dict) and w.get("id") and w["id"] not in open_ids
+            and now - int(w.get("closed") or 0) < WEEK and os.path.isdir(w.get("cwd") or "")]
 
 
 def rotate():
@@ -199,6 +235,7 @@ def reopen(cmd, w):
     if wid:
         # Keep the task name it had, not "claude".
         tmux("set", "-w", "-t", wid, "automatic-rename", "off")
+    return wid
 
 
 def main():
@@ -213,6 +250,14 @@ def main():
             if auto and not p:
                 continue
             print("\t".join(str(x) for x in (i, int(p), w.get("session", ""), w.get("name", ""), w["cwd"], w["id"])))
+    elif cmd == "closed":
+        for w in closed_windows():
+            print("\t".join((w["id"], "0", w.get("session", ""), w.get("name", ""), w["cwd"], w["id"])))
+    elif cmd == "back" and len(sys.argv) > 3:
+        w = next((w for w in closed_windows() if w["id"] == sys.argv[3]), None)
+        if w:
+            print(reopen(sys.argv[2], w))
+            mark([w["id"]])
     elif cmd == "open" and len(sys.argv) > 3:
         # Prints "opened<TAB>left". One agent at a time, a few seconds apart, and
         # at most AUTO on their own: each claude with its MCP servers takes the

@@ -380,11 +380,16 @@ set -g @junban-notify-cmd 'curl -s -d @- ntfy.sh/your-topic'</pre>
       </section>
 
       <section id="restore">
-        <h2><span lang="en">After a restart</span><span lang="ja">再起動したあと</span></h2>
+        <h2><span lang="en">Getting windows back</span><span lang="ja">ウィンドウを戻す</span></h2>
         <p lang="en">junban keeps a list of which window runs which Claude Code conversation. When tmux starts again (after a crash, a reboot or <code>tmux kill-server</code>), it reopens the windows you would reopen by hand, each in its old session, folder and name, with <code>claude --resume</code>: agents that were waiting on you, working, or finished and not yet looked at, and any active in the last day. Windows marked z are not reopened automatically. At most six reopen on their own, two seconds apart, the ones waiting on you first, so a dozen agents never start at the same moment. The conversation picks up where it stopped; a command that was running does not. Only Claude Code windows are restored.</p>
         <p lang="ja">junban は、どのウィンドウでどの Claude Code の会話が動いているかを記録しています。tmux を起動し直したとき（tmux が落ちたあと、マシンを再起動したあと、<code>tmux kill-server</code> のあと）、Claude Code のウィンドウを、元の tmux セッション・フォルダ・ウィンドウ名のまま <code>claude --resume</code> で開き直します。自動で開くのは、再起動の前に返事待ち・作業中だったもの、完了してまだ見ていなかったもの、直近1日に動いていたものです。<code>z</code> が付いていたウィンドウは自動では開きません。エージェントを一度に何本も起動してメモリを使い切らないよう、返事待ちのものから順に最大6件までを、2秒ずつ間を空けて開きます。会話は止まったところから続けられますが、実行中だったコマンドは再実行されません。復元できるのは Claude Code のウィンドウだけです。</p>
         <p lang="en">The status line says how many came back and how many are left in the menu. The rest are under <kbd>Alt+,</kbd> → <b>Restore windows</b>, one by one or all at once. <code>@junban-restore off</code> stops the automatic reopening; the menu still works. Windows whose folder is gone are skipped.</p>
         <p lang="ja">開いた件数と、開かずに残した件数がステータスバーに出ます。開かなかったウィンドウは <kbd>Alt+,</kbd> →「ウィンドウを復元」から、1つずつでも、まとめてでも開けます。<code>@junban-restore off</code> にすると自動では開かなくなります（<kbd>Alt+,</kbd> からは開けます）。フォルダがなくなったウィンドウは対象外です。</p>
+        <h3 lang="en">A window you closed</h3><h3 lang="ja">閉じたウィンドウ</h3>
+        <p lang="en">Closed a window with <kbd>Alt+w</kbd> and need it after all? <kbd>Alt+,</kbd> → <b>Restore windows</b> also lists the last nine Claude Code windows you closed in the past week, newest first. Pick one and junban reopens it in its old folder or worktree and switches to it. The conversation picks up where it stopped. These never reopen on their own, and <b>Restore all</b> leaves them out. A window whose folder is gone is not listed.</p>
+        <p lang="ja"><kbd>Alt+w</kbd> で閉じたあとで続きをしたくなったら、<kbd>Alt+,</kbd> →「ウィンドウを復元」を開きます。1週間以内に閉じた Claude Code のウィンドウが、最後に閉じたものから順に最大9件並びます。選ぶとそのウィンドウを開き直して移動します。元のフォルダ（worktree で動いていたならその worktree）で会話を続けられます。閉じたウィンドウが自動で開くことはなく、「すべて開く」にも含まれません。フォルダがなくなったものは一覧に出ません。</p>
+        <p lang="en">Claude Code's own <code>/resume</code> shows only the current worktree's conversations at first, so it looks empty in a new worktree that <kbd>Alt+n</kbd> created. Press <kbd>Ctrl+W</kbd> in that list to see conversations from other worktrees.</p>
+        <p lang="ja">Claude Code の <code>/resume</code> で探す場合、一覧には最初は今の worktree の会話だけが出ます。そのため、<kbd>Alt+n</kbd> で開いた新しい worktree のウィンドウでは、一覧が空に見えます。一覧で <kbd>Ctrl+W</kbd> を押すと、ほかの worktree の会話も出ます。</p>
       </section>
 
       <section id="options">

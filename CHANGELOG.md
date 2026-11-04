@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 — 2026-11-04
+
+### Added
+
+- **A window you closed can come back.** Closed a Claude Code window with Alt+w and need it after all? Alt+, → Restore windows now lists the last nine you closed in the past week, newest first. Pick one and junban reopens it in its old folder or worktree and switches to it, and the conversation picks up where it stopped. These never reopen on their own, and Restore all leaves them out.
+
 ## 0.9.0 — 2026-10-31
 
 ### Added
