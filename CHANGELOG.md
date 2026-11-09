@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0 — 2026-11-09
+
+### Added
+
+- **Long sessions can hand off and start fresh (off by default).** Every turn of a long conversation re-reads all of it, and an agent left idle past the prompt cache pays to write all of it again on the next prompt. Turn on Alt+, → Hand off and clear long idle sessions (`@junban-handoff on`). Once a conversation passes 120,000 tokens (`@junban-handoff-tokens`), the agent is asked once to end its turn with a handoff note: goal, state, decisions, dead ends, next step, pointers. junban saves the note where only you can read it. You see the note too, as a summary. When that window has sat idle for 60 minutes (`@junban-reset-minutes`, 0 = never), and only if you have already looked at it, no one has it on screen and its input box is empty, junban types `/clear`. The new session starts from the note and the current git state. The old one is still in `/resume`. Each clear is logged to `resets.tsv`. `claude -p` and SDK runs are left alone. Claude Code labels the request "Stop hook error"; that is the request, not a failure.
+
 ## 0.10.0 — 2026-11-04
 
 ### Added

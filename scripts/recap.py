@@ -154,6 +154,9 @@ def main():
     elif kind == "notify":
         line = gemini_line(data) or strip_md(str(data.get("message") or "")) or permission_line(data)
     elif kind == "done":
+        # The extra turn handoff.py asked for ends in "note written": keep the real recap.
+        if data.get("stop_hook_active"):
+            return
         line = summarise(last_reply(data))
     else:
         return

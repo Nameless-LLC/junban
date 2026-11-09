@@ -2,7 +2,8 @@
   "description": "junban: mirror each agent's state (running / waiting for you / done) onto its tmux window, keep the window named after the current task, and say in one line what each agent needs from you.",
   "hooks": {
     "SessionStart": [
-      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" idle", "timeout": 5 } ] }
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" idle", "timeout": 5 },
+                   { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/handoff.py\" start || true", "timeout": 5 } ] }
     ],
     "UserPromptSubmit": [
       { "hooks": [
@@ -26,7 +27,8 @@
                    { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" notify || true", "timeout": 5 } ] }
     ],
     "Stop": [
-      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 },
+      { "hooks": [ { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/handoff.py\" stop || true", "timeout": 10 },
+                   { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/state.sh\" done", "timeout": 5 },
                    { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/recap.py\" done || true", "timeout": 20, "async": true },
                    { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/review.py\" done || true", "timeout": 20, "async": true } ] }
     ],

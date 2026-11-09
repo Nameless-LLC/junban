@@ -33,6 +33,7 @@ options() {
     "@junban-done-batch|off|$SET_BATCH|off=$SET_OFF 30=$(printf "$SET_EVERY" 30) 60=$(printf "$SET_EVERY" 60)" \
     "@junban-mascot|on|$SET_MASCOT|on=$SET_ON off=$SET_OFF" \
     "@junban-quiet-minutes|15|$SET_QUIET|15=$(printf "$SET_AFTER" 15) 30=$(printf "$SET_AFTER" 30) 60=$(printf "$SET_AFTER" 60) 0=$SET_OFF" \
+    "@junban-handoff|off|$SET_HANDOFF|off=$SET_OFF on=$SET_ON" \
     "@junban-update|stable|$SET_UPDATE|stable=$SET_UPDATE_STABLE main=$SET_UPDATE_MAIN off=$SET_OFF"
 }
 

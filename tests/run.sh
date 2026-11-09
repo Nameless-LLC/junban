@@ -19,7 +19,7 @@ fi
 half() { [ "$JUNBAN_TEST_PART" = "$1" ] || [ "$JUNBAN_TEST_PART" = all ]; }
 WORK=$(mktemp -d)
 trap 'tmux kill-server 2>/dev/null; rm -rf "$WORK"' EXIT
-unset TMUX TMUX_PANE XDG_CONFIG_HOME XDG_STATE_HOME
+unset TMUX TMUX_PANE XDG_CONFIG_HOME XDG_STATE_HOME CLAUDE_CODE_ENTRYPOINT
 export TMUX_TMPDIR="$WORK" HOME="$WORK/home" LANG=C.UTF-8
 mkdir -p "$HOME/.claude/sessions"
 cd "$WORK" || exit 1   # not inside a git repo, or every test window would share one tree
@@ -1040,6 +1040,65 @@ eq  "…under its old name"           "$(tmux display -p -t "$w" '#{window_name}
 eq  "…and it leaves the list"       "$(python3 "$S/restore.py" closed)" ""
 eq  "a second try opens nothing"    "$(python3 "$S/restore.py" back "echo" sss)" ""
 rm -f "$HOME/.claude/sessions/"*.json
+fi
+
+if half B; then
+echo "hand off long sessions"
+H="$S/handoff.py"
+tmux new -d -s ho -n long -x 160 -y 40; ph=$(tmux display -p -t ho:long "#{pane_id}")
+tr="$WORK/t.jsonl"
+mk_tr() {  # mk_tr TOKENS — a transcript whose last main reply carries TOKENS in total
+  { printf '{"type":"assistant","message":{"model":"m","usage":{"input_tokens":1,"cache_read_input_tokens":%d,"cache_creation_input_tokens":0,"output_tokens":9}}}\n' "$(( $1 - 10 ))"
+    printf '{"type":"assistant","isSidechain":true,"message":{"model":"m","usage":{"input_tokens":999999}}}\n'
+    printf '{"type":"assistant","message":{"model":"<synthetic>","usage":{"input_tokens":5}}}\n'; } > "$tr"; }
+hs() { printf '{"session_id":"sess1234abcd","cwd":"%s","transcript_path":"%s"%s}' "$WORK" "$tr" "${1:-}" | TMUX_PANE=$ph python3 "$H" stop; }
+mk_tr 150000
+eq  "off by default: no ask"          "$(hs)" ""
+tmux set -g @junban-handoff on
+mk_tr 50000
+eq  "a short session is left alone"   "$(hs)" ""
+eq  "…but its size is on the window"  "$(get "$ph" @junban_ctx)" "50000"
+mk_tr 150000
+out=$(hs)
+has "a long one is asked for a note"  "$out" '"decision": "block"'
+has "…with the size"                  "$out" "150,000 tokens"
+has "…to reply between markers"      "$out" "<handoff>"
+eq  "…only once"                      "$(hs)" ""
+tmux set -w -t "$ph" @junban_handoff_asked "x 0"
+eq  "claude -p is never asked"        "$(CLAUDE_CODE_ENTRYPOINT=sdk-cli hs)" ""
+tmux set -w -t "$ph" @junban_handoff_asked "sess1234abcd 150000"
+mk_tr 220000
+has "…again after it grows a lot"     "$(hs)" '"decision": "block"'
+eq  "the asked-for turn is let through" "$(hs ',"stop_hook_active":true,"last_assistant_message":"Done.\n<handoff>\n## Goal\nship it\n</handoff>\nok"')" ""
+note=$(get "$ph" @junban_handoff)
+has "…and the note is saved"          "$note" "/junban/handoff/"
+eq  "…without the markers"            "$(cat "$note")" "$(printf '## Goal\nship it')"
+eq  "…readable by you only"           "$(stat -c %a "$note")" "600"
+eq  "the state dir is yours only"     "$(stat -c %a "$HOME/.local/state/junban/handoff")" "700"
+# reset: an idle, long window with a fresh note and an empty input box
+box() { tmux send-keys -t "$ph" "clear; printf '%s\n' '$(printf '─%.0s' $(seq 40))' '$1' '$(printf '─%.0s' $(seq 40))'" Enter; sleep 0.3; }
+old=$(( $(date +%s) - 7200 ))
+tmux set -w -t "$ph" @junban idle \; set -w -t "$ph" @junban_ts "$old" \; set -w -t "$ph" @junban_act "$old"
+touch -d "@$old" "$note"
+box '❯ half a draft'
+tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
+eq  "a draft in the box stops the clear" "$(get "$ph" @junban_handoff_pending)" ""
+tmux send-keys -t "$ph" "clear; printf '%s\\n\\033[39m❯ \\033[2mTry a test\\033[0m\\n%s\\n' '$(printf '─%.0s' $(seq 40))' '$(printf '─%.0s' $(seq 40))'" Enter; sleep 0.3
+tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
+has "an empty box gets cleared"       "$(get "$ph" @junban_handoff_pending)" "$note"
+has "…and it is logged"               "$(cat "$HOME/.local/state/junban/resets.tsv")" "220000"
+eq  "…and the window forgets the size" "$(get "$ph" @junban_ctx)" ""
+st_out=$(printf '{"source":"clear","cwd":"%s"}' "$WORK" | TMUX_PANE=$ph python3 "$H" start)
+has "the new session gets the note"   "$st_out" "ship it"
+has "…and how to go back"             "$st_out" "/resume"
+eq  "…once"                           "$(get "$ph" @junban_handoff_pending)" ""
+has "a fresh start only gets a pointer" "$(printf '{"source":"startup","cwd":"%s"}' "$WORK" | TMUX_PANE=$ph python3 "$H" start)" "Read it only if"
+hasnt "…not the note itself"          "$(printf '{"source":"startup","cwd":"%s"}' "$WORK" | TMUX_PANE=$ph python3 "$H" start)" "ship it"
+tmux set -w -t "$ph" @junban "done" \; set -w -t "$ph" @junban_ctx 220000 \; set -w -t "$ph" @junban_handoff "$note"
+tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
+eq  "an unread ✓ is never cleared"    "$(get "$ph" @junban_handoff_pending)" ""
+eq  "a bad payload exits quietly"     "$(echo 'not json' | TMUX_PANE=$ph python3 "$H" stop; echo $?)" "0"
+tmux set -gu @junban-handoff; tmux kill-session -t ho
 fi
 
 printf '\n%d passed, %d failed\n' "$pass" "$fail"

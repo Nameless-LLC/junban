@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Status-right counter: ✋ waiting / ✓ done / ● running across all sessions.
 # Also the heartbeat that runs heal.py (stale-state repair), scan.py (parked
-# agents) and restore.py save (which window runs which session) every status-interval.
+# agents), handoff.py reset (long idle sessions) and restore.py save (which window runs which session) every status-interval.
 . "$(dirname "$0")/lib.sh"
 # In the background, one at a time: the counter never waits for them, and a slow
 # run (a busy machine) cannot pile up a python per client per refresh.
@@ -10,10 +10,12 @@ if command -v python3 >/dev/null 2>&1; then
   if command -v flock >/dev/null 2>&1; then
     ( flock -n 9 || exit 0
       python3 "$JUNBAN_SCRIPTS/heal.py"; python3 "$JUNBAN_SCRIPTS/scan.py"
+      python3 "$JUNBAN_SCRIPTS/handoff.py" reset
       python3 "$JUNBAN_SCRIPTS/restore.py" save ) 9>"$lock" >/dev/null 2>&1 &
   else
     python3 "$JUNBAN_SCRIPTS/heal.py" >/dev/null 2>&1
     python3 "$JUNBAN_SCRIPTS/scan.py" >/dev/null 2>&1
+    python3 "$JUNBAN_SCRIPTS/handoff.py" reset >/dev/null 2>&1
     python3 "$JUNBAN_SCRIPTS/restore.py" save >/dev/null 2>&1
   fi
 fi
