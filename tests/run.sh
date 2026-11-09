@@ -1073,13 +1073,13 @@ eq  "the asked-for turn is let through" "$(hs ',"stop_hook_active":true,"last_as
 note=$(get "$ph" @junban_handoff)
 has "…and the note is saved"          "$note" "/junban/handoff/"
 eq  "…without the markers"            "$(cat "$note")" "$(printf '## Goal\nship it')"
-eq  "…readable by you only"           "$(stat -c %a "$note")" "600"
-eq  "the state dir is yours only"     "$(stat -c %a "$HOME/.local/state/junban/handoff")" "700"
+eq  "…readable by you only"           "$(python3 -c 'import os,sys; print(oct(os.stat(sys.argv[1]).st_mode)[-3:])' "$note")" "600"
+eq  "the state dir is yours only"     "$(python3 -c 'import os,sys; print(oct(os.stat(sys.argv[1]).st_mode)[-3:])' "$HOME/.local/state/junban/handoff")" "700"
 # reset: an idle, long window with a fresh note and an empty input box
 box() { tmux send-keys -t "$ph" "clear; printf '%s\n' '$(printf '─%.0s' $(seq 40))' '$1' '$(printf '─%.0s' $(seq 40))'" Enter; sleep 0.3; }
 old=$(( $(date +%s) - 7200 ))
 tmux set -w -t "$ph" @junban idle \; set -w -t "$ph" @junban_ts "$old" \; set -w -t "$ph" @junban_act "$old"
-touch -d "@$old" "$note"
+python3 -c 'import os,sys; os.utime(sys.argv[1], (int(sys.argv[2]),) * 2)' "$note" "$old"
 box '❯ half a draft'
 tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
 eq  "a draft in the box stops the clear" "$(get "$ph" @junban_handoff_pending)" ""
