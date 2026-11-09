@@ -15,7 +15,8 @@ fresh session starts from that note.
                        the new one the note and the git state. After a /clear or
                        a new start of your own, only points at a recent note.
     handoff.py reset   Heartbeat (summary.sh). Clears a session that is long,
-                       has a fresh note, and has sat idle for
+                       has a fresh note, has nothing scheduled or running in
+                       the background, and has sat idle for
                        @junban-reset-minutes, by typing /clear into it, but
                        only when its input box is empty and no one is looking
                        at the window. The old session stays in /resume.
@@ -191,6 +192,10 @@ def stop():
         time.sleep(0.2)
     setw(pane, "@junban_ctx", tokens or "")
     setw(pane, "@junban_agent_pane", pane)
+    # /clear would drop what is still due to wake this session: a /loop or
+    # ScheduleWakeup (session_crons), or work still running in the background.
+    busy = bool(data.get("session_crons")) or bool(data.get("background_tasks"))
+    setw(pane, "@junban_handoff_hold", "1" if busy else "")
     path = note_path(cwd, sid)
     asked_sid, _, asked_at = getw(pane, "@junban_handoff_asked").partition(" ")
     if data.get("stop_hook_active"):
@@ -287,10 +292,13 @@ def reset():
     rows = tmux("list-windows", "-a", "-F",
                 "#{window_id}\t#{@junban}\t#{@junban_ts}\t#{@junban_act}\t#{@junban_ctx}"
                 "\t#{@junban_handoff}\t#{@junban_agent_pane}\t#{@junban_handoff_asked}"
-                "\t#{window_active}\t#{session_attached}\t#{session_name}:#{window_name}")
+                "\t#{window_active}\t#{session_attached}\t#{@junban_handoff_hold}"
+                "\t#{session_name}:#{window_name}")
     for row in rows.splitlines():
-        f = (row.split("\t") + [""] * 11)[:11]
-        wid, state, ts, act, ctx, note, pane, asked, active, attached, name = f
+        f = (row.split("\t") + [""] * 12)[:12]
+        wid, state, ts, act, ctx, note, pane, asked, active, attached, hold, name = f
+        if hold:
+            continue
         # Only windows you have already looked at: a ✓ still holds a result to read.
         if state != "idle" or not pane or not note or not ctx.isdigit() or int(ctx) < limit:
             continue

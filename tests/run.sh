@@ -1080,6 +1080,14 @@ box() { tmux send-keys -t "$ph" "clear; printf '%s\n' '$(printf '─%.0s' $(seq 
 old=$(( $(date +%s) - 7200 ))
 tmux set -w -t "$ph" @junban idle \; set -w -t "$ph" @junban_ts "$old" \; set -w -t "$ph" @junban_act "$old"
 python3 -c 'import os,sys; os.utime(sys.argv[1], (int(sys.argv[2]),) * 2)' "$note" "$old"
+box '❯ '
+hs ',"stop_hook_active":true,"session_crons":[{"id":"c1"}]' >/dev/null
+tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
+eq  "a /loop due to wake it stops the clear" "$(get "$ph" @junban_handoff_pending)" ""
+hs ',"stop_hook_active":true,"background_tasks":[{"id":"b1"}]' >/dev/null
+tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
+eq  "…so does work running in the background" "$(get "$ph" @junban_handoff_pending)" ""
+hs ',"stop_hook_active":true,"session_crons":[],"background_tasks":[]' >/dev/null
 box '❯ half a draft'
 tmux set -gu @junban-handoff-scan-at; python3 "$H" reset
 eq  "a draft in the box stops the clear" "$(get "$ph" @junban_handoff_pending)" ""

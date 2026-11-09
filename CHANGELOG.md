@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.1 — 2026-11-09
+
+### Fixed
+
+- **A session with something still due is never cleared.** A `/loop`, a scheduled wake-up, or work still running in the background lives in the session, and `/clear` would have dropped it. The hand-off clear now skips those windows until they are done.
+
 ## 0.11.0 — 2026-11-09
 
 ### Added
