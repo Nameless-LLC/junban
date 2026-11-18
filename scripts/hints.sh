@@ -14,6 +14,7 @@ opt_prefetch @junban-lang @junban-color-bg @junban-color-waiting @junban-color-d
   @junban-color-muted @junban-color-slower @junban-color-dim @junban-key-jump @junban-key-list \
   @junban-key-new @junban-key-settings @junban-key-help @junban-nav-keys @junban-meter @junban-tint \
   @junban-tint-waiting @junban-stale-hours @junban-quiet-minutes @junban-done-batch @junban-meter-cap @junban_meter_cache \
+  @junban-usage @junban_limits @junban-usage-warn @junban-usage-suggest @junban-heavy-tokens \
   @junban_update_day @junban_version @junban_version_seen
 load_i18n
 
@@ -204,6 +205,63 @@ if [ "$row" != 2 ] && [ "$(opt @junban-meter on)" = on ]; then
       +[0-9]* | x[0-9]*) info="$info#[fg=$co]$(printf "$T_TREND_SLOW" "$(amount "$mtr")")" ;;
     esac
     info="$info  "
+  fi
+fi
+# Plan usage (usage.py, fed by the Claude Code status line): the account of the
+# window in front, when this pace would use it up, the other accounts, and how
+# heavy this window's conversation is. $3/$4 are that window's @junban_acct and
+# @junban_ctx. Nothing shows until the status line has reported once.
+if [ "$row" != 2 ] && [ "$(opt @junban-usage on)" = on ]; then
+  uacct=${3:--}; uctx=${4:-0}
+  case "$uctx" in '' | *[!0-9]*) uctx=0 ;; esac
+  usage=$(opt @junban_limits "")
+  if [ -n "$usage" ]; then
+    warn=$(num @junban-usage-warn 80 100)
+    IFS=';' read -ra urows <<<"$usage"
+    # The window's own account leads; the rest follow, most recently seen first.
+    first=""; rest=()
+    for r in "${urows[@]}"; do
+      if [ -z "$first" ] && [ "${r%%|*}" = "$uacct" ]; then first=$r; else rest+=("$r"); fi
+    done
+    [ -z "$first" ] && [ "$uacct" = - ] && [ ${#rest[@]} -gt 0 ] && { first=${rest[0]}; rest=("${rest[@]:1}"); }
+    useg=""; cur_pct=-1; low=""; low_pct=101
+    for r in ${first:+"$first"} ${rest[@]+"${rest[@]}"}; do
+      IFS='|' read -r ua _ up ue _ <<<"$r"
+      case "$up" in '' | *[!0-9]*) continue ;; esac
+      label="$up%"; [ ${#urows[@]} -gt 1 ] && label="${ua//#/＃} $up%"
+      if [ "$r" = "$first" ]; then
+        cur_pct=$up
+        if [ "$up" -ge 95 ]; then uc=$cw; elif [ "$up" -ge "$warn" ]; then uc=$co; else uc=$cm; fi
+        # shellcheck disable=SC2059
+        useg="#[fg=$uc]$(printf "$T_USAGE" "$label")"
+        case "$ue" in '' | *[!0-9]*) ue=0 ;; esac
+        if [ "$ue" -gt 0 ]; then
+          if [ "$(date +%Y%m%d)" = "$(date -d "@$ue" +%Y%m%d 2>/dev/null || date -r "$ue" +%Y%m%d)" ]; then
+            when=$(hhmm "$ue")
+          else
+            when="$(date -d "@$ue" +%-m/%-d 2>/dev/null || date -r "$ue" +%-m/%-d) $(hhmm "$ue")"
+          fi
+          # shellcheck disable=SC2059
+          useg="$useg · $(printf "$T_USAGE_ETA" "$when")"
+        fi
+      else
+        useg="$useg#[fg=$cdim] · $label"
+        [ "$up" -lt "$low_pct" ] && { low=$ua; low_pct=$up; }
+      fi
+    done
+    # Pointing at another account is left to whoever sets @junban-usage-suggest
+    # (a printf format taking the account name); junban itself says nothing.
+    sug=$(opt @junban-usage-suggest "")
+    if [ -n "$sug" ] && [ "$cur_pct" -ge "$warn" ] && [ -n "$low" ] && [ "$low_pct" -lt "$warn" ]; then
+      # shellcheck disable=SC2059
+      useg="$useg#[fg=$ck] → $(printf "$sug" "${low//#/＃}")"
+    fi
+    [ -n "$useg" ] && info="$useg  $info"
+  fi
+  heavy=$(num @junban-heavy-tokens 200000)
+  if [ "$heavy" -gt 0 ] && [ "$uctx" -ge "$heavy" ]; then
+    # shellcheck disable=SC2059
+    info="#[fg=$co]$(printf "$T_HEAVY" "$((uctx / ${T_TOK_DIV:-1000}))${T_TOK_UNIT:-k}")  $info"
   fi
 fi
 # An agent gone silent mid-turn may be stuck: worth a look, not a call to come now.

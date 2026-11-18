@@ -126,3 +126,8 @@ SET_SAVED_OVERRIDE="%s: %s saved — but %s line %d overrides it on the next sta
 SET_DISABLED="%s line %d is now a comment (backup: %s)"
 SET_DISABLED_TAG="turned off by junban: set in Alt+,"
 SET_FILE="saved in %s"
+# Plan usage (usage.py): T_USAGE takes the percent text, T_USAGE_ETA a time.
+T_USAGE="limit %s"
+T_USAGE_ETA="at this pace, full at %s"
+T_HEAVY="this window holds %s · /compact to lighten"
+T_TOK_DIV=1000; T_TOK_UNIT="k"

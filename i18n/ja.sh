@@ -125,3 +125,8 @@ SET_SAVED_OVERRIDE="%s: %s を保存しました。ただし %s の %d 行目が
 SET_DISABLED="%s の %d 行目をコメントにしました（元のファイル: %s）"
 SET_DISABLED_TAG="junban が無効化: Alt+, で設定"
 SET_FILE="保存先 %s"
+# Plan usage (usage.py): T_USAGE takes the percent text, T_USAGE_ETA a time.
+T_USAGE="枠 %s"
+T_USAGE_ETA="このペースだと %s に上限"
+T_HEAVY="この窓は %s · /compact で軽く"
+T_TOK_DIV=10000; T_TOK_UNIT="万"

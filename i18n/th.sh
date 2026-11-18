@@ -125,3 +125,8 @@ SET_SAVED_OVERRIDE="%s: บันทึก %s แล้ว แต่ %s บร�
 SET_DISABLED="%s บรรทัด %d เป็นคอมเมนต์แล้ว (สำรอง: %s)"
 SET_DISABLED_TAG="ปิดโดย junban: ตั้งค่าใน Alt+,"
 SET_FILE="บันทึกไว้ที่ %s"
+# Plan usage (usage.py): T_USAGE takes the percent text, T_USAGE_ETA a time.
+T_USAGE="โควตา %s"
+T_USAGE_ETA="ถ้าใช้เท่านี้ จะเต็มเวลา %s"
+T_HEAVY="หน้าต่างนี้ใช้ %s · /compact ให้เบาลง"
+T_TOK_DIV=1000; T_TOK_UNIT="k"

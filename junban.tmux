@@ -97,10 +97,10 @@ if [ "$(opt @junban-guide on)" = on ]; then
     # A shade darker, so the keys row sits apart from both the banner and the pane.
     bg2=$(opt @junban-color-bg2 "#17191d")
     tmux set -g status 3 \; \
-         set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 1)" \; \
+         set -g status-format[1] "#[bg=$bg]#[align=left]#($S/hints.sh #{client_width} 1 #{?@junban_acct,#{@junban_acct},-} #{?@junban_ctx,#{@junban_ctx},0})" \; \
          set -g status-format[2] "#[bg=$bg2]#[fill=$bg2]#[align=left]#{?client_prefix,$pk,#($S/hints.sh #{client_width} 2)}"
   else
-    tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#{?client_prefix,$pk,#($S/hints.sh #{client_width})}"
+    tmux set -g status 2 \; set -g status-format[1] "#[bg=$bg]#[align=left]#{?client_prefix,$pk,#($S/hints.sh #{client_width} - #{?@junban_acct,#{@junban_acct},-} #{?@junban_ctx,#{@junban_ctx},0})}"
     # Back from 3 rows: drop our third row, never a user's own.
     case "$(tmux show -gv 'status-format[2]' 2>/dev/null)" in *hints.sh*) tmux set -gu 'status-format[2]' ;; esac
   fi

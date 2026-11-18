@@ -1109,5 +1109,62 @@ eq  "a bad payload exits quietly"     "$(echo 'not json' | TMUX_PANE=$ph python3
 tmux set -gu @junban-handoff; tmux kill-session -t ho
 fi
 
+if half A; then
+echo "plan usage"
+U="$S/usage.py"
+tmux new -d -s us -n u -x 160 -y 40; pu=$(tmux display -p -t us:u "#{pane_id}")
+now=$(date +%s); rs=$((now + 3 * 86400))
+sl() {  # sl PCT TOKENS [CONFIG_DIR] — one status line refresh
+  printf '{"context_window":{"total_input_tokens":%d},"rate_limits":{"seven_day":{"used_percentage":%d,"resets_at":%d}}}' "$2" "$1" "$rs" |
+    TMUX_PANE=$pu CLAUDE_CONFIG_DIR=${3:-} python3 "$U" record; }
+sl 40 1000
+eq  "the window learns its size"      "$(get "$pu" @junban_ctx)" "1000"
+eq  "…and its account"                "$(get "$pu" @junban_acct)" "main"
+has "the limit is published"          "$(tmux show -gv @junban_limits)" "main|seven_day|40|0|$rs"
+has "the guide shows it"              "$(plain 0 1 main 1000)" "limit 40%"
+hasnt "…without a name for one account" "$(plain 0 1 main 1000)" "main 40%"
+# An hour ago at 30 %, now 40 %: 60 more points at 10 an hour is 6 hours away.
+f="$HOME/.local/state/junban/usage/main.json"
+python3 - "$f" "$now" "$rs" <<'PY'
+import json, sys
+f, now, rs = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+d = json.load(open(f)); d["seven_day_hist"] = [[now - 3600, 30, rs]]; json.dump(d, open(f, "w"))
+PY
+sl 40 1000
+e=$(tmux show -gv @junban_limits | cut -d'|' -f4)
+eq  "the pace says when it runs out"  "$(( (e - now + 300) / 3600 ))" "6"
+has "…and the guide says so"          "$(plain 0 1 main 1000)" "at this pace, full at"
+sl 90 1000 "$HOME/.claude-b"
+has "a second account is kept apart"  "$(tmux show -gv @junban_limits)" "b|seven_day|90"
+out=$(plain 0 1 b 1000)
+has "…the window's own account leads" "$out" "limit b 90%"
+has "…the other follows"              "$out" "main 40%"
+hasnt "no advice unless asked"        "$out" "→"
+tmux set -g @junban-usage-suggest "Alt+u: %s"
+has "a suggestion names the roomier one" "$(plain 0 1 b 1000)" "→ Alt+u: main"
+hasnt "…not when there is room left"  "$(plain 0 1 main 1000)" "Alt+u"
+tmux set -gu @junban-usage-suggest
+has "a heavy window says so"          "$(plain 0 1 main 250000)" "this window holds 250k"
+hasnt "…a light one does not"         "$(plain 0 1 main 1000)" "this window holds"
+tmux set -g @junban-lang ja
+has "in Japanese, in 万"              "$(plain 0 1 main 250000)" "この窓は 25万"
+tmux set -gu @junban-lang
+tmux set -g @junban-usage off
+hasnt "off hides it"                  "$(plain 0 1 main 250000)" "limit"
+tmux set -gu @junban-usage
+eq  "a bad payload exits quietly"     "$(echo 'nope' | python3 "$U" record; echo $?)" "0"
+# The status line wrapper: records, then runs the user's own command with the same input.
+mkdir -p "$HOME/.local/state/junban/usage"; echo 'cat >/dev/null; echo mine' > "$HOME/.local/state/junban/usage/statusline-next"
+eq  "the wrapper keeps your status line" "$(printf '{}' | bash "$S/statusline.sh")" "mine"
+echo '{"statusLine":{"type":"command","command":"my-line.sh"}}' > "$HOME/.claude/settings.json"
+rm -f "$HOME/.local/state/junban/usage/statusline-next"
+python3 "$U" install >/dev/null
+has "install points at the wrapper"   "$(cat "$HOME/.claude/settings.json")" "statusline.sh"
+eq  "…and remembers yours"            "$(cat "$HOME/.local/state/junban/usage/statusline-next")" "my-line.sh"
+python3 "$U" uninstall >/dev/null
+has "uninstall puts yours back"       "$(cat "$HOME/.claude/settings.json")" "my-line.sh"
+rm -f "$HOME/.claude/settings.json"; tmux set -gu @junban_limits; tmux kill-session -t us
+fi
+
 printf '\n%d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]

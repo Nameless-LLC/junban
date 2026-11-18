@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 — 2026-11-18
+
+### Added
+
+- **How much of your plan is left, and when this pace runs out.** Claude Code tells its status line command how much of your plan's limit you have used and when it resets. Run `python3 scripts/usage.py install` once (it puts `scripts/statusline.sh` in front of your own status line command, which keeps running; `uninstall` puts it back). The guide line then shows the limit of the window in front (`limit 82%`), orange from 80 % (`@junban-usage-warn`) and red from 95 %. Once the last few hours show a pace, it adds when that pace would reach 100 % before the reset (`at this pace, full at 11/20 21:00`). Run more than one account (`CLAUDE_CONFIG_DIR`) and each shows, the window's own first. `@junban-usage off` hides it. No network calls: it is what Claude Code already knows.
+- **A heavy window says so.** Every turn re-reads the whole conversation, so one window past 200,000 tokens (`@junban-heavy-tokens`, 0 = off) can use more of your plan than several light ones. When the window in front is that heavy, the guide line says how big it is and suggests `/compact`.
+- `@junban-usage-suggest`: a printf format, shown after the limit when the window's account is past the warning and another account still has room (the `%s` is that account). Empty by default.
+
 ## 0.11.1 — 2026-11-09
 
 ### Fixed
